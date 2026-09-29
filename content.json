@@ -1,0 +1,75 @@
+{
+ "home": {
+  "type": "page",
+  "title": "whoami",
+  "content": "<h1><i class=\"fa-solid fa-terminal\"></i> <span class=\"tw\">0xb00b4@terminal:~$ whoami</span></h1><div class=\"fade\"><p>Cybersecurity student &amp; CTF player based in Tunisia.</p><p>Focusing on binary exploitation, reverse engineering, and low-level system dynamics.</p><div id=\"stats\"></div><h3><i class=\"fa-solid fa-clock-rotate-left\"></i> latest_writeups</h3><ul class=\"file-list\" id=\"recent\"></ul><h2><i class=\"fa-solid fa-shield-virus\"></i> $ cat skills.txt</h2><ul style=\"list-style:none;padding:0\"><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Categories:</strong> Pwn, Reverse Engineering, Forensics, OSINT</li><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Languages:</strong> C, Python, x86-64 Assembly, Java</li><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Tools:</strong> GDB, Ghidra, Wireshark, Docker, Linux</li></ul><h3><i class=\"fa-solid fa-chart-simple\"></i> skill_level</h3><div>Pwn <span class=\"meta\">85%</span><div class=\"bar\"><i style=\"--w:85%\"></i></div>Reverse Engineering <span class=\"meta\">75%</span><div class=\"bar\"><i style=\"--w:75%\"></i></div>Forensics <span class=\"meta\">65%</span><div class=\"bar\"><i style=\"--w:65%\"></i></div>OSINT <span class=\"meta\">60%</span><div class=\"bar\"><i style=\"--w:60%\"></i></div></div><p class=\"meta\">tip: try <b style=\"color:var(--yellow)\">help</b>, <b style=\"color:var(--yellow)\">grep pwn</b>, <b style=\"color:var(--yellow)\">neofetch</b> below ↓</p></div>"
+ },
+ "about": {
+  "type": "page",
+  "title": "about",
+  "body": "Welcome to my dark-mode writeup database & personal CTF archive.\n\nBrowse with the menu above, or use the prompt below — try `help`.\n\n## Contact\n- GitHub: add your link here\n- Discord: https://discord.com/users/877314305207455805",
+  "imgs": {}
+ },
+ "writeups": {
+  "type": "dir",
+  "title": "CTF Archives",
+  "items": {
+   "picoctf": {
+    "type": "dir",
+    "title": "PicoCTF",
+    "items": {
+     "pwn": {
+      "type": "dir",
+      "title": "Binary Exploitation",
+      "items": {
+       "buffer-overflow-0": {
+        "type": "file",
+        "title": "buffer-overflow-0.md",
+        "date": "2026-09-29",
+        "category": "Pwn",
+        "body": "A classic stack-based buffer overflow. The target reads user input into a fixed buffer without length checks.\n\n## Exploit\n```python\nfrom pwn import *\n\np = remote('saturn.picoctf.net', 50000)\npayload = b\"A\" * 100\np.sendline(payload)\np.interactive()\n```\n\nFlag: picoCTF{example_flag_here}\n\nLog in, open this file and click **edit** to place screenshots anywhere in the text.",
+        "pts": "100 pts"
+       },
+       "buffer-overflow-1": {
+        "type": "file",
+        "title": "buffer-overflow-1.md",
+        "date": "2026-09-28",
+        "category": "Pwn",
+        "pts": "200 pts",
+        "body": "Placeholder writeup. Edit or delete me."
+       },
+       "crackme-0": {
+        "type": "file",
+        "title": "crackme-0.md",
+        "date": "2026-09-27",
+        "category": "Rev",
+        "pts": "150 pts",
+        "body": "Placeholder writeup. Edit or delete me."
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "projects": {
+  "type": "cards",
+  "title": "Projects",
+  "items": {}
+ },
+ "achievements": {
+  "type": "cards",
+  "title": "Achievements",
+  "items": {
+   "example-achievement": {
+    "type": "card",
+    "title": "Securinets Beginner friendly Ctf",
+    "date": "2026-09-29",
+    "category": "CTF",
+    "link": "",
+    "body": "RANK 1 + solving 90% of pwn challs.",
+    "imgs": {}
+   }
+  }
+ }
+}
