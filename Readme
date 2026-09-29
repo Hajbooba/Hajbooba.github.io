@@ -1,0 +1,27 @@
+# 0xb00b4 — CTF writeups & portfolio
+
+Static terminal-style site hosted on GitHub Pages. No build step.
+
+## Files
+- `index.html` — the site (you never need to edit it to add writeups)
+- `content.json` — all writeups, projects, achievements and the About page
+- `images/` — screenshots, created automatically when you publish
+
+## Writing a writeup
+1. Open the site, run `login`, enter your passphrase.
+2. `cd writeups/<event>/<category>` and click **Add here** (or run `add`).
+3. Write in markdown. Use **insert image** or paste/drag screenshots exactly where you want them.
+4. Click **publish** (top bar) or run `publish`. The site updates in about a minute.
+
+## One-time setup
+1. Create a **public** repo named `USERNAME.github.io` and upload these files.
+2. Repo **Settings → Pages → Deploy from a branch → main / root**.
+3. Create a token: GitHub **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
+   - Repository access: **Only select repositories** → this repo
+   - Permissions → Repository permissions → **Contents: Read and write**
+4. First `publish` asks for `USERNAME/REPO`, the token and the branch. They are stored only in that browser (`publish reset` clears them).
+
+## Notes
+- Drafts live in your browser until you publish. `reset` discards the draft and reloads the published version.
+- Everything in this repo is public. Do not publish writeups for a CTF that is still running.
+- Backup: `export` downloads the current content as JSON; `import` loads one back.
