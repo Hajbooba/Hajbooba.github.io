@@ -156,6 +156,15 @@ footer{margin-top:2rem;border-top:1px solid var(--border);padding-top:.8rem;colo
         "category": "Pwn",
         "overview": "A classic stack-based buffer overflow challenge. The target reads user input into a fixed buffer without length checks.",
         "code": "from pwn import *\n\np = remote('saturn.picoctf.net', 50000)\npayload = b\"A\" * 100\np.sendline(payload)\np.interactive()"
+       },
+       "test": {
+        "type": "file",
+        "title": "test.md",
+        "date": "2026-09-29",
+        "category": "pwn",
+        "overview": "test",
+        "code": "test",
+        "images": []
        }
       }
      }
