@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0xb00b4@terminal:~$</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#070203;--surface:rgba(16,5,7,.88);--text:#ff4d4d;--glow:rgba(255,51,68,.6);--dim:#a35252;--accent:#ff1a40;--yellow:#ffb366;--border:#3d0e12;--danger:#ff2244}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(circle at center,#1a0508 0%,#050102 100%);color:var(--text);font-family:'JetBrains Mono','Courier New',monospace;padding:1.5rem;line-height:1.6;min-height:100vh;animation:flicker 6s infinite}
+#rain{position:fixed;inset:0;z-index:0;opacity:.22;pointer-events:none}
+body::before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(18,0,0,0) 50%,rgba(0,0,0,.35) 50%);background-size:100% 4px;z-index:999;pointer-events:none;opacity:.7}
+body::after{content:"";position:fixed;left:0;right:0;height:120px;top:-120px;background:linear-gradient(transparent,rgba(255,26,64,.07),transparent);z-index:998;pointer-events:none;animation:sweep 7s linear infinite}
+@keyframes sweep{to{top:100%}}
+@keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:.93}98%{opacity:1}99%{opacity:.95}}
+.terminal-container{position:relative;z-index:1;max-width:980px;margin:0 auto;background:var(--surface);backdrop-filter:blur(3px);border:1px solid rgba(255,26,64,.3);border-radius:8px;overflow:hidden;animation:pulse 4s ease-in-out infinite,rise .8s ease both}
+@keyframes pulse{50%{box-shadow:0 0 45px rgba(255,26,64,.3),0 20px 40px #000}0%,100%{box-shadow:0 0 25px rgba(255,26,64,.12),0 20px 40px #000}}
+@keyframes rise{from{opacity:0;transform:translateY(20px) scale(.98)}}
+.window-bar{background:#170709;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:8px}.dot{width:12px;height:12px;border-radius:50%}
+.dot:nth-child(1){background:#ff2244;box-shadow:0 0 8px #ff2244}.dot:nth-child(2){background:#ffaa00}.dot:nth-child(3){background:#333}
+.wt{color:var(--dim);font-size:.85rem;letter-spacing:1px;text-transform:uppercase}
+.rec{font-size:.75rem;color:var(--accent);animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.terminal-body{padding:1.5rem}
+header{border-bottom:1px dashed var(--border);padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.pp{color:var(--accent);font-weight:bold;text-shadow:0 0 8px var(--glow)}
+.pp::after{content:"█";margin-left:2px;animation:blink 1s steps(2) infinite}
+nav button,.btn-action{background:transparent;border:1px solid var(--border);color:var(--dim);font-family:inherit;padding:.4rem .9rem;border-radius:4px;cursor:pointer;font-size:.85rem;transition:all .2s;display:inline-flex;align-items:center;gap:.5rem;position:relative;overflow:hidden}
+nav button::before,.btn-action::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:translateX(-100%);transition:transform .5s}
+nav button:hover::before,.btn-action:hover::before{transform:translateX(100%)}
+nav button:hover,nav button.active,.btn-action:hover{background:var(--accent);color:#000;border-color:var(--accent);font-weight:bold;box-shadow:0 0 14px var(--glow);transform:translateY(-1px)}
+h1,h2,h3{color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:.6rem;text-shadow:0 0 6px rgba(255,26,64,.4)}
+h1{animation:glitch 5s infinite}
+@keyframes glitch{0%,92%,100%{text-shadow:0 0 6px rgba(255,26,64,.4);transform:none}93%{text-shadow:-3px 0 #0ff,3px 0 #f0f;transform:translateX(2px)}95%{text-shadow:3px 0 #0ff,-3px 0 #f0f;transform:translateX(-2px)}97%{transform:skewX(8deg)}}
+p,ul{margin-bottom:1rem}
+.fade>*{opacity:0;animation:in .5s ease forwards}
+@keyframes in{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.file-list{list-style:none;margin-top:1rem}
+.file-list li{margin:.6rem 0;padding:.5rem .8rem;border-radius:4px;background:rgba(255,0,30,.03);border:1px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:space-between;opacity:0;animation:in .4s ease forwards}
+.file-list li:hover{background:rgba(255,0,30,.1);border-color:rgba(255,26,64,.4);transform:translateX(6px)}
+.file-link,.dir-link{text-decoration:none;cursor:pointer;display:flex;align-items:center;gap:.8rem;flex-grow:1}
+.dir-link{color:var(--accent)}.file-link{color:#ffa6a6}
+.file-list li:hover i.fa-folder{animation:wiggle .4s}
+@keyframes wiggle{50%{transform:rotate(-12deg) scale(1.2)}}
+.btn-delete{background:0;border:0;color:#883333;cursor:pointer;padding:.3rem .6rem;border-radius:3px;transition:.2s}
+.btn-delete:hover{color:var(--danger);background:rgba(255,34,68,.15);transform:rotate(12deg)}
+.action-bar{display:flex;gap:.8rem;margin-bottom:1rem}
+.breadcrumb{background:#140608;padding:.5rem .8rem;border-radius:4px;color:var(--dim);margin-bottom:1.2rem;font-size:.9rem;border:1px solid var(--border)}
+.crumb{color:var(--accent);cursor:pointer;text-decoration:underline}
+pre{background:#080203;padding:1.2rem;border-radius:6px;border:1px solid var(--border);overflow-x:auto;margin:1rem 0;color:#ffcccc;box-shadow:inset 0 0 10px #000;position:relative}
+.copy{position:absolute;top:8px;right:8px}
+.kw{color:#ff6b9d}.st{color:var(--yellow)}
+.bar{height:6px;background:#1c0709;border-radius:3px;overflow:hidden;margin:.2rem 0 .8rem}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--yellow));box-shadow:0 0 8px var(--glow);animation:grow 1.2s .3s ease forwards}
+@keyframes grow{to{width:var(--w)}}
+.input-line{display:flex;align-items:center;gap:.6rem;margin-top:2rem;border-top:1px dashed var(--border);padding-top:1rem}
+.input-line input{background:transparent;border:0;color:var(--text);font-family:inherit;font-size:1rem;outline:0;width:100%;caret-color:var(--accent)}
+.terminal-msg,.terminal-info{padding:.8rem;margin-bottom:1rem;border-radius:0 4px 4px 0;animation:in .3s}
+.terminal-msg{background:rgba(255,34,68,.1);border-left:3px solid var(--danger)}
+.terminal-info{background:rgba(255,179,102,.1);border-left:3px solid var(--yellow);color:var(--yellow)}
+footer{margin-top:2rem;border-top:1px solid var(--border);padding-top:.8rem;color:var(--dim);font-size:.8rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.badge{background:var(--border);color:var(--yellow);padding:.15rem .5rem;border-radius:3px;font-size:.8rem}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);z-index:1000;justify-content:center;align-items:center}
+.modal{background:#100507;border:1px solid var(--accent);padding:1.8rem;border-radius:8px;width:90%;max-width:550px;box-shadow:0 0 30px rgba(255,26,64,.3);animation:pop .3s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.8)}}
+.form-group{margin-bottom:1rem}.form-group label{display:block;color:var(--dim);margin-bottom:.3rem;font-size:.85rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:#080203;border:1px solid var(--border);color:var(--text);padding:.6rem;border-radius:4px;font-family:inherit;outline:0}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.modal-buttons{display:flex;justify-content:flex-end;gap:.8rem;margin-top:1.5rem}
+#boot{position:fixed;inset:0;background:#050102;z-index:2000;padding:2rem;color:var(--accent);font-size:.9rem;overflow:hidden;cursor:pointer;transition:opacity .6s}
+#boot div{white-space:pre}
+.ok{color:#5f5}
+.nf{display:flex;gap:2rem;flex-wrap:wrap;align-items:center}.nf pre{border:0;background:0;box-shadow:none;color:var(--accent);text-shadow:0 0 8px var(--glow)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;margin-bottom:1rem}.gallery img{width:100%;border:1px solid var(--border);border-radius:6px;cursor:zoom-in;transition:.25s;filter:saturate(.9)}.gallery img:hover{transform:scale(1.03);border-color:var(--accent);box-shadow:0 0 16px var(--glow)}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1500;align-items:center;justify-content:center;cursor:zoom-out;animation:pop .25s}#lb img{max-width:92vw;max-height:92vh;border:1px solid var(--accent);border-radius:6px;box-shadow:0 0 40px var(--glow)}
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div id="lb" onclick="this.style.display='none'"><img alt=""></div>
+<div id="boot" title="click to skip"></div>
+
+<div class="terminal-container">
+  <div class="window-bar">
+    <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div class="wt"><i class="fa-solid fa-terminal"></i> bash - 0xb00b4@blood-moon</div>
+    <span class="rec"><i class="fa-solid fa-circle-dot"></i> REC</span>
+  </div>
+  <div class="terminal-body">
+    <header>
+      <div><span style="color:var(--dim)">root@0xb00b4:</span><span class="pp" id="current-path">~/home</span><span id="badge"></span></div>
+      <nav>
+        <button data-path="home" onclick="navigateTo('home')"><i class="fa-solid fa-house"></i> ~/home</button>
+        <button data-path="writeups" onclick="navigateTo('writeups')"><i class="fa-solid fa-skull"></i> ~/writeups</button>
+        <button data-path="about" onclick="navigateTo('about')"><i class="fa-solid fa-user-ninja"></i> ~/about</button>
+      </nav>
+    </header>
+    <main id="main-content"></main>
+    <div class="input-line"><span style="color:var(--accent)">$</span>
+      <input type="text" id="cli-input" placeholder="type 'help' • ↑/↓ history • Tab to autocomplete" autocomplete="off" spellcheck="false">
+    </div>
+    <footer>
+      <span><i class="fa-solid fa-biohazard"></i> Crimson System Active</span>
+      <span id="clock"></span>
+      <span id="mode"></span>
+    </footer>
+  </div>
+</div>
+
+<div class="modal-overlay" id="create-modal"><div class="modal">
+  <h2><i class="fa-solid fa-plus-circle"></i> Create New Item</h2>
+  <div class="form-group"><label>Type</label>
+    <select id="item-type" onchange="toggleFormFields()"><option value="dir">Folder (Category / Platform)</option><option value="file">Writeup File (.md)</option></select></div>
+  <div class="form-group"><label>ID / Folder Name (slug)</label><input id="item-id" placeholder="e.g. web-challenges"></div>
+  <div class="form-group"><label>Display Title</label><input id="item-title" placeholder="e.g. Web Exploitation"></div>
+  <div id="file-specific-fields" style="display:none">
+    <div class="form-group"><label>Category Tag</label><input id="item-category" placeholder="Pwn, Rev, Web"></div>
+    <div class="form-group"><label>Image URLs / paths (one per line)</label><textarea id="item-imgs" rows="2" placeholder="images/shot1.png"></textarea></div><div class="form-group"><label>…or upload images (auto-compressed)</label><input type="file" id="item-files" accept="image/*" multiple></div>
+    <div class="form-group"><label>Overview</label><textarea id="item-overview" rows="3"></textarea></div>
+    <div class="form-group"><label>Exploit / Code (optional)</label><textarea id="item-code" rows="3"></textarea></div>
+  </div>
+  <div class="modal-buttons"><button class="btn-action" onclick="closeModal()">Cancel</button>
+  <button class="btn-action" style="background:var(--accent);color:#000" onclick="saveNewItem()">Create</button></div>
+</div></div>
+
+<script type="application/json" id="content">
+{
+ "home": {
+  "type": "page",
+  "title": "whoami",
+  "content": "\n  <h1><i class=\"fa-solid fa-terminal\"><\/i> <span class=\"tw\">0xb00b4@terminal:~$ whoami<\/span><\/h1>\n  <div class=\"fade\">\n  <p>Cybersecurity student &amp; CTF player based in Tunisia.<\/p>\n  <p>Focusing on binary exploitation, reverse engineering, and low-level system dynamics.<\/p>\n  <h2><i class=\"fa-solid fa-shield-virus\"><\/i> $ cat skills.txt<\/h2>\n  <ul style=\"list-style:none\">\n   <li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"><\/i> <strong>Categories:<\/strong> Pwn, Reverse Engineering, Forensics, OSINT<\/li>\n   <li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"><\/i> <strong>Languages:<\/strong> C, Python, x86-64 Assembly, Java<\/li>\n   <li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"><\/i> <strong>Tools:<\/strong> GDB, Ghidra, Wireshark, Docker, Linux<\/li>\n  <\/ul>\n  <h3><i class=\"fa-solid fa-chart-simple\"><\/i> skill_level<\/h3>\n  <div>Pwn <span style=\"color:var(--dim)\">85%<\/span><div class=\"bar\"><i style=\"--w:85%\"><\/i><\/div>\n  Reverse Engineering <span style=\"color:var(--dim)\">75%<\/span><div class=\"bar\"><i style=\"--w:75%\"><\/i><\/div>\n  Forensics <span style=\"color:var(--dim)\">65%<\/span><div class=\"bar\"><i style=\"--w:65%\"><\/i><\/div>\n  OSINT <span style=\"color:var(--dim)\">60%<\/span><div class=\"bar\"><i style=\"--w:60%\"><\/i><\/div><\/div>\n  <p style=\"color:var(--dim)\">tip: try <b style=\"color:var(--yellow)\">neofetch<\/b>, <b style=\"color:var(--yellow)\">matrix<\/b> or <b style=\"color:var(--yellow)\">help<\/b> below ↓<\/p>\n  <\/div>"
+ },
+ "about": {
+  "type": "page",
+  "title": "about",
+  "content": "\n  <h1><i class=\"fa-solid fa-user-ninja\"><\/i> <span class=\"tw\">$ cat /etc/profile<\/span><\/h1>\n  <div class=\"fade\"><p>Welcome to my dark red writeup database &amp; personal CTF archive.<\/p>\n  <p>Browse the archive with the menu above, or use the prompt below — try <b>help<\/b>.<\/p><\/div>"
+ },
+ "writeups": {
+  "type": "dir",
+  "title": "CTF Archives",
+  "items": {
+   "picoctf": {
+    "type": "dir",
+    "title": "PicoCTF",
+    "items": {
+     "pwn": {
+      "type": "dir",
+      "title": "Binary Exploitation",
+      "items": {
+       "buffer-overflow-0": {
+        "type": "file",
+        "title": "buffer-overflow-0.md",
+        "date": "2026-09-29",
+        "category": "Pwn",
+        "overview": "A classic stack-based buffer overflow challenge. The target reads user input into a fixed buffer without length checks.",
+        "code": "from pwn import *\n\np = remote('saturn.picoctf.net', 50000)\npayload = b\"A\" * 100\np.sendline(payload)\np.interactive()"
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
+</script>
+<script>
+const $=id=>document.getElementById(id);
+const PUBLISHED=JSON.parse($('content').textContent);const clone=o=>JSON.parse(JSON.stringify(o));
+const ADMIN_HASH='788006caf535441ad49e2747bb0edd0203f38a74caacf7c337fc1a9ecfa99cd8';let admin=false;
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+let fs={},cur="home";
+const KEY='0xb00b4_crimson_fs';
+function loadFS(){fs=clone(PUBLISHED);setAdmin(sessionStorage.getItem('adm')==='1')}
+function saveFS(){if(admin)try{localStorage.setItem(KEY,JSON.stringify(fs))}catch(e){alert('Storage full — export & use image URLs instead.')}}
+function setAdmin(on){admin=on;sessionStorage.setItem('adm',on?1:0);
+ try{fs=on?(JSON.parse(localStorage.getItem(KEY))||clone(PUBLISHED)):clone(PUBLISHED)}catch(e){fs=clone(PUBLISHED)}
+ $('badge').innerHTML=on?' <span class="badge" style="background:var(--accent);color:#000">ADMIN</span>':'';
+ $('mode').innerHTML=on?'<i class="fa-solid fa-lock-open"></i> Admin (local draft)':'<i class="fa-solid fa-lock"></i> Read-only'}
+async function doLogin(){if(admin)return showInfo('already logged in');const p=prompt('Passphrase:');if(!p)return;
+ if(await sha(p)===ADMIN_HASH){setAdmin(true);navigateTo(cur);showInfo('Access granted. Edits are a local draft — run <b>export</b> to publish.')}else showErr('Access denied.')}
+function exportJSON(){const j=JSON.stringify(fs,null,1).replace(/<\//g,'<\\/');navigator.clipboard&&navigator.clipboard.writeText(j).catch(()=>{});
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download='content.json';a.click();
+ showInfo('Exported (also copied). Paste it over the JSON inside <code>&lt;script id="content"&gt;</code>, then upload the file.')}
+const safeImg=u=>/^(https?:\/\/\S+|data:image\/\S+|[\w\-\/.]+\.(png|jpe?g|gif|webp|svg))$/i.test(u);
+function readImg(f){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,900/im.width),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8))};im.onerror=()=>r(null);im.src=fr.result};fr.readAsDataURL(f)})}
+function zoom(s){const l=$('lb');l.querySelector('img').src=s;l.style.display='flex'}
+
+function resolve(c,t){
+ if(!t||t==='.'||t==='./')return c;
+ if(['~','/','home'].includes(t))return 'home';
+ if(t==='about'||t==='writeups')return t;
+ const abs=/^(~\/|\/)/.test(t);let st=abs?[]:(c==='home'||c==='about'?[]:c.split('/'));
+ for(const p of t.replace(/^(\/|~\/)/,'').split('/')){if(!p||p==='.')continue;p==='..'?st.pop():st.push(p)}
+ return st.length?st.join('/'):'home';
+}
+function getObj(p){
+ if(!p||p==='home')return{obj:fs.home,cleanPath:'home'};
+ if(p==='about')return{obj:fs.about,cleanPath:'about'};
+ const parts=p.split('/').filter(x=>x&&x!=='~');let c=fs;
+ for(const x of parts){if(c[x])c=c[x];else if(c.items&&c.items[x])c=c.items[x];else return null}
+ return{obj:c,cleanPath:parts.join('/')};
+}
+function navigateTo(p){
+ const r=getObj(p);
+ if(!r){showErr(`bash: cd: ${p}: No such file or directory`);return}
+ cur=r.cleanPath;history.replaceState(null,'','#'+cur);const{obj,cleanPath}=r;
+ $('current-path').innerText='~/'+(cleanPath==='home'?'':cleanPath);
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',cleanPath===b.dataset.path||(cleanPath.startsWith('writeups')&&b.dataset.path==='writeups')));
+ crumb(cleanPath);const m=$('main-content');
+ if(obj.type==='page')m.innerHTML+=obj.content;
+ else if(obj.type==='file')fileView(obj);
+ else if(obj.type==='dir')dirView(cleanPath,obj);
+ stagger();typewrite();
+}
+function crumb(p){
+ const parts=p.split('/');let acc="",h=`<div class="breadcrumb"><i class="fa-solid fa-folder-tree"></i> `;
+ parts.forEach((x,i)=>{acc+=(i?'/':'')+x;h+=i===parts.length-1?`<span style="color:var(--text)">${x}</span>`:`<span class="crumb" onclick="navigateTo('${acc}')">${x}</span> / `});
+ $('main-content').innerHTML=h+'</div>';
+}
+function dirView(p,d){
+ const parts=p.split('/'),del=k=>admin?`<button class="btn-delete" onclick="deleteItem('${p}','${k}')"><i class="fa-solid fa-trash"></i></button>`:'';
+ let h=(admin?'<div class="action-bar"><button class="btn-action" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> Add Item Here</button></div>':'')+`<h1><i class="fa-solid fa-terminal"></i> <span class="tw">$ ls -la ./${p}</span></h1><ul class="file-list">`;
+ if(parts.length>1)h+=`<li><a class="dir-link" onclick="navigateTo('${parts.slice(0,-1).join('/')}')"><i class="fa-solid fa-folder-open" style="color:var(--yellow)"></i> <strong>.. (parent)</strong></a></li>`;
+ const ks=d.items?Object.keys(d.items):[];
+ if(ks.length)for(const k of ks){const it=d.items[k],ip=p+'/'+k;
+  h+=it.type==='dir'
+  ?`<li><a class="dir-link" onclick="navigateTo('${ip}')"><i class="fa-solid fa-folder" style="color:var(--accent)"></i> <strong>${k}/</strong> <span style="color:var(--dim);font-size:.8rem">(${esc(it.title||'')})</span></a>${del(k)}</li>`
+  :`<li><a class="file-link" onclick="navigateTo('${ip}')"><i class="fa-regular fa-file-code"></i> ${esc(it.title)} <span class="badge">${esc(it.category||'Note')}</span></a>${del(k)}</li>`}
+ else h+=`<li style="color:var(--dim)"><i class="fa-solid fa-folder-minus"></i> Directory empty</li>`;
+ $('main-content').innerHTML+=h+'</ul>';
+}
+function fileView(f){
+ const im=(f.images||[]).filter(safeImg).map(u=>`<img src="${esc(u)}" alt="writeup image" loading="lazy" onclick="zoom(this.src)">`).join('');
+ let h=`<h1><i class="fa-regular fa-file-code"></i> <span class="tw">$ cat ${esc(f.title)}</span></h1><div class="fade">
+ <p style="color:var(--dim)"><i class="fa-regular fa-calendar"></i> Date: ${f.date||'N/A'} | <span class="badge">${esc(f.category||'General')}</span></p>
+ <hr style="border:0;border-top:1px dashed var(--border);margin:1rem 0">
+ <h3><i class="fa-solid fa-magnifying-glass"></i> Overview</h3><p>${esc(f.overview||'No overview provided.')}</p>`;
+ if(im)h+=`<h3><i class="fa-regular fa-image"></i> Screenshots</h3><div class="gallery">${im}</div>`;
+ if(f.code)h+=`<h3><i class="fa-solid fa-code"></i> Code / Exploit Script</h3><pre><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(f.code)}</code></pre>`;
+ $('main-content').innerHTML+=h+'</div>';
+}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function hl(c){return esc(c).replace(/(&quot;|"[^"\n]*"|'[^'\n]*')/g,'<span class="st">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="kw">$1</span>')}
+function copyCode(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.querySelector('code').innerText);b.innerHTML='<i class="fa-solid fa-check"></i> copied';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i> copy',1500)}
+
+/* animations */
+function stagger(){document.querySelectorAll('.file-list li').forEach((l,i)=>l.style.animationDelay=i*70+'ms');document.querySelectorAll('.fade>*').forEach((l,i)=>l.style.animationDelay=(500+i*120)+'ms')}
+function typewrite(){document.querySelectorAll('.tw').forEach(el=>{const t=el.textContent;el.textContent='';let i=0;const id=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(id)},28)})}
+function showErr(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-msg"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(m)}</div>`)}
+function showInfo(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-info"><i class="fa-solid fa-circle-info"></i> ${m}</div>`)}
+
+/* modal */
+function openCreateModal(){if(!admin)return;$('create-modal').style.display='flex'}
+function closeModal(){$('create-modal').style.display='none'}
+function toggleFormFields(){$('file-specific-fields').style.display=$('item-type').value==='file'?'block':'none'}
+async function saveNewItem(){
+ if(!admin)return;
+ const type=$('item-type').value,id=$('item-id').value.trim().toLowerCase().replace(/\s+/g,'-'),title=$('item-title').value.trim();
+ if(!id||!title){alert("Please fill in both the ID and Title.");return}
+ const r=getObj(cur);if(!r||r.obj.type!=='dir'){showErr("Must be inside a directory to create items.");closeModal();return}
+ r.obj.items=r.obj.items||{};
+ const imgs=$('item-imgs').value.split('\n').map(s=>s.trim()).filter(safeImg);
+ for(const f of $('item-files').files){const d=await readImg(f);if(d)imgs.push(d)}
+ r.obj.items[id]=type==='dir'?{type:"dir",title,items:{}}:{type:"file",title:title.endsWith('.md')?title:title+'.md',date:new Date().toISOString().split('T')[0],category:$('item-category').value.trim()||"Writeup",overview:$('item-overview').value.trim(),code:$('item-code').value.trim(),images:imgs};
+ $('item-imgs').value='';$('item-files').value='';
+ saveFS();closeModal();navigateTo(cur);
+}
+function deleteItem(d,k){if(!admin)return;if(confirm(`Delete '${k}'?`)){const r=getObj(d);if(r&&r.obj.items&&r.obj.items[k]){delete r.obj.items[k];saveFS();navigateTo(d)}}}
+function resetFS(){if(admin&&confirm("Discard draft and reset to the published version?")){fs=clone(PUBLISHED);saveFS();navigateTo('home')}}
+
+/* CLI: history + tab completion */
+const cli=$('cli-input'),hist=[];let hi=0;
+const CMDS=['help','ls','cd','cat','pwd','whoami','add','reset','clear','neofetch','matrix','date','login','logout','export','hash'];
+let rainOn=true;
+cli.addEventListener('keydown',e=>{
+ if(e.key==='ArrowUp'){e.preventDefault();if(hi>0)cli.value=hist[--hi]||''}
+ else if(e.key==='ArrowDown'){e.preventDefault();hi<hist.length-1?cli.value=hist[++hi]:(hi=hist.length,cli.value='')}
+ else if(e.key==='Tab'){e.preventDefault();const p=cli.value.split(/\s+/);
+  if(p.length===1){const m=CMDS.filter(c=>c.startsWith(p[0]));if(m.length===1)cli.value=m[0]+' '}
+  else{const r=getObj(cur),ks=r&&r.obj.items?Object.keys(r.obj.items):['writeups','about','home'];const m=ks.filter(k=>k.startsWith(p[p.length-1]));if(m.length===1){p[p.length-1]=m[0];cli.value=p.join(' ')}}}
+ else if(e.key==='Enter'){
+  const line=cli.value.trim();cli.value='';if(!line)return;hist.push(line);hi=hist.length;
+  const parts=line.split(/\s+/),cmd=parts[0].toLowerCase(),arg=parts.slice(1).join(' ');
+  if(cmd==='help')showInfo("Commands:<br>• <b>ls [path]</b> list • <b>cd [path]</b> change dir • <b>cat [file]</b> read<br>• <b>pwd</b> • <b>whoami</b> • <b>neofetch</b> • <b>matrix</b> toggle rain • <b>date</b><br>• <b>clear</b> • <b>login</b>/<b>logout</b> (owner)<br>Owner only: <b>add</b>, <b>export</b>, <b>reset</b><br>Tab = autocomplete, ↑/↓ = history");
+  else if(cmd==='ls')navigateTo(arg?resolve(cur,arg):(cur==='home'||cur==='about'?'writeups':cur));
+  else if(cmd==='cd')navigateTo(arg?resolve(cur,arg):'home');
+  else if(cmd==='cat'){if(!arg)return showErr("cat: missing file operand");const t=resolve(cur,arg),r=getObj(t);
+   r&&(r.obj.type==='file'||r.obj.type==='page')?navigateTo(t):showErr(r?`cat: ${arg}: Is a directory`:`cat: ${arg}: No such file or directory`)}
+  else if(cmd==='pwd')showInfo('~/'+cur);
+  else if(cmd==='whoami')navigateTo('home');
+  else if(cmd==='add')admin?openCreateModal():showErr('permission denied: read-only (owner: login)');
+  else if(cmd==='reset')admin?resetFS():showErr('permission denied: read-only');
+  else if(cmd==='login')doLogin();else if(cmd==='logout'){setAdmin(false);navigateTo(cur);showInfo('Logged out.')}else if(cmd==='export')admin?exportJSON():showErr('permission denied: read-only');else if(cmd==='hash')sha(arg).then(x=>showInfo('sha256: '+x));else if(cmd==='clear')$('main-content').innerHTML='';
+  else if(cmd==='date')showInfo(new Date().toString());
+  else if(cmd==='matrix'){rainOn=!rainOn;$('rain').style.display=rainOn?'block':'none';showInfo('rain '+(rainOn?'ON':'OFF'))}
+  else if(cmd==='neofetch'){$('main-content').innerHTML=`<div class="nf"><pre>  ▄▄▄▄▄
+ █ ☠ ☠ █
+ █ ▀▀▀ █
+  ▀█▄█▀</pre><div><b style="color:var(--accent)">root@0xb00b4</b><br>─────────────<br><b>OS:</b> Crimson Linux x86_64<br><b>Host:</b> blood-moon<br><b>Shell:</b> bash 5.2<br><b>Location:</b> Tunisia<br><b>Focus:</b> pwn / rev<br><b>Uptime:</b> ${Math.floor(performance.now()/1000)}s</div></div>`}
+  else showErr(`bash: ${cmd}: command not found. Type 'help' for options.`);
+ }
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.modal,button,a,input,select,textarea,#boot'))cli.focus()});
+
+/* clock */
+setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString(),1000);
+
+/* red matrix rain */
+const cv=$('rain'),cx=cv.getContext('2d');let cols,drops;
+function sizeRain(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.floor(cv.width/16);drops=Array(cols).fill(0).map(()=>Math.random()*-50)}
+sizeRain();addEventListener('resize',sizeRain);
+setInterval(()=>{if(!rainOn)return;cx.fillStyle='rgba(5,1,2,.12)';cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle='#ff1a40';cx.font='14px monospace';
+ drops.forEach((y,i)=>{cx.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*16,y*16);drops[i]=y*16>cv.height&&Math.random()>.975?0:y+1})},60);
+
+/* boot sequence (once per session) */
+function boot(){
+ const b=$('boot');
+ if(sessionStorage.getItem('booted')){b.remove();return}
+ const L=['[  0.000] Booting crimson kernel 6.6.0-blood...','[  0.312] Mounting /dev/skull ........ <span class=ok>OK</span>','[  0.554] Loading exploit modules ..... <span class=ok>OK</span>','[  0.871] Starting ghidra-daemon ...... <span class=ok>OK</span>','[  1.203] Establishing secure shell ... <span class=ok>OK</span>','','Welcome, 0xb00b4.'];
+ let i=0;const done=()=>{sessionStorage.setItem('booted',1);b.style.opacity=0;setTimeout(()=>b.remove(),600)};
+ b.onclick=done;
+ const t=setInterval(()=>{if(i<L.length){b.insertAdjacentHTML('beforeend',`<div>${L[i++]}</div>`)}else{clearInterval(t);setTimeout(done,500)}},260);
+}
+loadFS();navigateTo(location.hash.slice(1)||'home');boot();
+</script>
+</body>
+</html>
