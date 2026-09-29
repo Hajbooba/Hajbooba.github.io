@@ -168,7 +168,7 @@ footer{margin-top:2rem;border-top:1px solid var(--border);padding-top:.8rem;colo
 <script>
 const $=id=>document.getElementById(id);
 const PUBLISHED=JSON.parse($('content').textContent);const clone=o=>JSON.parse(JSON.stringify(o));
-const ADMIN_HASH='788006caf535441ad49e2747bb0edd0203f38a74caacf7c337fc1a9ecfa99cd8';let admin=false;
+const ADMIN_HASH='bc9c149372f2251955f580f33cdf4bef334c0a7c5a6f9d486b108dff8284e699';let admin=false;
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 let fs={},cur="home";
 const KEY='0xb00b4_crimson_fs';
