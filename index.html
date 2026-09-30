@@ -102,6 +102,15 @@ header{border-bottom:2px solid var(--border)}
 .flag{background:var(--accent);border-color:var(--accent);color:#fff}
 .tile{border-top-width:4px}.stats b{text-shadow:none}
 .terminal-container{box-shadow:0 0 0 1px #000,0 24px 50px #000}
+@media (hover:hover) and (pointer:fine){body.cur *{cursor:none!important}body.cur input,body.cur textarea{cursor:text!important}}
+#cd,#cr{position:fixed;top:0;left:0;pointer-events:none;z-index:3000;border-radius:50%;opacity:0;will-change:transform}
+#cd{width:6px;height:6px;background:var(--accent);box-shadow:0 0 10px var(--glow)}
+#cr{width:34px;height:34px;border:1px solid var(--accent);transition:width .2s,height .2s,background .2s,opacity .25s}
+body.mv #cd{opacity:1}body.mv #cr{opacity:.75}
+#cr.h{width:58px;height:58px;background:color-mix(in srgb,var(--accent) 16%,transparent)}
+#cr.d{width:20px;height:20px}
+body.mv.tx #cd,body.mv.tx #cr{opacity:0}
+#trail{position:fixed;inset:0;z-index:2999;pointer-events:none}
 </style>
 </head>
 <body>
@@ -409,6 +418,24 @@ boot();
 /* content lives in content.json (embedded JSON above is only a fallback for opening the file locally) */
 fetch('content.json?'+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.home)PUBLISHED=j}).catch(()=>{})
  .then(()=>{setAdmin(sessionStorage.getItem('adm')==='1');navigateTo(location.hash.slice(1)||'home')});
+/* custom cursor: dot + lagging ring + code-glyph trail + click ripples (desktop mouse only) */
+(()=>{if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ const B=document.body,mk=(t,i)=>{const e=document.createElement(t);e.id=i;B.appendChild(e);return e},d=mk('div','cd'),r=mk('div','cr'),cv=mk('canvas','trail'),c=cv.getContext('2d');
+ const col=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#22d3ee',G='01{}<>/#$ABCDEF';
+ let x=-100,y=-100,rx=-100,ry=-100,lx=0,ly=0,P=[],K=[];B.classList.add('cur');
+ const fit=()=>{cv.width=innerWidth;cv.height=innerHeight};fit();addEventListener('resize',fit);
+ addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;B.classList.add('mv');
+  if(Math.hypot(x-lx,y-ly)>14){lx=x;ly=y;P.push({x,y,vx:(Math.random()-.5)*.8,vy:Math.random()*.8+.2,l:1,ch:G[Math.random()*G.length|0]})}
+  const t=e.target;r.classList.toggle('h',!!t.closest('a,button,.tile,.card,.crumb,figure img,select,[onclick],label'));
+  B.classList.toggle('tx',!!t.closest('input,textarea'))});
+ addEventListener('mousedown',()=>{r.classList.add('d');K.push({x,y,r:6,l:1})});addEventListener('mouseup',()=>r.classList.remove('d'));
+ document.addEventListener('mouseleave',()=>B.classList.remove('mv'));
+ (function loop(){rx+=(x-rx)*.18;ry+=(y-ry)*.18;
+  d.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%)`;r.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+  c.clearRect(0,0,cv.width,cv.height);c.font='12px monospace';c.fillStyle=c.strokeStyle=col;
+  P=P.filter(p=>p.l>0);for(const p of P){p.l-=.03;p.x+=p.vx;p.y+=p.vy;c.globalAlpha=Math.max(p.l,0)*.8;c.fillText(p.ch,p.x,p.y)}
+  K=K.filter(k=>k.l>0);for(const k of K){k.l-=.04;k.r+=3;c.globalAlpha=Math.max(k.l,0);c.beginPath();c.arc(k.x,k.y,k.r,0,7);c.stroke()}
+  requestAnimationFrame(loop)})()})();
 </script>
 </body>
 </html>
