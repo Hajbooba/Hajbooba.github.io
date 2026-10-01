@@ -8,7 +8,7 @@
  "about": {
   "type": "page",
   "title": "about",
-  "body": "Welcome to my dark-mode writeup database & personal CTF archive.\n\nBrowse with the menu above, or use the prompt below — try `help`.\n\n## Contact\n- GitHub: https://github.com/Hajbooba\n- Discord: https://discord.com/users/877314305207455805",
+  "body": "Hey, I'm Rayen!\n**Age**: 20\n**Education**: Network Engineering @ INSAT\n**Interests**: Pwn, Low-Level Security, Reverse Engineering, CTFs\nWelcome to my writeup database and personal archive, where I share my notes, CTF solutions, and journey into deep binary concepts.\n\nBrowse with the menu above, or use the prompt below — try `help`.\n\n## Contact\n- GitHub: https://github.com/Hajbooba\n- Discord: https://discord.com/users/877314305207455805",
   "imgs": {}
  },
  "writeups": {
