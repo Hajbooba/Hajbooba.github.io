@@ -1,3 +1,4 @@
+YourSecretPassword123!
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,44 +29,16 @@ body::before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(1
 .wt{color:var(--dim);font-size:.8rem}.rec{font-size:.75rem;color:var(--accent);animation:blink 1.2s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
 .terminal-body{padding:1.5rem}
-
-/* ── FIXED NAVIGATION ─────────────────────────────────────────────── */
-header {
-  border-bottom: 1px dashed var(--border);
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-nav {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  flex: 1 1 auto;
-  justify-content: flex-end;
-}
-/* ─────────────────────────────────────────────────────────────────── */
-
+header{border-bottom:1px dashed var(--border);padding-bottom:1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .pp{color:var(--accent);font-weight:bold;text-shadow:0 0 8px var(--glow)}.pp::after{content:"█";margin-left:2px;animation:blink 1s steps(2) infinite}
+nav{display:flex;gap:.4rem;flex-wrap:wrap;flex:1 1 auto;justify-content:flex-end}
 button,.btn-action{background:transparent;border:1px solid var(--border);color:var(--dim);font-family:inherit;padding:.35rem .8rem;border-radius:4px;cursor:pointer;font-size:.82rem;transition:.2s;display:inline-flex;align-items:center;gap:.5rem;text-decoration:none}
 button:hover,button.active,.btn-action:hover{background:var(--accent);color:var(--onacc);border-color:var(--accent);box-shadow:0 0 12px var(--glow)}
 :focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 h1,h2,h3,h4{color:var(--accent);margin:1.2rem 0 .7rem;display:flex;align-items:center;gap:.6rem;text-shadow:0 0 6px color-mix(in srgb,var(--accent) 35%,transparent)}
 h1{margin-top:0;font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.05rem}h4{font-size:.95rem;color:var(--yellow)}
 p,ul{margin-bottom:1rem}ul{padding-left:1.2rem}
-
-/* ── SMOOTH PAGE TRANSITIONS ──────────────────────────────────────── */
-#main-content {
-  transition: opacity 0.18s ease;
-}
-#main-content.page-exit {
-  opacity: 0;
-}
-/* ─────────────────────────────────────────────────────────────────── */
-
+#main-content{transition:opacity .18s ease}#main-content.page-exit{opacity:0}
 .fade>*{opacity:0;animation:in .45s ease forwards}
 @keyframes in{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
 .file-list{list-style:none;padding:0}
@@ -185,12 +158,10 @@ nav button,.btn-action,.badge,footer button{text-transform:var(--ht);letter-spac
 [data-theme=dedsec] nav button,[data-theme=dedsec] .btn-action{transform:skewX(-8deg)}
 [data-theme=dedsec] .flag{background:var(--yellow);color:#000;border-color:var(--yellow)}
 
-/* selection: always selectable, always visible */
 .md,.md *,.card,.card *,.tile,.tile *,.tl-item,.tl-item *,.file-list li,.file-list li *,pre,pre *,h1,h2,h3,h4,p,.meta,.toc{-webkit-user-select:text;user-select:text}
 button,.btn-action,.drop,.copy{-webkit-user-select:none;user-select:none}
 [data-theme=detroit] ::selection{background:rgba(76,195,255,.9);color:#04101a}
 .drop{margin:1.2rem 0;padding:1rem;border:1px dashed var(--accent2);color:var(--accent2);text-align:center;cursor:pointer;transition:.2s}.drop:hover,.drop.on{background:color-mix(in srgb,var(--accent2) 12%,transparent);border-style:solid}
-/* Detroit: Become Human x r3t0x palette. blue LED = standby, yellow = admin, red = error */
 [data-theme=detroit] body{background:radial-gradient(ellipse at 15% -10%,rgba(76,195,255,.11),transparent 55%),radial-gradient(ellipse at 95% 0,rgba(240,68,80,.13),transparent 50%),var(--bg2);background-attachment:fixed}
 [data-theme=detroit] .terminal-container{--b:linear-gradient(var(--accent2),var(--accent2))}
 [data-theme=detroit] .terminal-container::after{content:"";position:absolute;inset:8px;pointer-events:none;z-index:5;background:var(--b) 0 0/18px 1px,var(--b) 0 0/1px 18px,var(--b) 100% 0/18px 1px,var(--b) 100% 0/1px 18px,var(--b) 0 100%/18px 1px,var(--b) 0 100%/1px 18px,var(--b) 100% 100%/18px 1px,var(--b) 100% 100%/1px 18px;background-repeat:no-repeat;opacity:.7}
@@ -206,14 +177,26 @@ button,.btn-action,.drop,.copy{-webkit-user-select:none;user-select:none}
 [data-theme=detroit] .flag{background:var(--accent);color:#fff}
 [data-theme=detroit] .tile:hover,[data-theme=detroit] .card:hover,[data-theme=detroit] .tl-item:hover{border-color:var(--accent2);box-shadow:0 0 22px rgba(76,195,255,.18)}
 [data-theme=detroit] .rank,[data-theme=detroit] .stats b{color:var(--accent)}
-
-/* ── NAV NO SHIFT + SMOOTH CONTENT FADE ──────────────────────────── */
-nav button {
-  min-width: 8.5rem;
-  justify-content: center;
-  text-align: center;
-}
-/* ─────────────────────────────────────────────────────────────────── */
+nav button{min-width:8.5rem;justify-content:center;text-align:center}
+/* ===== NEW: no layout shift between pages ===== */
+html{overflow-y:scroll;scrollbar-gutter:stable}
+#main-content{min-height:55vh}
+#current-path{overflow-wrap:anywhere}header>div:first-child{flex:1 1 260px;min-width:0}
+/* ===== NEW: writeup highlights, callouts, flag box ===== */
+.c-hl{background:color-mix(in srgb,var(--yellow) 30%,transparent);color:var(--h);padding:0 .25em;border-radius:2px}
+.c-strike{text-decoration:line-through;color:var(--dim)}
+.c-red{color:#ff5561}.c-green{color:#4ade80}.c-blue{color:#4cc3ff}.c-yellow{color:#ffd166}.c-purple{color:#c4b5fd}.c-orange{color:#fb923c}.c-pink{color:#f472b6}.c-dim{color:var(--dim)}
+.callout{margin:1rem 0;padding:.7rem 1rem;border-left:4px solid var(--c,var(--accent2));background:color-mix(in srgb,var(--c,var(--accent2)) 10%,transparent)}
+.callout b{color:var(--c,var(--accent2));letter-spacing:.12em;font-size:.75rem;margin-right:.6rem}
+.callout.note{--c:#4cc3ff}.callout.tip{--c:#4ade80}.callout.warn{--c:#ffd166}.callout.danger{--c:#ff5561}
+.flagbox{position:relative;margin:2.2rem 0 1.2rem;padding:1.2rem 1.3rem;display:grid;gap:.55rem;border:1px solid var(--yellow);background:linear-gradient(135deg,color-mix(in srgb,var(--yellow) 12%,transparent),transparent 70%);box-shadow:0 0 28px color-mix(in srgb,var(--yellow) 16%,transparent),inset 0 0 0 4px var(--bg);outline:1px dashed color-mix(in srgb,var(--yellow) 45%,transparent);outline-offset:-9px}
+.flagbox::before{content:"✔ SOLVED";position:absolute;top:.7rem;right:1rem;font-size:.7rem;letter-spacing:.15em;color:var(--yellow);border:1px solid var(--yellow);padding:0 .45rem;transform:rotate(4deg)}
+.fb-h{color:var(--yellow);letter-spacing:.22em;font-size:.75rem;font-weight:700}
+.fb-v{font-size:1.2rem;font-weight:700;word-break:break-all;color:var(--h);padding:.2rem 0}
+.fb-c{justify-self:start}.fb-s{font-size:.75rem;color:var(--dim)}
+.flagbox:not(.hid) .fb-s{display:none}
+.flagbox.hid .fb-v{filter:blur(9px);cursor:pointer;-webkit-user-select:none;user-select:none}
+.flagbox,.flagbox .fb-v{-webkit-user-select:text;user-select:text}.flagbox.hid .fb-v{-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -269,13 +252,17 @@ nav button {
       <button onclick="wrap('`')"><i class="fa-solid fa-code"></i> inline</button>
       <button onclick="wrap('\n```python\n','\n```\n')"><i class="fa-solid fa-terminal"></i> code block</button>
       <button onclick="ins('\n## Heading\n')">H2</button><button onclick="ins('\n- item')">list</button>
+      <button onclick="wrap('{hl|','}')" title="highlight selected text"><i class="fa-solid fa-highlighter"></i> highlight</button>
+      <select id="f-col" onchange="colorSel(this)" style="width:auto" title="color the selected text"><option value="">🎨 color</option><option>red</option><option>green</option><option>blue</option><option>yellow</option><option>purple</option><option>orange</option><option>pink</option><option>dim</option></select>
+      <button onclick="ins('\n::note ')">note</button><button onclick="ins('\n::tip ')">tip</button><button onclick="ins('\n::warn ')">warn</button><button onclick="ins('\n::danger ')">danger</button>
       <button onclick="prev()"><i class="fa-regular fa-eye"></i> preview</button>
       <input type="file" id="f-files" accept="image/*" multiple hidden onchange="addImgs(this.files);this.value=''">
     </div>
     <textarea id="f-body" placeholder="Write markdown. Put the cursor anywhere and click 'insert image' (or paste / drag an image in) to place a screenshot exactly there."></textarea>
     <div id="f-prev" class="md"></div>
-    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).</p>
+    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler).</p>
   </div>
+  <div id="g-flag"><label>Flag (shown in a highlighted box at the end of the writeup)</label><input id="f-flag" placeholder="picoCTF{...}"><label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="f-fh" style="width:auto"> hide it until the reader clicks (spoiler)</label></div>
   <div id="g-files"><label>Challenge files (zip, binary, pcap… up to 25 MB each)</label><button onclick="$('f-att').click()"><i class="fa-solid fa-paperclip"></i> attach files</button><input type="file" id="f-att" multiple hidden onchange="attach(this.files);this.value=''"><div id="f-list"></div></div>
   <div class="modal-buttons"><button onclick="closeEd()">Cancel</button><button style="background:var(--accent);color:var(--onacc)" onclick="saveItem()">Save</button></div>
 </div></div>
@@ -334,13 +321,15 @@ const zoom=s=>{const l=$('lb');l.querySelector('img').src=s;l.style.display='fle
 function hl(c){return esc(c).replace(/("[^"\n]*"|'[^'\n]*')/g,'<span class="st">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="kw">$1</span>')}
 const cb=c=>`<pre><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c)}</code></pre>`;
 function md(t,im){im=im||{};
- const inl=s=>esc(s).replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,(m,a,u)=>{u=u.startsWith('img:')?(im[u.slice(4)]||''):u;return safeImg(u)?`<figure><img src="${u}" alt="${a}" onclick="zoom(this.src)" loading="lazy">${a?`<figcaption>${a}</figcaption>`:''}</figure>`:''})
-  .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\b([A-Za-z0-9_]*(?:CTF|flag)\{[^}\s]*\})/gi,'<span class="flag">$1</span>').replace(/\[([^\]]+)\]\((https?:[^)\s"']+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+ const inl=s=>fx(esc(s).replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,(m,a,u)=>{u=u.startsWith('img:')?(im[u.slice(4)]||''):u;return safeImg(u)?`<figure><img src="${u}" alt="${a}" onclick="zoom(this.src)" loading="lazy">${a?`<figcaption>${a}</figcaption>`:''}</figure>`:''})
+  .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\b([A-Za-z0-9_]*(?:CTF|flag)\{[^}\s]*\})/gi,'<span class="flag">$1</span>').replace(/\[([^\]]+)\]\((https?:[^)\s"']+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>'));
  let o='',code=null,ls=false,m;
  for(const l of String(t||'').split('\n')){
   if(l.startsWith('```')){if(code===null)code=[];else{o+=cb(code.join('\n'));code=null}continue}
   if(code){code.push(l);continue}
   if(ls&&!/^- /.test(l)){o+='</ul>';ls=false}
+  if(m=l.match(/^::(note|tip|warn|danger) (.*)$/)){o+=`<div class="callout ${m[1]}"><b>${m[1].toUpperCase()}</b> ${inl(m[2])}</div>`;continue}
+  if(m=l.match(/^::flag(\?)? (.+)$/)){o+=flagBox(m[2],!!m[1]);continue}
   if(m=l.match(/^::bar (.+) (\d{1,3})$/)){o+=`<div>${esc(m[1])} <span class="meta">${m[2]}%</span><div class="bar"><i style="--w:${Math.min(100,m[2])}%"></i></div></div>`;continue}
   if(m=l.match(/^::btn (.+?) \| (https?:\/\/[^\s"'<>]+)$/)){o+=`<a class="btn-action" style="margin:0 .5rem .5rem 0" href="${m[2]}" target="_blank" rel="noopener">${esc(m[1])} ↗</a>`;continue}
   if(m=l.match(/^(#{1,3}) (.*)/)){const n=m[1].length+1;o+=`<h${n} id="h-${++HC}">${inl(m[2])}</h${n}>`}
@@ -365,16 +354,13 @@ function getObj(p){
  for(const x of parts){const n=c===fs?fs[x]:(c.items&&c.items[x]);if(!n||typeof n!=='object')return null;c=n}
  return{obj:c,cleanPath:parts.join('/')}}
 const cnt=o=>o.type==='file'||o.type==='card'?1:Object.values(o.items||{}).reduce((a,x)=>a+cnt(x),0);
-
 /* ── SMOOTH NAVIGATE ──────────────────────────────────────────────── */
 function navigateTo(p) {
   const r = getObj(p);
   if (!r) { showErr(`bash: cd: ${p}: No such file or directory`); return; }
   const main = $('main-content');
-  // Fade out quickly
   main.classList.add('page-exit');
   setTimeout(() => {
-    // Rebuild content
     cur = r.cleanPath;
     history.replaceState(null, '', '#' + cur);
     const { obj, cleanPath } = r;
@@ -401,12 +387,9 @@ function navigateTo(p) {
       `<div class="stats"><div><b>${cnt(fs.writeups)}</b>writeups</div><div><b>${cnt(fs.projects)}</b>projects</div><div><b>${cnt(fs.achievements)}</b>achievements</div></div>`;
     stagger();
     typewrite();
-    // Fade back in
     main.classList.remove('page-exit');
   }, 120);
 }
-/* ─────────────────────────────────────────────────────────────────── */
-
 function crumb(p){const parts=p.split('/');let acc="",h=`<div class="breadcrumb"><i class="fa-solid fa-folder-tree"></i> `;
  parts.forEach((x,i)=>{acc+=(i?'/':'')+x;h+=i===parts.length-1?`<span style="color:var(--text)">${esc(x)}</span>`:`<span class="crumb" onclick="navigateTo('${acc}')">${esc(x)}</span> / `});
  $('main-content').innerHTML=h+'</div>'}
@@ -415,11 +398,11 @@ function pageView(o){const home=cur==='home';
  $('main-content').innerHTML+=`${editBtn(cur)}<h1 class="${home?'hero':''}"><i class="fa-solid ${home?'fa-terminal':'fa-user-ninja'}"></i> <span class="tw">${home?esc(o.title):'$ cat '+esc(o.title)}</span></h1><div class="md fade">${md(o.body,o.imgs)}</div>${home?'<div id="stats"></div><h3><i class="fa-solid fa-clock-rotate-left"></i> latest_writeups</h3><ul class="file-list" id="recent"></ul>':''}`}
 function fileView(f){const b=bodyOf(f),mins=Math.max(1,Math.round(b.split(/\s+/).length/200)),a=cur.split('/'),k=a.pop(),pp=a.join('/'),par=getObj(pp).obj.items,ks=Object.keys(par).filter(x=>par[x].type==='file'),i=ks.indexOf(k);
  const fl=(f.files||[]).length?`<h3><i class="fa-solid fa-paperclip"></i> Challenge files</h3><div class="files">${f.files.map((x,i)=>x.path?`<a class="btn-action" href="${esc(x.path)}" download="${esc(x.name)}"><i class="fa-solid fa-download"></i> ${esc(x.name)} <span class="meta">${fmt(x.size)}</span></a><div class="meta" style="margin:.2rem 0 .8rem;word-break:break-all">sha256: ${esc(x.sha||'')}</div>`:`<div class="meta">📎 ${esc(x.name)} · ${fmt(x.size)} — pending publish ${admin?`<button class="btn-action" style="padding:.1rem .5rem" onclick="dlLocal(${i})">download</button> <button class="btn-delete" onclick="rmFile(${i})">✕</button>`:''}</div>`).join('')}</div>`:'';const pn=(j,l)=>ks[j]?`<a class="btn-action" onclick="navigateTo('${pp}/${ks[j]}')">${l}</a>`:'<span></span>',h=md(b,f.imgs),toc=[...h.matchAll(/<h2 id="(h-\d+)">(.*?)<\/h2>/g)];
- $('main-content').innerHTML+=`${editBtn(cur)}<h1><i class="fa-regular fa-file-code"></i> <span class="tw">$ cat ${esc(f.title)}</span></h1><div class="fade"><p class="meta"><i class="fa-regular fa-calendar"></i> ${esc(f.date||'N/A')} | ${bdg(f.category||'General')} ${f.role?`<span class="badge">${esc(f.role)}</span>`:''} · ${mins} min read ${f.pts?`· <span class="pts">${esc(f.pts)}</span>`:''}</p>${(f.tags||[]).length?`<div class="chips">${f.tags.map(x=>`<span class="badge">#${esc(x)}</span>`).join('')}</div>`:''}<hr style="border:0;border-top:1px dashed var(--border);margin:1rem 0">${toc.length>2?`<div class="toc"><b>contents</b>${toc.map(t=>`<a onclick="document.getElementById('${t[1]}').scrollIntoView({behavior:'smooth'})">› ${t[2]}</a>`).join('')}</div>`:''}<div class="md">${h}</div>${fl}${admin?dz():''}<div class="pn">${pn(i-1,'← prev')}${pn(i+1,'next →')}</div></div>`}
+ $('main-content').innerHTML+=`${editBtn(cur)}<h1><i class="fa-regular fa-file-code"></i> <span class="tw">$ cat ${esc(f.title)}</span></h1><div class="fade"><p class="meta"><i class="fa-regular fa-calendar"></i> ${esc(f.date||'N/A')} | ${bdg(f.category||'General')} ${f.role?`<span class="badge">${esc(f.role)}</span>`:''} · ${mins} min read ${f.pts?`· <span class="pts">${esc(f.pts)}</span>`:''}</p>${(f.tags||[]).length?`<div class="chips">${f.tags.map(x=>`<span class="badge">#${esc(x)}</span>`).join('')}</div>`:''}<hr style="border:0;border-top:1px dashed var(--border);margin:1rem 0">${toc.length>2?`<div class="toc"><b>contents</b>${toc.map(t=>`<a onclick="document.getElementById('${t[1]}').scrollIntoView({behavior:'smooth'})">› ${t[2]}</a>`).join('')}</div>`:''}<div class="md">${h}</div>${f.flag?flagBox(f.flag,f.fhide):''}${fl}${admin?dz():''}<div class="pn">${pn(i-1,'← prev')}${pn(i+1,'next →')}</div></div>`}
 function cardH(it,path,btns){const b=bodyOf(it),m=b.match(/!\[[^\]]*\]\(([^)\s]+)\)/);let cov=m?(m[1].startsWith('img:')?(it.imgs||{})[m[1].slice(4)]:m[1]):'';
  const ex=b.replace(/```[\s\S]*?```/g,'').replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[#*`]/g,'').replace(/\s+/g,' ').trim();
  return `<div class="card" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')">${cov&&safeImg(cov)?`<img class="cov" src="${cov}" alt="">`:''}<div class="cb">${btns}</div>${it.rank?`<div class="rank">${esc(it.rank)}</div>`:''}<h3>${esc(it.title)}</h3><p class="meta" style="margin:0">${it.category?bdg(it.category):''} ${esc(it.date||'')}</p><p class="ex">${esc(ex.slice(0,150))}${ex.length>150?'…':''}</p>${it.stack?`<div class="chips">${it.stack.split(',').map(x=>`<span class="badge">${esc(x.trim())}</span>`).join('')}</div>`:''}<span class="meta"><i class="fa-solid fa-book-open"></i> read more</span></div>`}
-const tileH=(f,path,btns)=>`<div class="tile" style="--tc:${ccol(f.category||'')}" data-c="${qa(f.category||'General')}" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')"><div class="cb">${btns}</div><div>${bdg(f.category||'General')}</div><h4>${esc(f.title.replace(/\.md$/,''))}</h4><div class="chips">${(f.tags||[]).slice(0,3).map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div><div class="meta" style="display:flex;justify-content:space-between"><span>${esc(f.date||'')}${f.role?' · '+esc(f.role):''}</span><span class="pts">${esc(f.pts||'')}</span></div></div>`;
+const tileH=(f,path,btns)=>`<div class="tile" style="--tc:${ccol(f.category||'')}" data-c="${qa(f.category||'General')}" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')"><div class="cb">${btns}</div><div>${bdg(f.category||'General')}</div><h4>${esc(f.title.replace(/\.md$/,''))}</h4><div class="chips">${(f.tags||[]).slice(0,3).map(x=>`<span class="badge">${esc(x)}</span>`).join('')}</div><div class="meta" style="display:flex;justify-content:space-between"><span>${esc(f.date||'')}${f.role?' · '+esc(f.role):''}</span><span class="pts">${f.flag?'<i class="fa-solid fa-flag" style="color:var(--yellow)" title="solved"></i> ':''}${esc(f.pts||'')}</span></div></div>`;
 function cardView(o){const par=cur.split('/').slice(0,-1).join('/');
  $('main-content').innerHTML+=`<div class="action-bar"><button class="btn-action" onclick="navigateTo('${par}')"><i class="fa-solid fa-arrow-left"></i> back</button>${admin?`<button class="btn-action" onclick="openEditor('${cur}')"><i class="fa-solid fa-pen"></i> edit</button>`:''}${safeUrl(o.link)?`<a class="btn-action" href="${o.link}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> open link</a>`:''}</div><h1><i class="fa-solid fa-folder-open"></i> <span class="tw">${esc(o.title)}</span></h1><div class="fade"><p class="meta">${o.rank?`<b class="rank" style="font-size:1.2rem">${esc(o.rank)}</b> `:''}${o.category?bdg(o.category):''} ${esc(o.period||o.date||'')}</p>${o.stack?`<div class="chips" style="margin-bottom:1rem">${o.stack.split(',').map(x=>`<span class="badge">${esc(x.trim())}</span>`).join('')}</div>`:''}<div class="md">${md(bodyOf(o),o.imgs)}</div></div>`}
 function dirView(p,d){
@@ -444,11 +427,11 @@ function openEditor(path,create){if(!admin)return;const r=getObj(path);if(!r)ret
  $('f-type').value=ED.t==='dir'?'dir':'file';
  $('g-type').style.display=create&&!isc?'block':'none';$('g-id').style.display=create?'block':'none';
  $('f-id').value='';$('f-title').value=o.title||'';$('f-cat').value=o.category||'';$('f-date').value=o.date||new Date().toISOString().split('T')[0];
- $('f-link').value=o.link||o.pts||'';$('f-tags').value=(o.tags||[]).join(', ');$('f-role').value=o.role||'';$('f-x').value=o[XK[ED.kind]]||'';$('f-body').value=page||o.type==='file'||o.type==='card'?bodyOf(o):'';
+ $('f-link').value=o.link||o.pts||'';$('f-tags').value=(o.tags||[]).join(', ');$('f-role').value=o.role||'';$('f-x').value=o[XK[ED.kind]]||'';$('f-flag').value=o.flag||'';$('f-fh').checked=!!o.fhide;$('f-body').value=page||o.type==='file'||o.type==='card'?bodyOf(o):'';
  $('f-prev').style.display='none';$('f-body').style.display='block';upd();$('ed').style.display='flex'}
 function upd(){const t=ED.t;$('g-meta').style.display=t==='file'||t==='card'?'grid':'none';$('g-link').style.display=t==='card'||t==='file'?'block':'none';$('g-link').querySelector('label').textContent=t==='card'?'Link (optional)':'Points / difficulty (optional)';$('f-link').placeholder=t==='card'?'https://':'e.g. 200 pts or easy';const kx={rank:'Rank (e.g. 1ST, TOP 3)',project:'Tech stack (comma separated)',exp:'Period (e.g. Sep 2024 — present)'}[ED.kind];
  $('g-meta2').style.display=t==='file'||(t==='card'&&kx)?'grid':'none';$('g-tags').style.display=$('g-role').style.display=t==='file'?'block':'none';$('g-x').style.display=t==='card'&&kx?'block':'none';if(kx)$('g-x').querySelector('label').textContent=kx;
- $('g-files').style.display=t==='file'?'block':'none';
+ $('g-files').style.display=$('g-flag').style.display=t==='file'?'block':'none';
  $('g-body').style.display=t==='dir'?'none':'block'}
 const closeEd=()=>$('ed').style.display='none';
 function ins(s){const t=$('f-body'),a=t.selectionStart;t.setRangeText(s,a,t.selectionEnd,'end');t.focus()}
@@ -468,7 +451,7 @@ function saveItem(){const t=ED.t,body=$('f-body').value,title=$('f-title').value
  if(ED.create&&ED.p.items[id])return alert('That slug already exists here.');
  const old=ED.create?{}:ED.o;
  ED.p.items[id]=t==='dir'?{type:'dir',title,items:old.items||{}}
-  :{...old,overview:undefined,code:undefined,images:undefined,type:t,title:t==='file'&&!/\.md$/.test(title)?title+'.md':title,date:$('f-date').value,category:$('f-cat').value.trim()||(t==='file'?'Writeup':''),link:t==='card'?$('f-link').value.trim():undefined,pts:t==='file'?$('f-link').value.trim():undefined,body,imgs:used,files:t==='file'&&ED.files.length?ED.files:undefined,tags:t==='file'?$('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean):undefined,role:t==='file'?$('f-role').value||undefined:undefined,...(t==='card'&&XK[ED.kind]?{[XK[ED.kind]]:$('f-x').value.trim()}:{})};
+  :{...old,overview:undefined,code:undefined,images:undefined,type:t,title:t==='file'&&!/\.md$/.test(title)?title+'.md':title,date:$('f-date').value,category:$('f-cat').value.trim()||(t==='file'?'Writeup':''),link:t==='card'?$('f-link').value.trim():undefined,pts:t==='file'?$('f-link').value.trim():undefined,body,imgs:used,flag:t==='file'&&$('f-flag').value.trim()||undefined,fhide:t==='file'&&$('f-fh').checked||undefined,files:t==='file'&&ED.files.length?ED.files:undefined,tags:t==='file'?$('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean):undefined,role:t==='file'?$('f-role').value||undefined:undefined,...(t==='card'&&XK[ED.kind]?{[XK[ED.kind]]:$('f-x').value.trim()}:{})};
  saveFS();closeEd();navigateTo(cur)}
 function deleteItem(d,k){if(!admin)return;if(confirm(`Delete '${k}'?`)){const r=getObj(d);if(r&&r.obj.items&&r.obj.items[k]){delete r.obj.items[k];saveFS();navigateTo(d)}}}
 function resetFS(){if(admin&&confirm("Discard draft and reset to the published version?")){fs=clone(PUBLISHED);saveFS();navigateTo('home')}}
@@ -502,6 +485,10 @@ async function publish(arg){
  }catch(e){showErr('publish failed: '+e.message)}}
 
 /* timeline, filters, themes, search palette, shortcuts, motion */
+const fx=h=>h.split(/(<code>[\s\S]*?<\/code>|<img[^>]*>|<a [^>]*>)/).map((p,i)=>i%2?p:p.replace(/\{(red|green|blue|yellow|purple|orange|pink|dim|hl|strike)\|([^}]+)\}/g,'<span class="c-$1">$2</span>')).join('');
+const flagBox=(t,hide)=>`<div class="flagbox${hide?' hid':''}"><div class="fb-h"><i class="fa-solid fa-flag"></i> FLAG CAPTURED</div><div class="fb-v" onclick="this.parentNode.classList.remove('hid')">${esc(t)}</div><button class="btn-action fb-c" onclick="copyFlag(this)"><i class="fa-regular fa-copy"></i> copy flag</button>${hide?'<div class="fb-s">▲ click the blurred flag to reveal (spoiler)</div>':''}</div>`;
+function copyFlag(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentNode.querySelector('.fb-v').textContent);b.innerHTML='<i class="fa-solid fa-check"></i> copied';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i> copy flag',1500)}
+function colorSel(s){if(s.value)wrap('{'+s.value+'|','}');s.value=''}
 let HC=0;
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('ctfsite',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function idbSet(k,v){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
