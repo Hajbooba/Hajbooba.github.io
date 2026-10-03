@@ -42,7 +42,9 @@
       ],
       "role": "player",
       "flag": "Securinets{luc14s_j1ggl3_1s_20GB_0r_20480MB",
-      "fhide": true
+      "fhide": true,
+      "flagLabel": "Flag.txt",
+      "flagColor": "blue"
      },
      "gateway": {
       "type": "file",
@@ -63,7 +65,9 @@
       ],
       "role": "player",
       "flag": "Securinets{0n3_l34k_0n3_sh0t_z3r0_w4nt3d_st4rs}",
-      "fhide": true
+      "fhide": true,
+      "flagLabel": "Flag.txt",
+      "flagColor": "blue"
      },
      "test": {
       "type": "file",
