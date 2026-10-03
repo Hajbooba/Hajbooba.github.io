@@ -193,6 +193,10 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
 .fb-v{font-size:.95rem;font-weight:700;word-break:break-all;color:var(--h);flex:1 1 auto}
 .fb-c{padding:.15rem .5rem}.fb-n{flex-basis:100%;font-size:.72rem;color:var(--dim)}
 .flagbox.hid .fb-v{filter:blur(7px);cursor:pointer;-webkit-user-select:none;user-select:none}.flagbox:not(.hid) .fb-v{-webkit-user-select:text;user-select:text}
+/* centered images + centered text */
+figure{margin:1.2rem auto;text-align:center}figure img{margin:0 auto;max-width:100%}figcaption{text-align:center}
+.ctr{text-align:center}.ctr pre{text-align:left}.ctr ul{list-style-position:inside;padding-left:0}
+.ctr h2,.ctr h3,.ctr h4{justify-content:center}.ctr .flagbox,.ctr .callout{margin-left:auto;margin-right:auto}
 </style>
 </head>
 <body>
@@ -248,6 +252,7 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
       <button onclick="wrap('`')"><i class="fa-solid fa-code"></i> inline</button>
       <button onclick="wrap('\n```python\n','\n```\n')"><i class="fa-solid fa-terminal"></i> code block</button>
       <button onclick="ins('\n## Heading\n')">H2</button><button onclick="ins('\n- item')">list</button>
+      <button onclick="centerSel()" title="center the selected lines (click again to undo)"><i class="fa-solid fa-align-center"></i> center</button>
       <button onclick="wrap('{hl|','}')" title="highlight selected text"><i class="fa-solid fa-highlighter"></i> highlight</button>
       <select id="f-col" onchange="colorSel(this)" style="width:auto" title="color the selected text"><option value="">🎨 color</option><option>red</option><option>green</option><option>blue</option><option>yellow</option><option>purple</option><option>orange</option><option>pink</option><option>dim</option></select>
       <button onclick="ins('\n::note ')">note</button><button onclick="ins('\n::tip ')">tip</button><button onclick="ins('\n::warn ')">warn</button><button onclick="ins('\n::danger ')">danger</button>
@@ -256,7 +261,7 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
     </div>
     <textarea id="f-body" placeholder="Write markdown. Put the cursor anywhere and click 'insert image' (or paste / drag an image in) to place a screenshot exactly there."></textarea>
     <div id="f-prev" class="md"></div>
-    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler).</p>
+    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered.</p>
   </div>
   <div id="g-flag"><label>Flag (shown in a highlighted box at the end of the writeup)</label><input id="f-flag" placeholder="picoCTF{...}"><label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="f-fh" style="width:auto"> hide it until the reader clicks (spoiler)</label>
    <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">gold</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
@@ -317,7 +322,10 @@ const zoom=s=>{const l=$('lb');l.querySelector('img').src=s;l.dataset.y=scrollY;
 /* markdown-lite: headings, lists, bold, code, links, images (img:id resolves to embedded image) */
 function hl(c){return esc(c).replace(/("[^"\n]*"|'[^'\n]*')/g,'<span class="st">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="kw">$1</span>')}
 const cb=c=>`<pre><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c)}</code></pre>`;
-function md(t,im){im=im||{};
+function md(t,im){t=String(t||'');
+ if(/(^|\n)::center( |$)/.test(t)){let out='',buf=[],c=false;const flush=()=>{if(buf.length)out+=c?`<div class="ctr">${md(buf.join('\n'),im)}</div>`:md(buf.join('\n'),im);buf=[]};
+  for(const l of t.split('\n')){const m=l.match(/^::center ?(.*)$/);if(!!m!==c){flush();c=!!m}buf.push(m?m[1]:l)}flush();return out}
+ im=im||{};
  const inl=s=>fx(esc(s).replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,(m,a,u)=>{u=u.startsWith('img:')?(im[u.slice(4)]||''):u;return safeImg(u)?`<figure><img src="${u}" alt="${a}" onclick="zoom(this.src)" loading="lazy">${a?`<figcaption>${a}</figcaption>`:''}</figure>`:''})
   .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\b([A-Za-z0-9_]*(?:CTF|flag)\{[^}\s]*\})/gi,'<span class="flag">$1</span>').replace(/\[([^\]]+)\]\((https?:[^)\s"']+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>'));
  let o='',code=null,ls=false,m;
@@ -487,6 +495,9 @@ const FC={gold:'#ffd166',red:'#ff5561',green:'#4ade80',blue:'#4cc3ff',purple:'#c
 const flagBox=(t,hide,o={})=>`<div class="flagbox${hide?' hid':''}" style="--fc:${FC[o.color]||'var(--yellow)'}"><span class="fb-h"><i class="fa-solid fa-flag"></i> ${esc(o.label||'FLAG')}</span><span class="fb-v" onclick="this.parentNode.classList.remove('hid')">${esc(t)}</span><button class="btn-action fb-c" onclick="copyFlag(this)" title="copy flag"><i class="fa-regular fa-copy"></i></button>${o.note?`<span class="fb-n">${esc(o.note)}</span>`:''}${hide?'<span class="fb-n">click the blurred flag to reveal (spoiler)</span>':''}</div>`;
 function copyFlag(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentNode.querySelector('.fb-v').textContent);b.innerHTML='<i class="fa-solid fa-check"></i>';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i>',1500)}
 function colorSel(s){if(s.value)wrap('{'+s.value+'|','}');s.value=''}
+function centerSel(){const t=$('f-body'),v=t.value;let a=t.selectionStart,e=t.selectionEnd;a=a?v.lastIndexOf('\n',a-1)+1:0;let z=v.indexOf('\n',e);if(z<0)z=v.length;
+ const L=v.slice(a,z).split('\n'),is=l=>/^::center( |$)/.test(l),all=L.every(l=>!l.trim()||is(l));
+ t.setRangeText(L.map(l=>!l.trim()?l:all?l.replace(/^::center ?/,''):is(l)?l:'::center '+l).join('\n'),a,z,'select');t.focus()}
 let HC=0;
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('ctfsite',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function idbSet(k,v){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
