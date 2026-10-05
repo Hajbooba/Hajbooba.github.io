@@ -119,6 +119,20 @@
        "buffer overflow"
       ],
       "role": "player"
+     },
+     "wrong_number": {
+      "type": "file",
+      "title": "wrong_number.md",
+      "date": "2026-10-05",
+      "category": "pwn",
+      "pts": "100",
+      "body": "test",
+      "imgs": {},
+      "fhide": true,
+      "tags": [
+       "ret2libc"
+      ],
+      "role": "player"
      }
     }
    },
