@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>0xb00b4 · CTF writeups, projects & achievements</title>
 <meta name="description" content="Cybersecurity student & CTF player from Tunisia. Pwn, reverse engineering, forensics: writeups, projects and achievements.">
-<meta property="og:title" content="0xb00b4 · CTF writeups & portfolio"><meta property="og:type" content="website"><script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'detroit'}catch(e){}</script><meta name="theme-color" content="#0b0b0e">
+<meta property="og:title" content="0xb00b4 · CTF writeups & portfolio"><meta property="og:type" content="website"><script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'void'}catch(e){}</script><meta name="theme-color" content="#060609">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%91%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&family=Chakra+Petch:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap" rel="stylesheet">
 <style>:root,[data-theme=blackout]{--bg:#0a0a0a;--bg2:#070707;--panel:#121212;--panel2:#1c1c1c;--surface:rgba(14,14,14,.94);--text:#e6e6e6;--dim:#8a8a8a;--h:#fff;--border:#2e2e2e;--accent:#f0313f;--accent2:#ff6b6b;--yellow:#f2f2f2;--link:#d4d4d4;--pre:#dcdcdc;--danger:#ff5561;--onacc:#fff;--font:'JetBrains Mono','Courier New',monospace;--fh:var(--font);--ht:none;--hl:-.3px;--bl:0;--rad:2px;--glow:color-mix(in srgb,var(--accent) 45%,transparent)}
 [data-theme=cyan]{--bg:#070a10;--bg2:#05080d;--panel:#0d121b;--panel2:#141c28;--surface:rgba(10,14,22,.92);--text:#cfe3f1;--dim:#6b8199;--h:#e8f6ff;--border:#1f2c3f;--accent:#22d3ee;--accent2:#c4b5fd;--yellow:#fbbf24;--link:#a5f3fc;--pre:#d5e6f3;--onacc:#031318}
 [data-theme=detroit]{--bg:#0b0b0e;--bg2:#07070a;--panel:#111116;--panel2:#191a22;--surface:rgba(13,14,19,.82);--text:#e4eaf2;--dim:#7d8799;--h:#fff;--border:#262a36;--accent:#f04450;--accent2:#4cc3ff;--yellow:#ffd166;--link:#9fdcff;--pre:#d6e8f6;--onacc:#fff;--font:'Rajdhani','JetBrains Mono',sans-serif;--fh:'Rajdhani',sans-serif;--ht:uppercase;--hl:.12em;--bl:.1em;--rad:0}
 [data-theme=dedsec]{--bg:#09040f;--bg2:#06020b;--panel:#12081c;--panel2:#1d0f2c;--surface:rgba(14,6,22,.93);--text:#f3eaff;--dim:#9a86b5;--h:#fff;--border:#3a1f58;--accent:#ff2bd6;--accent2:#00e5ff;--yellow:#ffe600;--link:#9ff3ff;--pre:#efe3ff;--onacc:#000;--font:'JetBrains Mono',monospace;--fh:'Chakra Petch',sans-serif;--ht:uppercase;--hl:.04em;--bl:.04em;--rad:0}
+[data-theme=void]{--bg:#07070b;--bg2:#050508;--panel:#0b0b12;--panel2:#15151f;--surface:rgba(8,8,13,.80);--text:#c4c8d6;--dim:#7a7f93;--h:#eceef5;--border:#1d1e2c;--accent:#7573d6;--accent2:#cfa062;--yellow:#cfa062;--link:#a3a6e8;--pre:#cdd0dc;--danger:#d9626b;--onacc:#0a0a12;--font:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono','JetBrains Mono',monospace;--fh:'Fraunces',Georgia,serif;--ht:none;--hl:-.01em;--bl:.08em;--rad:3px;--glow:color-mix(in srgb,var(--accent) 22%,transparent)}
 ::selection{background:var(--accent);color:var(--onacc)}body{user-select:text}
 
 
@@ -197,6 +198,76 @@ html{overflow-y:scroll;scrollbar-gutter:stable}
 figure{margin:1.2rem auto;text-align:center}figure img{margin:0 auto;max-width:100%}figcaption{text-align:center}
 .ctr{text-align:center}.ctr pre{text-align:left}.ctr ul{list-style-position:inside;padding-left:0}
 .ctr h2,.ctr h3,.ctr h4{justify-content:center}.ctr .flagbox,.ctr .callout{margin-left:auto;margin-right:auto}
+/* ===== VOID: near-black, muted indigo + amber accents ===== */
+[data-theme=void] #rain{display:none}
+[data-theme=void] body{background:radial-gradient(ellipse at 50% -25%,rgba(117,115,214,.09),transparent 60%),var(--bg2);background-attachment:fixed;font-size:1rem}
+[data-theme=void] body::before{opacity:1;background:
+radial-gradient(1px 1px at 8% 14%,rgba(255,255,255,.35),transparent),radial-gradient(1px 1px at 23% 61%,rgba(255,255,255,.22),transparent),
+radial-gradient(1px 1px at 37% 9%,rgba(255,255,255,.28),transparent),radial-gradient(1.5px 1.5px at 52% 33%,rgba(255,255,255,.3),transparent),
+radial-gradient(1px 1px at 66% 78%,rgba(255,255,255,.2),transparent),radial-gradient(1px 1px at 78% 22%,rgba(255,255,255,.3),transparent),
+radial-gradient(1px 1px at 91% 55%,rgba(255,255,255,.25),transparent),radial-gradient(1px 1px at 15% 88%,rgba(255,255,255,.2),transparent),
+radial-gradient(1.5px 1.5px at 84% 92%,rgba(255,255,255,.22),transparent),radial-gradient(1px 1px at 45% 70%,rgba(255,255,255,.18),transparent);z-index:0}
+[data-theme=void] .terminal-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);backdrop-filter:blur(6px);box-shadow:0 30px 60px rgba(0,0,0,.6)}
+[data-theme=void] .terminal-container::before{height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 55%,transparent),transparent)}
+[data-theme=void] .window-bar{background:transparent;border-bottom:1px solid var(--border)}
+[data-theme=void] .dots{display:none}
+[data-theme=void] .wt{font-family:var(--mono);font-size:.75rem;color:var(--dim)}
+[data-theme=void] .rec{font-family:var(--mono);color:var(--accent2)}
+[data-theme=void] header{position:relative;border-bottom:1px solid var(--border);padding-bottom:1.1rem;margin-bottom:2rem}
+[data-theme=void] header::before{content:"";position:absolute;left:50%;bottom:-4px;width:6px;height:6px;transform:translateX(-50%) rotate(45deg);border:1px solid var(--accent2);background:var(--bg2);z-index:1}
+[data-theme=void] header::after{content:"";position:absolute;left:50%;bottom:-1px;width:62px;height:1px;transform:translateX(-50%);background:linear-gradient(90deg,var(--accent2) 0 22px,transparent 22px 40px,var(--accent2) 40px)}
+[data-theme=void] .pp{font-family:var(--mono);font-weight:400;color:var(--dim);text-shadow:none}
+[data-theme=void] .pp::after{color:var(--accent2)}
+[data-theme=void] nav button,[data-theme=void] .btn-action,[data-theme=void] .badge,[data-theme=void] footer button,[data-theme=void] .input-line,[data-theme=void] .meta,[data-theme=void] .toc,[data-theme=void] .breadcrumb,[data-theme=void] pre,[data-theme=void] code{font-family:var(--mono)}
+[data-theme=void] nav button{min-width:0;border:0;border-bottom:2px solid transparent;border-radius:0;padding:.35rem .7rem;font-size:.8rem;color:var(--dim)}
+[data-theme=void] nav button:hover{background:transparent;color:var(--h);box-shadow:none;border-color:transparent}
+[data-theme=void] nav button.active{background:transparent;color:var(--h);border-bottom-color:var(--accent2);box-shadow:none}
+[data-theme=void] button,[data-theme=void] .btn-action{border-color:color-mix(in srgb,var(--accent) 40%,var(--border));background:color-mix(in srgb,var(--accent) 5%,transparent);color:var(--link);font-size:.78rem}
+[data-theme=void] button:hover,[data-theme=void] .btn-action:hover{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--h);border-color:var(--accent);box-shadow:none}
+[data-theme=void] .btn-delete{background:0;border:0}
+[data-theme=void] .btn-delete:hover{background:rgba(217,98,107,.2);color:var(--h)}
+[data-theme=void] h1,[data-theme=void] h2,[data-theme=void] h3,[data-theme=void] h4{font-weight:400;color:var(--h)}
+[data-theme=void] h1 i,[data-theme=void] h2 i,[data-theme=void] h3 i{color:var(--accent)}
+[data-theme=void] h4{color:var(--h)}
+[data-theme=void] .hero{font-weight:400;letter-spacing:-.02em}
+[data-theme=void] h2{border-left:0;padding-left:0}
+[data-theme=void] .md h2{border-bottom:1px solid var(--border)}
+[data-theme=void] .tile,[data-theme=void] .card,[data-theme=void] .tl-item,[data-theme=void] .stats div,[data-theme=void] .file-list li,[data-theme=void] .toc,[data-theme=void] .breadcrumb{background:var(--panel);border-color:var(--border);box-shadow:none}
+[data-theme=void] .file-list li{border-left:1px solid var(--border)}
+[data-theme=void] .card::after,[data-theme=void] .tile::after{content:"";position:absolute;left:3px;right:3px;bottom:3px;height:9px;pointer-events:none;opacity:.55;
+background:linear-gradient(var(--dim),var(--dim)) 0 100%/9px 1px no-repeat,linear-gradient(var(--dim),var(--dim)) 0 100%/1px 9px no-repeat,linear-gradient(var(--dim),var(--dim)) 100% 100%/9px 1px no-repeat,linear-gradient(var(--dim),var(--dim)) 100% 100%/1px 9px no-repeat}
+[data-theme=void] .tile{border-top-width:2px}
+[data-theme=void] .tile:hover,[data-theme=void] .card:hover,[data-theme=void] .tl-item:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));box-shadow:0 10px 28px rgba(0,0,0,.5);transform:translateY(-2px)}
+[data-theme=void] .file-list li:hover{background:var(--panel2);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+[data-theme=void] .stats div{font-family:var(--font);font-size:.82rem}
+[data-theme=void] .stats b,[data-theme=void] .rank{font-family:var(--fh);font-weight:400;color:var(--h);text-shadow:none}
+[data-theme=void] .bar{height:4px;background:var(--panel2);border-radius:2px}
+[data-theme=void] .bar i{background:var(--accent);opacity:.9}
+[data-theme=void] .badge{background:transparent;border:1px solid var(--border);color:var(--dim)}
+[data-theme=void] .flag{background:color-mix(in srgb,var(--accent2) 14%,transparent);border-color:color-mix(in srgb,var(--accent2) 45%,transparent);color:var(--accent2)}
+[data-theme=void] .pts{color:var(--accent2)}
+[data-theme=void] .tl-item::before{background:var(--accent);box-shadow:none}
+[data-theme=void] .tl{border-left-color:var(--border)}
+[data-theme=void] .dir-link,[data-theme=void] .crumb{color:var(--link)}
+[data-theme=void] .md a{color:var(--link)}
+[data-theme=void] code{color:var(--accent2)}
+[data-theme=void] pre{background:#05050a;border-color:var(--border)}
+[data-theme=void] pre code{color:inherit}
+[data-theme=void] .kw{color:var(--link)}
+[data-theme=void] .terminal-info{background:color-mix(in srgb,var(--accent) 8%,transparent);border-left-color:var(--accent);color:var(--text)}
+[data-theme=void] .terminal-msg{background:rgba(217,98,107,.08);border-left-color:var(--danger)}
+[data-theme=void] .modal,[data-theme=void] .pbox{background:var(--panel);border-color:var(--border);box-shadow:0 30px 70px rgba(0,0,0,.8)}
+[data-theme=void] .modal input:focus,[data-theme=void] .modal textarea:focus{border-color:var(--accent)}
+[data-theme=void] #pres div.sel{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--h)}
+[data-theme=void] #pres div.sel .meta{color:var(--dim)}
+[data-theme=void] .drop{border-color:var(--accent);color:var(--link)}
+[data-theme=void] .drop:hover,[data-theme=void] .drop.on{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+[data-theme=void] #cd{box-shadow:none}
+[data-theme=void] .c-hl{background:color-mix(in srgb,var(--accent2) 22%,transparent)}
+[data-theme=void] .c-red{color:#d9626b}[data-theme=void] .c-green{color:#6fb59a}[data-theme=void] .c-blue{color:#6aa7c9}[data-theme=void] .c-yellow{color:#cfa062}[data-theme=void] .c-purple{color:#9c9be0}[data-theme=void] .c-orange{color:#c98a5c}[data-theme=void] .c-pink{color:#c98aa8}
+[data-theme=void] .callout.note{--c:#6aa7c9}[data-theme=void] .callout.tip{--c:#6fb59a}[data-theme=void] .callout.warn{--c:#cfa062}[data-theme=void] .callout.danger{--c:#d9626b}
+[data-theme=void] .ok{color:var(--accent2)}
+[data-theme=void] footer{border-top-color:var(--border)}
 </style>
 </head>
 <body>
@@ -302,7 +373,7 @@ let admin=false,fs={},cur='home',ED=null;
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const safeImg=u=>/^(https?:\/\/[^\s"'<>]+|data:image\/[^\s"'<>]+|[\w\-\/.]+\.(png|jpe?g|gif|webp|svg))$/i.test(u);
-const CC={rev:'#c4b5fd',web:'#38bdf8',crypto:'#fbbf24',forensic:'#34d399',osint:'#f0abfc',misc:'#94a3b8'};
+const CC={rev:'#9c9be0',web:'#6aa7c9',crypto:'#c9a35f',forensic:'#6fb59a',osint:'#b48fc4',misc:'#8a90a3'};
 const ccol=c=>{const k=String(c).toLowerCase();return CC[Object.keys(CC).find(x=>k.includes(x))]||ACC};
 const bdg=c=>{const col=ccol(c);return `<span class="badge" style="color:${col};border:1px solid ${col}66;background:${col}14">${esc(c)}</span>`};
 const safeUrl=u=>/^https?:\/\/[^\s"'<>]+$/i.test(u||'');
@@ -491,7 +562,7 @@ async function publish(arg){
 
 /* timeline, filters, themes, search palette, shortcuts, motion */
 const fx=h=>h.split(/(<code>[\s\S]*?<\/code>|<img[^>]*>|<a [^>]*>)/).map((p,i)=>i%2?p:p.replace(/\{(red|green|blue|yellow|purple|orange|pink|dim|hl|strike)\|([^}]+)\}/g,'<span class="c-$1">$2</span>')).join('');
-const FC={gold:'#ffd166',red:'#ff5561',green:'#4ade80',blue:'#4cc3ff',purple:'#c4b5fd',pink:'#f472b6',accent:'var(--accent)'};
+const FC={gold:'#cfa062',red:'#d9626b',green:'#6fb59a',blue:'#6aa7c9',purple:'#9c9be0',pink:'#c98aa8',accent:'var(--accent)'};
 const flagBox=(t,hide,o={})=>`<div class="flagbox${hide?' hid':''}" style="--fc:${FC[o.color]||'var(--yellow)'}"><span class="fb-h"><i class="fa-solid fa-flag"></i> ${esc(o.label||'FLAG')}</span><span class="fb-v" onclick="this.parentNode.classList.remove('hid')">${esc(t)}</span><button class="btn-action fb-c" onclick="copyFlag(this)" title="copy flag"><i class="fa-regular fa-copy"></i></button>${o.note?`<span class="fb-n">${esc(o.note)}</span>`:''}${hide?'<span class="fb-n">click the blurred flag to reveal (spoiler)</span>':''}</div>`;
 function copyFlag(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentNode.querySelector('.fb-v').textContent);b.innerHTML='<i class="fa-solid fa-check"></i>';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i>',1500)}
 function colorSel(s){if(s.value)wrap('{'+s.value+'|','}');s.value=''}
@@ -518,8 +589,8 @@ const exc=(it,n)=>bodyOf(it).replace(/```[\s\S]*?```/g,'').replace(/!\[[^\]]*\]\
 const tlH=(it,path,btns)=>`<div class="tl-item" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')"><div class="cb">${btns}</div><span class="meta">${esc(it.period||it.date||'')}</span><h3>${esc(it.title)}</h3>${it.category?`<div class="meta">${esc(it.category)}</div>`:''}<p class="ex">${esc(exc(it,180))}</p></div>`;
 const filt=(ks,it)=>{const c=[...new Set(ks.map(k=>it[k].category||'General'))];return c.length<2?'':`<div class="chips filt"><button class="active" data-c="" onclick="flt(this)">all</button>${c.map(x=>`<button data-c="${qa(x)}" onclick="flt(this)">${esc(x)}</button>`).join('')}</div>`};
 function flt(b){const c=b.dataset.c;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tile').forEach(t=>t.style.display=!c||t.dataset.c===c?'':'none')}
-const THEMES=['detroit','dedsec','blackout','cyan'];let ACC='#f04450';
-function setTheme(n){if(!THEMES.includes(n))n='detroit';document.documentElement.dataset.theme=n;ACC=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();$('wt').textContent=n==='detroit'?'CYBERLIFE // RK800 · 0xb00b4':'bash - 0xb00b4@'+n;try{localStorage.setItem('theme',n)}catch(e){}}
+const THEMES=['void','detroit','dedsec','blackout','cyan'];let ACC='#7573d6';
+function setTheme(n){if(!THEMES.includes(n))n='void';document.documentElement.dataset.theme=n;ACC=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();$('wt').textContent=n==='detroit'?'CYBERLIFE // RK800 · 0xb00b4':'bash - 0xb00b4@'+n;try{localStorage.setItem('theme',n)}catch(e){}}
 function nextTheme(){const c=document.documentElement.dataset.theme,n=THEMES[(THEMES.indexOf(c)+1)%THEMES.length];setTheme(n);showInfo('theme: '+n)}
 function toggleMotion(){const on=!document.body.classList.toggle('nomo');rainOn=on;$('rain').style.display=on?'':'none';$('mo').textContent='motion: '+(on?'on':'off');try{localStorage.setItem('motion',on?1:0)}catch(e){}}
 let PI=[],ps=0;
@@ -561,7 +632,7 @@ cli.addEventListener('keydown',e=>{
  else if(e.key==='Enter'){
   const line=cli.value.trim();cli.value='';if(!line)return;hist.push(line);hi=hist.length;
   const parts=line.split(/\s+/),cmd=parts[0].toLowerCase(),arg=parts.slice(1).join(' ');
-  if(cmd==='help')showInfo("<b>ls [path]</b> list • <b>cd [path]</b> change dir • <b>cat [file]</b> read • <b>grep [word]</b> search everything<br><b>theme [dedsec|detroit|blackout|cyan]</b> • <b>search</b> (or Ctrl K) • <b>pwd</b> • <b>whoami</b> • <b>neofetch</b> • <b>matrix</b> toggle rain • <b>date</b> • <b>clear</b> • <b>login</b>/<b>logout</b><br>Owner only: <b>add</b> (new item here), <b>attach</b> (challenge files), <b>edit</b> (edit current file/page), <b>publish</b> (push to GitHub), <b>export</b>, <b>import</b>, <b>reset</b> (discard draft)<br>Tab = autocomplete, ↑/↓ = history");
+  if(cmd==='help')showInfo("<b>ls [path]</b> list • <b>cd [path]</b> change dir • <b>cat [file]</b> read • <b>grep [word]</b> search everything<br><b>theme [void|dedsec|detroit|blackout|cyan]</b> • <b>search</b> (or Ctrl K) • <b>pwd</b> • <b>whoami</b> • <b>neofetch</b> • <b>matrix</b> toggle rain • <b>date</b> • <b>clear</b> • <b>login</b>/<b>logout</b><br>Owner only: <b>add</b> (new item here), <b>attach</b> (challenge files), <b>edit</b> (edit current file/page), <b>publish</b> (push to GitHub), <b>export</b>, <b>import</b>, <b>reset</b> (discard draft)<br>Tab = autocomplete, ↑/↓ = history");
   else if(cmd==='ls')navigateTo(arg?resolve(cur,arg):(cur==='home'||cur==='about'?'writeups':cur));
   else if(cmd==='cd')navigateTo(arg?resolve(cur,arg):'home');
   else if(cmd==='cat'){if(!arg)return showErr("cat: missing file operand");const t=resolve(cur,arg),r=getObj(t);
@@ -620,7 +691,7 @@ boot();
 /* content lives in content.json (embedded JSON above is only a fallback for opening the file locally) */
 fetch('content.json?'+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.home)PUBLISHED=norm(j)}).catch(()=>{})
  
- .then(()=>{setTheme(localStorage.getItem('theme')||'detroit');if(localStorage.getItem('motion')==='0')toggleMotion();setAdmin(sessionStorage.getItem('adm')==='1');navigateTo(location.hash.slice(1)||'home')});
+ .then(()=>{setTheme(localStorage.getItem('theme')||'void');if(localStorage.getItem('motion')==='0')toggleMotion();setAdmin(sessionStorage.getItem('adm')==='1');navigateTo(location.hash.slice(1)||'home')});
 /* custom cursor: dot + lagging ring + code-glyph trail + click ripples (desktop mouse only) */
 (()=>{if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  const B=document.body,mk=(t,i)=>{const e=document.createElement(t);e.id=i;B.appendChild(e);return e},d=mk('div','cd'),r=mk('div','cr'),cv=mk('canvas','trail'),c=cv.getContext('2d');
