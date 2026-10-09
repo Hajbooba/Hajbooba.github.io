@@ -2,7 +2,7 @@
  "home": {
   "type": "page",
   "title": "./0xb00b4_",
-  "body": "Networking student at INSAT & CTF player based in Tunisia.\nBinary exploitation, reverse engineering and low-level systems.\n\n::btn GitHub | https://github.com/Hajbooba\n::btn CTFtime | https://ctftime.org/\n::btn Discord | https://discord.com/users/877314305207455805\n\n## skills\n::bar Pwn 60\n::bar Reverse Engineering 50\n::bar Forensics 40\n::bar OSINT 40",
+  "body": "Networking student at INSAT & CTF player based in Tunisia.\nBinary exploitation, reverse engineering and low-level systems.\n\n::btn GitHub | https://github.com/Hajbooba\n::btn CTFtime | https://ctftime.org\n::btn Discord | https://discord.com/users/877314305207455805\n\n## skills\n::bar Pwn 60\n::bar Reverse Engineering 50\n::bar Forensics 40\n::bar OSINT 40",
   "imgs": {}
  },
  "about": {
@@ -100,7 +100,7 @@
       "type": "file",
       "title": "skiiiiiip.md",
       "date": "2026-10-04",
-      "category": "PWN",
+      "category": "pwn",
       "pts": "200",
       "body": "This is a classic buffer overflow challenge, we are given a program that asks the user for input with precise length. let's take a look at the binary security so we can know what techniques to use : \n\n![image](img:imuty21a86nx)\n\nNo canary, which means the addresses are fixed for each run, and No canary which let us smash the stack freely without worrying about the canary interrupting our workflow. \nTaking a look at the source code we can notice two important functions : \n\n![image](img:imuty2q5yj4n)\n\n**{red|1-vuln()}** : this is the vulnerability, this function allow us to write up to 48 bytes into a 32 bytes long buffer. \n\n![image](img:imuty314pgtf)\n\n**{red|2-win()}** : a function that prints the flag, but only if we pass three specific arguments. Setting all three args normally means finding ROP gadgets for rdi, rsi, rdx... which we don't have room for (only one return address to control). \nThe trick here is to jump past the the part that check whether the arguments are correct or not, let's take a look at gdb so we know where we are jumping:\n\n![image](img:imutxka4qzff)\nto solve this challenge we need just to jump after the last **cmp, jne** lines. so our target adress is {hl|0x00000000004011ce}. \nNow let's see how far our input buffer from the return address so we know how to write our payload, and this is easy to do in gdb : \n\n![image](img:imuty4f3t05t)\n\nwe have saved rip which is at **0x7fffffffdb98** and we have the start of our buffer **0x00007fffffffdb70**, we can now know how many bytes we need to reach the saved return adress \n\n![image](img:imutxyj6hm3x)\n\n40 bytes to fill the buffer (which is 32 bytes)  and the saved rbp (8 bytes), then we can write the address to jump to (8 bytes), {hl|total is 48 bytes}  which is exactly how much we are allowed to write in buffer.\nHere is the final solver :\n\n```python\nfrom pwn import * \n\n#p = remote(host,port)\np=process(\"./main\")\n\npayload =b\"A\" * 32\npayload += b\"B\" * 8\npayload += p64(0x00000000004011ce)\np.sendline(payload)\np.interactive()\n\n```\n\n\n",
       "imgs": {
