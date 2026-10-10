@@ -197,6 +197,22 @@
        "format string"
       ],
       "role": "player"
+     },
+     "guessing-game-1": {
+      "type": "file",
+      "title": "guessing-game-1.md",
+      "date": "2026-10-10",
+      "category": "pwn",
+      "pts": "mid",
+      "body": "Coming soon..",
+      "imgs": {},
+      "flag": "academy{r0p_y0u_l1k3_4_hurr1c4n3_3ea9d94813b570b2}",
+      "fhide": true,
+      "flagLabel": "Flag.txt",
+      "tags": [
+       "rop"
+      ],
+      "role": "player"
      }
     }
    }
