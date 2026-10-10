@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="obsidian">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>0xb00b4 · CTF writeups, projects & achievements</title>
 <meta name="description" content="Cybersecurity student & CTF player from Tunisia. Pwn, reverse engineering, forensics: writeups, projects and achievements.">
-<meta property="og:title" content="0xb00b4 · CTF writeups & portfolio"><meta property="og:type" content="website"><script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'obsidian'}catch(e){}</script><meta name="theme-color" content="#07070a">
+<meta property="og:title" content="0xb00b4 · CTF writeups & portfolio"><meta property="og:type" content="website"><meta name="theme-color" content="#07070a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2307070a'/%3E%3Cpolygon points='32,8 54,20 54,44 32,56 10,44 10,20' fill='none' stroke='%237c80cf' stroke-width='3'/%3E%3Cpath d='M32 22l8 10-8 10-8-10z' fill='%23c8905a'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@400;600;700&family=Chakra+Petch:wght@500;700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap" rel="stylesheet">
-<style>:root,[data-theme=blackout]{--bg:#0a0a0a;--bg2:#070707;--panel:#121212;--panel2:#1c1c1c;--surface:rgba(14,14,14,.94);--text:#e6e6e6;--dim:#8a8a8a;--h:#fff;--border:#2e2e2e;--accent:#f0313f;--accent2:#ff6b6b;--yellow:#f2f2f2;--link:#d4d4d4;--pre:#dcdcdc;--danger:#ff5561;--onacc:#fff;--font:'JetBrains Mono','Courier New',monospace;--fh:var(--font);--ht:none;--hl:-.3px;--bl:0;--rad:2px;--glow:color-mix(in srgb,var(--accent) 45%,transparent)}
-[data-theme=cyan]{--bg:#070a10;--bg2:#05080d;--panel:#0d121b;--panel2:#141c28;--surface:rgba(10,14,22,.92);--text:#cfe3f1;--dim:#6b8199;--h:#e8f6ff;--border:#1f2c3f;--accent:#22d3ee;--accent2:#c4b5fd;--yellow:#fbbf24;--link:#a5f3fc;--pre:#d5e6f3;--onacc:#031318}
-[data-theme=detroit]{--bg:#0b0b0e;--bg2:#07070a;--panel:#111116;--panel2:#191a22;--surface:rgba(13,14,19,.82);--text:#e4eaf2;--dim:#7d8799;--h:#fff;--border:#262a36;--accent:#f04450;--accent2:#4cc3ff;--yellow:#ffd166;--link:#9fdcff;--pre:#d6e8f6;--onacc:#fff;--font:'Rajdhani','JetBrains Mono',sans-serif;--fh:'Rajdhani',sans-serif;--ht:uppercase;--hl:.12em;--bl:.1em;--rad:0}
-[data-theme=dedsec]{--bg:#09040f;--bg2:#06020b;--panel:#12081c;--panel2:#1d0f2c;--surface:rgba(14,6,22,.93);--text:#f3eaff;--dim:#9a86b5;--h:#fff;--border:#3a1f58;--accent:#ff2bd6;--accent2:#00e5ff;--yellow:#ffe600;--link:#9ff3ff;--pre:#efe3ff;--onacc:#000;--font:'JetBrains Mono',monospace;--fh:'Chakra Petch',sans-serif;--ht:uppercase;--hl:.04em;--bl:.04em;--rad:0}
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap" rel="stylesheet">
+<style>:root{--glow:color-mix(in srgb,var(--accent) 45%,transparent)}
 [data-theme=obsidian]{--bg:#07070a;--bg2:#050507;--panel:#0c0d13;--panel2:#171824;--surface:rgba(8,8,12,.8);--text:#c4c5d6;--dim:#8a8ca3;--h:#ececf3;--border:#23253a;--accent:#7c80cf;--accent2:#c8905a;--yellow:#d9b97c;--link:#b9bcf0;--pre:#cfd0e0;--danger:#d2605a;--onacc:#0a0a12;--font:'Newsreader',Georgia,serif;--fh:'Newsreader',Georgia,serif;--ht:none;--hl:-.01em;--bl:.02em;--rad:3px;--hex:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 48'><polygon points='22,1.5 41,12.5 41,35.5 22,46.5 3,35.5 3,12.5' fill='%230b0c12' stroke='%2345487a' stroke-width='1.2'/></svg>");--cbl:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1.5 .5v8.5a5 5 0 0 0 5 5h8.5' fill='none' stroke='%23555a93' stroke-width='1'/></svg>");--cbr:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M14.5 .5v8.5a5 5 0 0 1-5 5H1' fill='none' stroke='%23555a93' stroke-width='1'/></svg>");--cop:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='7'><path d='M0 3.5h24M36 3.5h24' stroke='%23c8905a' stroke-width='1' fill='none'/><path d='M30 .5l3 3-3 3-3-3z' fill='none' stroke='%23c8905a' stroke-width='1'/></svg>")}
 ::selection{background:var(--accent);color:var(--onacc)}body{user-select:text}
 
@@ -86,7 +83,6 @@ footer{margin-top:2rem;border-top:1px solid var(--border);padding-top:.8rem;colo
 #f-body{min-height:300px;resize:vertical;line-height:1.5}
 #f-prev{display:none;min-height:300px;border:1px solid var(--border);padding:1rem;border-radius:4px;background:var(--bg)}
 .modal-buttons{display:flex;justify-content:flex-end;gap:.8rem;margin-top:1.2rem}
-#boot{position:fixed;inset:0;background:var(--bg2);z-index:2000;padding:2rem;color:var(--accent);font-size:.9rem;cursor:pointer;transition:opacity .6s}#boot div{white-space:pre}.ok{color:#5f5}
 .nf{display:flex;gap:2rem;flex-wrap:wrap;align-items:center}.nf pre{border:0;background:0;color:var(--accent)}
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1500;align-items:center;justify-content:center;cursor:zoom-out}#lb img{max-width:92vw;max-height:92vh;border:1px solid var(--accent);border-radius:6px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.fade>*,.file-list li{opacity:1}.bar i{width:var(--w)}}
@@ -112,7 +108,7 @@ header{border-bottom:2px solid var(--border)}
 .flag{background:var(--accent);border-color:var(--accent);color:var(--onacc)}
 .tile{border-top-width:4px}.stats b{text-shadow:none}
 .terminal-container{box-shadow:0 0 0 1px #000,0 24px 50px #000}
-@media (hover:hover) and (pointer:fine){body.cur *{cursor:none!important}body.cur.tx *{cursor:text!important}body.cur input,body.cur textarea{cursor:text!important}}
+@media (hover:hover) and (pointer:fine){html.cur,html.cur body,html.cur body *{cursor:none!important}html.cur body.tx,html.cur body.tx *{cursor:text!important}html.cur input,html.cur textarea{cursor:text!important}html.cur.nocur,html.cur.nocur body,html.cur.nocur body *{cursor:auto!important}}
 #cd,#cr{position:fixed;top:0;left:0;pointer-events:none;z-index:3000;border-radius:50%;opacity:0;will-change:transform}
 #cd{width:6px;height:6px;background:var(--accent);box-shadow:0 0 10px var(--glow)}
 #cr{width:34px;height:34px;border:1px solid var(--accent);transition:width .2s,height .2s,background .2s,opacity .25s}
@@ -140,43 +136,10 @@ footer button{padding:.1rem .5rem;font-size:.75rem}
 h1,h2,h3,h4{font-family:var(--fh);text-transform:var(--ht);letter-spacing:var(--hl)}
 nav button,.btn-action,.badge,footer button{text-transform:var(--ht);letter-spacing:var(--bl)}
 .files .btn-action{margin-top:.4rem}
-#led{display:none;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);margin-right:.7rem;vertical-align:middle;animation:led 3s ease-in-out infinite}
-@keyframes led{50%{opacity:.4}}#led.y{background:#ffd166;box-shadow:0 0 10px #ffd166}#led.r{background:#ff4d5e;box-shadow:0 0 12px #ff4d5e;animation:none}
-/* Detroit: Become Human, cold android UI */
-[data-theme=detroit] #rain,[data-theme=detroit] body::before{display:none}[data-theme=detroit] #led{display:inline-block}
-[data-theme=detroit] body{font-size:1.08rem}
-[data-theme=detroit] .terminal-container{border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);backdrop-filter:blur(12px);box-shadow:0 0 70px color-mix(in srgb,var(--accent) 12%,transparent),0 30px 60px #000}
-[data-theme=detroit] .terminal-container::before{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-[data-theme=detroit] .tile,[data-theme=detroit] .card,[data-theme=detroit] .tl-item,[data-theme=detroit] .stats div{clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent)}
-[data-theme=detroit] .file-list li{border-left:2px solid var(--accent)}
-/* Watch Dogs 2, DedSec */
-[data-theme=dedsec] .terminal-container{background:radial-gradient(color-mix(in srgb,var(--accent2) 16%,transparent) 1px,transparent 1.3px) 0 0/7px 7px,var(--surface);border:2px solid var(--accent)}
-[data-theme=dedsec] .terminal-container::before{background:repeating-linear-gradient(-45deg,var(--yellow) 0 9px,#000 9px 18px)}
-[data-theme=dedsec] h1{text-shadow:2px 0 var(--accent2),-2px 0 var(--accent);animation:glitch 6s infinite}
-@keyframes glitch{0%,92%,100%{transform:none}93%{transform:translateX(3px);text-shadow:-4px 0 var(--accent2),4px 0 var(--accent)}95%{transform:translateX(-3px)}97%{transform:skewX(8deg)}}
-[data-theme=dedsec] .tile:hover,[data-theme=dedsec] .card:hover,[data-theme=dedsec] .tl-item:hover{box-shadow:6px 6px 0 var(--accent2);transform:translate(-3px,-3px)}
-[data-theme=dedsec] nav button,[data-theme=dedsec] .btn-action{transform:skewX(-8deg)}
-[data-theme=dedsec] .flag{background:var(--yellow);color:#000;border-color:var(--yellow)}
 
 .md,.md *,.card,.card *,.tile,.tile *,.tl-item,.tl-item *,.file-list li,.file-list li *,pre,pre *,h1,h2,h3,h4,p,.meta,.toc{-webkit-user-select:text;user-select:text}
 button,.btn-action,.drop,.copy{-webkit-user-select:none;user-select:none}
-[data-theme=detroit] ::selection{background:rgba(76,195,255,.9);color:#04101a}
 .drop{margin:1.2rem 0;padding:1rem;border:1px dashed var(--accent2);color:var(--accent2);text-align:center;cursor:pointer;transition:.2s}.drop:hover,.drop.on{background:color-mix(in srgb,var(--accent2) 12%,transparent);border-style:solid}
-[data-theme=detroit] body{background:radial-gradient(ellipse at 15% -10%,rgba(76,195,255,.11),transparent 55%),radial-gradient(ellipse at 95% 0,rgba(240,68,80,.13),transparent 50%),var(--bg2);background-attachment:fixed}
-[data-theme=detroit] .terminal-container{--b:linear-gradient(var(--accent2),var(--accent2))}
-[data-theme=detroit] .terminal-container::after{content:"";position:absolute;inset:8px;pointer-events:none;z-index:5;background:var(--b) 0 0/18px 1px,var(--b) 0 0/1px 18px,var(--b) 100% 0/18px 1px,var(--b) 100% 0/1px 18px,var(--b) 0 100%/18px 1px,var(--b) 0 100%/1px 18px,var(--b) 100% 100%/18px 1px,var(--b) 100% 100%/1px 18px;background-repeat:no-repeat;opacity:.7}
-[data-theme=detroit] .dots{display:none}[data-theme=detroit] .wt{letter-spacing:.14em;color:var(--accent2)}
-[data-theme=detroit] #led{border-radius:0;width:15px;height:13px;clip-path:polygon(50% 0,100% 100%,0 100%);background:var(--accent2);box-shadow:none;filter:drop-shadow(0 0 6px var(--accent2))}
-[data-theme=detroit] #led.y{background:var(--yellow);filter:drop-shadow(0 0 6px var(--yellow))}[data-theme=detroit] #led.r{background:var(--accent);filter:drop-shadow(0 0 8px var(--accent))}
-[data-theme=detroit] .pp{color:var(--accent2);text-shadow:0 0 10px rgba(76,195,255,.5)}
-[data-theme=detroit] .ok{color:var(--accent2)}
-[data-theme=detroit] h2{border-left:3px solid var(--accent);padding-left:.6rem}
-[data-theme=detroit] nav button,[data-theme=detroit] .btn-action{clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));box-shadow:none}
-[data-theme=detroit] nav button.active{background:var(--accent2);border-color:var(--accent2);color:#04101a}
-[data-theme=detroit] .bar i{background:linear-gradient(90deg,var(--accent2),var(--accent))}
-[data-theme=detroit] .flag{background:var(--accent);color:#fff}
-[data-theme=detroit] .tile:hover,[data-theme=detroit] .card:hover,[data-theme=detroit] .tl-item:hover{border-color:var(--accent2);box-shadow:0 0 22px rgba(76,195,255,.18)}
-[data-theme=detroit] .rank,[data-theme=detroit] .stats b{color:var(--accent)}
 nav button{min-width:8.5rem;justify-content:center;text-align:center}
 /* ===== NEW: no layout shift between pages ===== */
 html{overflow-y:scroll;scrollbar-gutter:stable}
@@ -257,23 +220,30 @@ figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid v
 [data-theme=obsidian] .c-red{color:#d2605a}[data-theme=obsidian] .c-green{color:#7fbfa8}[data-theme=obsidian] .c-blue{color:#8d92e0}[data-theme=obsidian] .c-yellow{color:#d9b97c}[data-theme=obsidian] .c-purple{color:#a58fd0}[data-theme=obsidian] .c-orange{color:#c8905a}[data-theme=obsidian] .c-pink{color:#c98fa6}
 [data-theme=obsidian] .fade>*,[data-theme=obsidian] .file-list li{animation-name:fadeup;animation-duration:.55s}
 [data-theme=obsidian] #cd{box-shadow:none}[data-theme=obsidian] #cr{border-color:rgba(124,128,207,.5)}
+/* centred flag box (dark) */
+[data-theme=obsidian] .flagbox{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.55rem;max-width:480px;margin:2.2rem auto 1.4rem;padding:1.1rem 1.4rem 1rem;background:var(--panel);border:1px solid #2c2f46;border-top:2px solid var(--fc);border-radius:3px}
+[data-theme=obsidian] .flagbox::after{content:"";position:absolute;inset:5px;pointer-events:none;opacity:.8;background:var(--cbl) left bottom/16px no-repeat,var(--cbr) right bottom/16px no-repeat}
+[data-theme=obsidian] .fb-h{font:.66rem 'JetBrains Mono',monospace;letter-spacing:.28em;color:var(--fc)}
+[data-theme=obsidian] .fb-h i{display:none}[data-theme=obsidian] .fb-h::before,[data-theme=obsidian] .fb-h::after{content:"◆";font-size:.5rem;margin:0 .8em;opacity:.7;vertical-align:middle}
+[data-theme=obsidian] .fb-v{flex:none;font:500 1rem 'JetBrains Mono',monospace;letter-spacing:.03em;color:var(--h);background:#08090d;border:1px solid #23253a;padding:.45rem 1rem;border-radius:2px;max-width:100%}
+[data-theme=obsidian] .fb-c{padding:.2rem .7rem}[data-theme=obsidian] .fb-n{flex-basis:auto;text-align:center;font-size:.72rem}
+/* reading progress, skip link, print */
+#prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;opacity:0;transition:opacity .3s;z-index:3100;pointer-events:none}
+.skip{position:absolute;left:-999px;top:0;z-index:4000;background:var(--accent);color:var(--onacc);padding:.5rem 1rem}.skip:focus{left:8px;top:8px}
+@media print{body{background:#fff!important;color:#000!important}#rain,#hexg,#cd,#cr,#trail,#prog,header,footer,.input-line,.action-bar,.pn,.drop,.cb,.skip{display:none!important}.terminal-container{background:none!important;box-shadow:none!important;max-width:none!important}.md,.md *,h1,h2,h3,p,li,.meta{color:#000!important}pre{background:#f4f4f4!important;color:#000!important;border:1px solid #ccc}a{color:#000}.flagbox{break-inside:avoid;border-color:#000;background:none!important}.fb-v{background:none!important;color:#000!important}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main-content">Skip to content</a><div id="prog"></div>
+<noscript><p style="padding:2rem;color:#c4c5d6;font-family:sans-serif">This site needs JavaScript to show the writeups.</p></noscript>
 <canvas id="rain"></canvas>
 <div id="lb" onclick="this.style.display='none';scrollTo(0,+this.dataset.y||0)"><img alt=""></div>
 <div id="pal"><div class="pbox"><input id="pq" placeholder="Search writeups, projects, pages…" aria-label="search" autocomplete="off"><div id="pres"></div><p class="meta" style="padding:.5rem 1rem;margin:0">↑↓ move · Enter open · Esc close</p></div></div>
-<div id="boot" title="click to skip"></div>
 
 <div class="terminal-container">
-  <div class="window-bar">
-    <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    <div class="wt"><i class="fa-solid fa-terminal"></i> <span id="wt">bash - 0xb00b4@blackout</span></div>
-    <span class="rec"><i class="fa-solid fa-circle-dot"></i> REC</span>
-  </div>
   <div class="terminal-body">
     <header>
-      <div><span id="led" title="status"></span><span style="color:var(--dim)">root@0xb00b4:</span><span class="pp" id="current-path">~/home</span><span id="badge"></span></div>
+      <div><span style="color:var(--dim)">root@0xb00b4:</span><span class="pp" id="current-path">~/home</span><span id="badge"></span></div>
       <nav>
         <button data-path="home" onclick="navigateTo('home')"><i class="fa-solid fa-house"></i> home</button>
         <button data-path="writeups" onclick="navigateTo('writeups')"><i class="fa-solid fa-flag"></i> writeups</button>
@@ -289,7 +259,7 @@ figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid v
     </div>
     <footer>
       <span><i class="fa-solid fa-shield-halved"></i> Secure channel active · 0 cookies</span>
-      <span id="clock"></span><span id="mode"></span><span><button onclick="openPal()">⌕ search</button> <button onclick="nextTheme()">theme</button> <button id="mo" onclick="toggleMotion()">motion: on</button></span>
+      <span id="clock"></span><span id="mode"></span><span><button onclick="openPal()">⌕ search</button> <button id="mo" onclick="toggleMotion()">motion: on</button></span>
     </footer>
   </div>
 </div>
@@ -324,7 +294,7 @@ figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid v
     <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered. Start a photo's caption with <code>portrait</code> for a round framed photo or <code>wide</code> for a cinematic banner crop.</p>
   </div>
   <div id="g-flag"><label>Flag (shown in a highlighted box at the end of the writeup)</label><input id="f-flag" placeholder="picoCTF{...}"><label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="f-fh" style="width:auto"> hide it until the reader clicks (spoiler)</label>
-   <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">gold</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
+   <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">copper</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
   <div id="g-files"><label>Challenge files (zip, binary, pcap… up to 25 MB each)</label><button onclick="$('f-att').click()"><i class="fa-solid fa-paperclip"></i> attach files</button><input type="file" id="f-att" multiple hidden onchange="attach(this.files);this.value=''"><div id="f-list"></div></div>
   <div class="modal-buttons"><button onclick="closeEd()">Cancel</button><button style="background:var(--accent);color:var(--onacc)" onclick="saveItem()">Save</button></div>
 </div></div>
@@ -362,15 +332,14 @@ let admin=false,fs={},cur='home',ED=null;
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const safeImg=u=>/^(https?:\/\/[^\s"'<>]+|data:image\/[^\s"'<>]+|[\w\-\/.]+\.(png|jpe?g|gif|webp|svg))$/i.test(u);
-const CC={rev:'#c4b5fd',web:'#38bdf8',crypto:'#fbbf24',forensic:'#34d399',osint:'#f0abfc',misc:'#94a3b8'};
 const CCO={pwn:'#9a8fe0',rev:'#7fa6c9',web:'#6fb3a8',crypto:'#d3a85f',forensic:'#a98fd0',osint:'#c98f9f',misc:'#8a8ca3'};
-const ccol=c=>{const k=String(c).toLowerCase(),M=document.documentElement.dataset.theme==='obsidian'?CCO:CC;return M[Object.keys(M).find(x=>k.includes(x))]||ACC};
+const ccol=c=>{const k=String(c).toLowerCase(),M=CCO;return M[Object.keys(M).find(x=>k.includes(x))]||ACC};
 const bdg=c=>{const col=ccol(c);return `<span class="badge" style="color:${col};border:1px solid ${col}66;background:${col}14">${esc(c)}</span>`};
 const safeUrl=u=>/^https?:\/\/[^\s"'<>]+$/i.test(u||'');
 function setAdmin(on){admin=on;sessionStorage.setItem('adm',on?1:0);
  try{fs=on?(JSON.parse(localStorage.getItem(KEY))||clone(PUBLISHED)):clone(PUBLISHED)}catch(e){fs=clone(PUBLISHED)}norm(fs);
  $('badge').innerHTML=on?' <span class="badge" style="background:var(--accent);color:var(--onacc)">ADMIN</span> <button class="btn-action" style="padding:.1rem .6rem" onclick="publish()"><i class="fa-solid fa-cloud-arrow-up"></i> publish</button>':'';
- $('mode').innerHTML=on?'<i class="fa-solid fa-lock-open"></i> Admin (local draft)':'<i class="fa-solid fa-lock"></i> Read-only';led()}
+ $('mode').innerHTML=on?'<i class="fa-solid fa-lock-open"></i> Admin (local draft)':'<i class="fa-solid fa-lock"></i> Read-only'}
 function saveFS(){if(admin)try{localStorage.setItem(KEY,JSON.stringify(fs))}catch(e){alert('Storage full — export your draft and use image URLs for big images.')}}
 async function doLogin(){if(admin)return showInfo('already logged in');const p=prompt('Passphrase:');if(!p)return;
  if(await sha(p)===ADMIN_HASH){setAdmin(true);navigateTo(cur);showInfo('Access granted. Edits are a local draft — hit <b>publish</b> to go live.')}else showErr('Access denied.')}
@@ -429,7 +398,7 @@ function navigateTo(p){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',r.cleanPath.split('/')[0]===b.dataset.path));
   moveInd();
   const swap=()=>{
-    cur=r.cleanPath;history.replaceState(null,'','#'+cur);
+    cur=r.cleanPath;{const h=location.hash.slice(1);if(h!==cur)(h===''&&cur==='home'?history.replaceState:history.pushState).call(history,null,'','#'+cur)}
     const{obj,cleanPath}=r;
     $('current-path').innerText='~/'+(cleanPath==='home'?'':cleanPath);
     main.innerHTML='';
@@ -442,7 +411,7 @@ function navigateTo(p){
       a.sort((x,y)=>(y[0].date||'').localeCompare(x[0].date||''));
       $('recent').innerHTML=a.slice(0,5).map(([v,p])=>`<li><a class="file-link" onclick="navigateTo('${p}')"><i class="fa-regular fa-file-code"></i> ${esc(v.title)} ${bdg(v.category||'')} <span class="meta">${esc(v.date||'')}</span></a></li>`).join('')||'<li class="meta">no writeups yet</li>'}
     if(cleanPath==='home'&&$('stats'))$('stats').innerHTML=`<div class="stats"><div><b>${cnt(fs.writeups)}</b>writeups</div><div><b>${cnt(fs.projects)}</b>projects</div><div><b>${cnt(fs.achievements)}</b>achievements</div></div>`;
-    stagger();typewrite();
+    stagger();$('prog').style.opacity=(obj.type==='file'||obj.type==='card')?1:0;
   };
   if(fast){swap();return}
   clearTimeout(navT);
@@ -550,8 +519,8 @@ async function publish(arg){
 
 /* timeline, filters, themes, search palette, shortcuts, motion */
 const fx=h=>h.split(/(<code>[\s\S]*?<\/code>|<img[^>]*>|<a [^>]*>)/).map((p,i)=>i%2?p:p.replace(/\{(red|green|blue|yellow|purple|orange|pink|dim|hl|strike)\|([^}]+)\}/g,'<span class="c-$1">$2</span>')).join('');
-const FC={gold:'#ffd166',red:'#ff5561',green:'#4ade80',blue:'#4cc3ff',purple:'#c4b5fd',pink:'#f472b6',accent:'var(--accent)'};
-const flagBox=(t,hide,o={})=>`<div class="flagbox${hide?' hid':''}" style="--fc:${FC[o.color]||'var(--yellow)'}"><span class="fb-h"><i class="fa-solid fa-flag"></i> ${esc(o.label||'FLAG')}</span><span class="fb-v" onclick="this.parentNode.classList.remove('hid')">${esc(t)}</span><button class="btn-action fb-c" onclick="copyFlag(this)" title="copy flag"><i class="fa-regular fa-copy"></i></button>${o.note?`<span class="fb-n">${esc(o.note)}</span>`:''}${hide?'<span class="fb-n">click the blurred flag to reveal (spoiler)</span>':''}</div>`;
+const FC={gold:'#d9b97c',red:'#d2605a',green:'#7fbfa8',blue:'#8d92e0',purple:'#a58fd0',pink:'#c98fa6',accent:'var(--accent)'};
+const flagBox=(t,hide,o={})=>`<div class="flagbox${hide?' hid':''}" style="--fc:${FC[o.color]||'var(--accent2)'}"><span class="fb-h"><i class="fa-solid fa-flag"></i> ${esc(o.label||'FLAG')}</span><span class="fb-v" onclick="this.parentNode.classList.remove('hid')">${esc(t)}</span><button class="btn-action fb-c" onclick="copyFlag(this)" title="copy flag"><i class="fa-regular fa-copy"></i></button>${o.note?`<span class="fb-n">${esc(o.note)}</span>`:''}${hide?'<span class="fb-n">click the blurred flag to reveal (spoiler)</span>':''}</div>`;
 function copyFlag(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentNode.querySelector('.fb-v').textContent);b.innerHTML='<i class="fa-solid fa-check"></i>';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i>',1500)}
 function colorSel(s){if(s.value)wrap('{'+s.value+'|','}');s.value=''}
 function centerSel(){const t=$('f-body'),v=t.value;let a=t.selectionStart,e=t.selectionEnd;a=a?v.lastIndexOf('\n',a-1)+1:0;let z=v.indexOf('\n',e);if(z<0)z=v.length;
@@ -583,10 +552,8 @@ const exc=(it,n)=>bodyOf(it).replace(/```[\s\S]*?```/g,'').replace(/!\[[^\]]*\]\
 const tlH=(it,path,btns)=>`<div class="tl-item" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')"><div class="cb">${btns}</div><span class="meta">${esc(it.period||it.date||'')}</span><h3>${esc(it.title)}</h3>${it.category?`<div class="meta">${esc(it.category)}</div>`:''}<p class="ex">${esc(exc(it,180))}</p></div>`;
 const filt=(ks,it)=>{const c=[...new Set(ks.map(k=>it[k].category||'General'))];return c.length<2?'':`<div class="chips filt"><button class="active" data-c="" onclick="flt(this)">all</button>${c.map(x=>`<button data-c="${qa(x)}" onclick="flt(this)">${esc(x)}</button>`).join('')}</div>`};
 function flt(b){const c=b.dataset.c;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tile').forEach(t=>t.style.display=!c||t.dataset.c===c?'':'none')}
-const THEMES=['obsidian','detroit','dedsec','blackout','cyan'];let ACC='#7c80cf';
-function setTheme(n){if(!THEMES.includes(n))n='obsidian';document.documentElement.dataset.theme=n;ACC=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();$('wt').textContent=n==='detroit'?'CYBERLIFE // RK800 · 0xb00b4':n==='obsidian'?'0xb00b4 · security notes':'bash - 0xb00b4@'+n;try{localStorage.setItem('theme',n)}catch(e){}setTimeout(moveInd,60)}
-function nextTheme(){const c=document.documentElement.dataset.theme,n=THEMES[(THEMES.indexOf(c)+1)%THEMES.length];setTheme(n);showInfo('theme: '+n)}
-function toggleMotion(){const on=!document.body.classList.toggle('nomo');rainOn=on;$('rain').style.display=on?'':'none';$('mo').textContent='motion: '+(on?'on':'off');try{localStorage.setItem('motion',on?1:0)}catch(e){}}
+let ACC='#7c80cf';
+function toggleMotion(){const on=!document.body.classList.toggle('nomo');rainOn=on;document.documentElement.classList.toggle('nocur',!on);$('rain').style.display=on?'':'none';$('mo').textContent='motion: '+(on?'on':'off');try{localStorage.setItem('motion',on?1:0)}catch(e){}}
 let PI=[],ps=0;
 function openPal(){const I=[];TOP.forEach(t=>{I.push({t:'~/'+t,p:t,c:'page',s:t});if(fs[t]&&fs[t].items)walk(fs[t],t,(v,p)=>I.push({t:(v.title||p).replace(/\.md$/,''),p,c:v.category||v.type,s:(v.title+' '+p+' '+(v.category||'')+' '+(v.tags||[]).join(' ')+' '+bodyOf(v)).toLowerCase()}))});
  PI=I;$('pal').style.display='flex';$('pq').value='';pr();$('pq').focus()}
@@ -602,21 +569,20 @@ document.addEventListener('keydown',e=>{
  const t=e.target;if(/INPUT|TEXTAREA|SELECT/.test(t.tagName)||e.ctrlKey||e.metaKey||e.altKey||$('ed').style.display==='flex')return;const k=e.key;
  if(k==='/'){e.preventDefault();openPal()}
  else if(/^[1-6]$/.test(k))navigateTo(['home','writeups','projects','achievements','experience','about'][k-1]);
- else if(k==='?')showInfo('<b>Keys</b> (press Esc first if the prompt is focused): <b>1-6</b> pages • <b>/</b> or <b>Ctrl K</b> search • <b>j/k</b> move • <b>Enter</b> open • <b>g g</b> top • <b>t</b> theme • <b>m</b> motion');
- else if(k==='t')nextTheme();else if(k==='m')toggleMotion();
+ else if(k==='?')showInfo('<b>Keys</b> (press Esc first if the prompt is focused): <b>1-6</b> pages • <b>/</b> or <b>Ctrl K</b> search • <b>j/k</b> move • <b>Enter</b> open • <b>g g</b> top • <b>m</b> motion • <b>←/→</b> prev/next writeup');
+ else if(k==='m')toggleMotion();
  else if(k==='g'){if(gp&&Date.now()-gp<600)scrollTo({top:0,behavior:'smooth'});gp=Date.now()}
+ else if(k==='ArrowRight'||k==='ArrowLeft'){const l=[...document.querySelectorAll('.pn a')],t=l.find(x=>x.textContent.includes(k==='ArrowRight'?'next':'prev'));if(t)t.click()}
  else if(k==='j'||k==='k'){const L=[...document.querySelectorAll('.tile,.card,.tl-item,.dir-link,.file-link')].filter(x=>x.offsetParent),i=L.indexOf(document.activeElement),n=L[Math.max(0,Math.min(L.length-1,i+(k==='j'?1:-1)))];if(n)n.focus()}});
 
-function led(c,ms){const l=$('led');if(!l)return;l.className=c||(admin?'y':'');if(ms)setTimeout(()=>led(),ms)}
 /* animations + messages */
 function stagger(){document.querySelectorAll('.dir-link,.file-link').forEach(a=>{a.tabIndex=0;a.onkeydown=e=>{if(e.key==='Enter')a.click()}});document.querySelectorAll('.file-list li').forEach((l,i)=>l.style.animationDelay=i*60+'ms');document.querySelectorAll('.fade>*').forEach((l,i)=>l.style.animationDelay=((isO()?40:300)+i*(isO()?55:90))+'ms');document.querySelectorAll('.tiles>*,.cards>*,.tl>*').forEach((e,i)=>e.style.setProperty('--i',i))}
-function typewrite(){if(document.documentElement.dataset.theme==='obsidian')return;document.querySelectorAll('.tw').forEach(el=>{const t=el.textContent;el.textContent='';let i=0;const id=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length)clearInterval(id)},22)})}
-function showErr(m){led('r',1500);$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-msg"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(m)}</div>`)}
+function showErr(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-msg"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(m)}</div>`)}
 function showInfo(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-info"><i class="fa-solid fa-circle-info"></i> ${m}</div>`)}
 
 /* CLI */
 const cli=$('cli-input'),hist=[];let hi=0,rainOn=true;
-const CMDS=['help','ls','cd','cat','pwd','whoami','grep','add','attach','edit','reset','clear','neofetch','matrix','date','login','logout','export','import','publish','theme','search','hash'];
+const CMDS=['help','ls','cd','cat','pwd','whoami','grep','add','attach','edit','reset','clear','neofetch','date','login','logout','export','import','publish','search','hash'];
 cli.addEventListener('keydown',e=>{
  if(e.key==='ArrowUp'){e.preventDefault();if(hi>0)cli.value=hist[--hi]||''}
  else if(e.key==='ArrowDown'){e.preventDefault();hi<hist.length-1?cli.value=hist[++hi]:(hi=hist.length,cli.value='')}
@@ -626,7 +592,7 @@ cli.addEventListener('keydown',e=>{
  else if(e.key==='Enter'){
   const line=cli.value.trim();cli.value='';if(!line)return;hist.push(line);hi=hist.length;
   const parts=line.split(/\s+/),cmd=parts[0].toLowerCase(),arg=parts.slice(1).join(' ');
-  if(cmd==='help')showInfo("<b>ls [path]</b> list • <b>cd [path]</b> change dir • <b>cat [file]</b> read • <b>grep [word]</b> search everything<br><b>theme [obsidian|detroit|dedsec|blackout|cyan]</b> • <b>search</b> (or Ctrl K) • <b>pwd</b> • <b>whoami</b> • <b>neofetch</b> • <b>matrix</b> toggle rain • <b>date</b> • <b>clear</b> • <b>login</b>/<b>logout</b><br>Owner only: <b>add</b> (new item here), <b>attach</b> (challenge files), <b>edit</b> (edit current file/page), <b>publish</b> (push to GitHub), <b>export</b>, <b>import</b>, <b>reset</b> (discard draft)<br>Tab = autocomplete, ↑/↓ = history");
+  if(cmd==='help')showInfo("<b>ls [path]</b> list • <b>cd [path]</b> change dir • <b>cat [file]</b> read • <b>grep [word]</b> search everything<br><b>search</b> (or Ctrl K) • <b>pwd</b> • <b>whoami</b> • <b>neofetch</b> • <b>date</b> • <b>clear</b> • <b>login</b>/<b>logout</b><br>Owner only: <b>add</b> (new item here), <b>attach</b> (challenge files), <b>edit</b> (edit current file/page), <b>publish</b> (push to GitHub), <b>export</b>, <b>import</b>, <b>reset</b> (discard draft)<br>Tab = autocomplete, ↑/↓ = history");
   else if(cmd==='ls')navigateTo(arg?resolve(cur,arg):(cur==='home'||cur==='about'?'writeups':cur));
   else if(cmd==='cd')navigateTo(arg?resolve(cur,arg):'home');
   else if(cmd==='cat'){if(!arg)return showErr("cat: missing file operand");const t=resolve(cur,arg),r=getObj(t);
@@ -638,7 +604,6 @@ cli.addEventListener('keydown',e=>{
   else if(cmd==='whoami')navigateTo('home');
   else if(cmd==='add'){if(!admin)return showErr('permission denied: read-only (owner: login)');const t=getObj(cur).obj.type;t==='dir'||t==='cards'?openEditor(cur,1):showErr('cd into a folder first')}
   else if(cmd==='edit'){if(!admin)return showErr('permission denied: read-only (owner: login)');const t=getObj(cur).obj;t.type==='dir'||t.type==='cards'||cur==='home'?showErr('open a file, card or the about page first'):openEditor(cur)}
-  else if(cmd==='theme'){if(!arg)nextTheme();else if(THEMES.includes(arg)){setTheme(arg);showInfo('theme: '+arg)}else showErr('themes: '+THEMES.join(', '))}
   else if(cmd==='search')openPal();
   else if(cmd==='publish')publish(arg);
   else if(cmd==='import'){if(!admin)return showErr('permission denied: read-only');const i=document.createElement('input');i.type='file';i.accept='.json';
@@ -651,11 +616,10 @@ cli.addEventListener('keydown',e=>{
   else if(cmd==='hash')sha(arg).then(x=>showInfo('sha256: '+x));
   else if(cmd==='clear')$('main-content').innerHTML='';
   else if(cmd==='date')showInfo(new Date().toString());
-  else if(cmd==='matrix'){rainOn=!rainOn;$('rain').style.display=rainOn?'':'none';showInfo('rain '+(rainOn?'ON':'OFF'))}
   else if(cmd==='neofetch'){$('main-content').innerHTML=`<div class="nf"><pre>  ▄▄▄▄▄
  █ ☠ ☠ █
  █ ▀▀▀ █
-  ▀█▄█▀</pre><div><b style="color:var(--accent)">root@0xb00b4</b><br>─────────────<br><b>OS:</b> Blackout Linux x86_64<br><b>Host:</b> blackout<br><b>Location:</b> Tunisia<br><b>Focus:</b> pwn / rev<br><b>Writeups:</b> ${cnt(fs.writeups)}<br><b>Uptime:</b> ${Math.floor(performance.now()/1000)}s</div></div>`}
+  ▀█▄█▀</pre><div><b style="color:var(--accent)">root@0xb00b4</b><br>─────────────<br><b>OS:</b> Obsidian x86_64<br><b>Host:</b> obsidian<br><b>Location:</b> Tunisia<br><b>Focus:</b> pwn / rev<br><b>Writeups:</b> ${cnt(fs.writeups)}<br><b>Uptime:</b> ${Math.floor(performance.now()/1000)}s</div></div>`}
   else showErr(`bash: ${cmd}: command not found. Type 'help' for options.`);
  }});
 document.addEventListener('click',e=>{if(String(getSelection())||e.target.closest('.modal,button,a,input,select,textarea,#boot,.crumb,figure,#pal,main,.md,pre,p,li,h1,h2,h3,h4,.card,.tile,.tl-item,.meta,.toc,.stats,.drop,#lb'))return;cli.focus({preventScroll:true})});
@@ -668,12 +632,8 @@ document.addEventListener('click',e=>{if(rd){rd=0;return}const t=e.target.closes
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEd();closePal();$('lb').style.display='none';if(document.activeElement===cli)cli.blur()}});
 setInterval(()=>{if(getSelection().isCollapsed)$('clock').textContent=new Date().toLocaleTimeString()},1000);
 
-/* red matrix rain */
-const cv=$('rain'),cx=cv.getContext('2d');let cols,drops;
-function sizeRain(){cv.width=innerWidth;cv.height=innerHeight;cols=Math.floor(cv.width/16);drops=Array(cols).fill(0).map(()=>Math.random()*-50)}
-sizeRain();addEventListener('resize',sizeRain);
-setInterval(()=>{if(!rainOn||document.documentElement.dataset.theme==='obsidian')return;cx.fillStyle='rgba(10,10,10,.12)';cx.fillRect(0,0,cv.width,cv.height);cx.fillStyle=ACC;cx.font='14px monospace';
- drops.forEach((y,i)=>{cx.fillText(String.fromCharCode(0x30A0+Math.random()*96),i*16,y*16);drops[i]=y*16>cv.height&&Math.random()>.975?0:y+1})},60);
+/* canvas size (the dust layer draws on it) */
+const cv=$('rain');function sizeRain(){cv.width=innerWidth;cv.height=innerHeight}sizeRain();addEventListener('resize',sizeRain);
 
 /* dust: faint drifting points behind the page (default theme) */
 (()=>{const cv=$('rain'),c=cv.getContext('2d'),mk=()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.1+.3,vx:(Math.random()-.5)*.08,vy:(Math.random()-.5)*.08,p:Math.random()*6.28,s:Math.random()*.012+.004,a:Math.random()*.5+.15}),M=Array.from({length:36},mk);
@@ -681,23 +641,17 @@ setInterval(()=>{if(!rainOn||document.documentElement.dataset.theme==='obsidian'
   for(const m of M){m.x+=m.vx;m.y+=m.vy;m.p+=m.s;if(m.x<0)m.x=innerWidth;if(m.x>innerWidth)m.x=0;if(m.y<0)m.y=innerHeight;if(m.y>innerHeight)m.y=0;
    c.fillStyle=`rgba(214,216,255,${m.a*(.5+.5*Math.sin(m.p*3))})`;c.beginPath();c.arc(m.x,m.y,m.r,0,6.3);c.fill()}})()})();
 
-/* boot */
-function boot(){const b=$('boot');
- if(sessionStorage.getItem('booted')){b.remove();return}
- if(document.documentElement.dataset.theme==='obsidian'){b.remove();return}
- const L=document.documentElement.dataset.theme==='detroit'?['CYBERLIFE RK800 · system check','[  0.312] biocomponents ......... <span class=ok>OK</span>','[  0.554] thirium pump .......... <span class=ok>OK</span>','[  0.871] exploit modules ....... <span class=ok>OK</span>','<span style="color:#f04450">▲ SOFTWARE INSTABILITY</span>','','Hello, 0xb00b4.']:['[  0.000] Booting blackout kernel 6.6.0-blood...','[  0.312] Mounting /dev/skull ........ <span class=ok>OK</span>','[  0.554] Loading exploit modules ..... <span class=ok>OK</span>','[  0.871] Starting ghidra-daemon ...... <span class=ok>OK</span>','','Welcome, 0xb00b4.'];
- let i=0;const done=()=>{sessionStorage.setItem('booted',1);b.style.opacity=0;setTimeout(()=>b.remove(),600)};b.onclick=done;
- const t=setInterval(()=>{if(i<L.length)b.insertAdjacentHTML('beforeend',`<div>${L[i++]}</div>`);else{clearInterval(t);setTimeout(done,400)}},220)}
-boot();
+addEventListener('popstate',()=>navigateTo(getObj(location.hash.slice(1))?location.hash.slice(1):'home'));
+addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);$('prog').style.transform='scaleX('+Math.min(1,Math.max(0,p))+')'},{passive:true});
 /* content lives in content.json (embedded JSON above is only a fallback for opening the file locally) */
 fetch('content.json?'+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.home)PUBLISHED=norm(j)}).catch(()=>{})
  
- .then(()=>{setTheme(localStorage.getItem('theme')||'obsidian');if(localStorage.getItem('motion')==='0')toggleMotion();setAdmin(sessionStorage.getItem('adm')==='1');navigateTo(location.hash.slice(1)||'home')});
+ .then(()=>{if(localStorage.getItem('motion')==='0')toggleMotion();setAdmin(sessionStorage.getItem('adm')==='1');navigateTo(getObj(location.hash.slice(1))?location.hash.slice(1):'home')});
 /* custom cursor: dot + lagging ring + code-glyph trail + click ripples (desktop mouse only) */
 (()=>{if(!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  const B=document.body,mk=(t,i)=>{const e=document.createElement(t);e.id=i;B.appendChild(e);return e},d=mk('div','cd'),r=mk('div','cr'),cv=mk('canvas','trail'),c=cv.getContext('2d');
  const col=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#22d3ee',G='01{}<>/#$ABCDEF';
- let x=-100,y=-100,rx=-100,ry=-100,lx=0,ly=0,P=[],K=[];B.classList.add('cur');
+ let x=-100,y=-100,rx=-100,ry=-100,lx=0,ly=0,P=[],K=[];B.classList.add('cur');document.documentElement.classList.add('cur');
  const fit=()=>{cv.width=innerWidth;cv.height=innerHeight};fit();addEventListener('resize',fit);
  addEventListener('mousemove',e=>{x=e.clientX;y=e.clientY;B.classList.add('mv');
   if(Math.hypot(x-lx,y-ly)>14){lx=x;ly=y;P.push({x,y,vx:(Math.random()-.5)*.8,vy:Math.random()*.8+.2,l:1,ch:(g=>g[Math.random()*g.length|0])(document.documentElement.dataset.theme==='obsidian'?'·':G)})}
