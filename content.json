@@ -204,13 +204,39 @@
       "date": "2026-10-10",
       "category": "pwn",
       "pts": "mid",
-      "body": "Coming soon..",
-      "imgs": {},
+      "body": "Coming soon..\n\nWhen the program is executed it asks for the user to guess a number and if the guess is wrong it asks again as shown here : \n\n![image](img:imv2gku26rw3)\n\nLets take a look at the source code of the file and see exactly what it does :\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n#include <sys/types.h>\n#include <sys/stat.h>\n\n#define BUFSIZE 100\n\n\nlong increment(long in) {\n\treturn in + 1;\n}\n\nlong get_random() {\n\treturn rand() % BUFSIZE;\n}\n\nint do_stuff() {\n\tlong ans = get_random();\n\tans = increment(ans);\n\tint res = 0;\n\t\n\tprintf(\"What number would you like to guess?\\n\");\n\tchar guess[BUFSIZE];\n\tfgets(guess, BUFSIZE, stdin);\n\t\n\tlong g = atol(guess);\n\tif (!g) {\n\t\tprintf(\"That's not a valid number!\\n\");\n\t} else {\n\t\tif (g == ans) {\n\t\t\tprintf(\"Congrats! You win! Your prize is this print statement!\\n\\n\");\n\t\t\tres = 1;\n\t\t} else {\n\t\t\tprintf(\"Nope!\\n\\n\");\n\t\t}\n\t}\n\treturn res;\n}\n\n\nvoid win() {\n\tchar winner[BUFSIZE];\n\tprintf(\"New winner!\\nName? \");\n\tfgets(winner, 360, stdin);\n\tprintf(\"Congrats %s\\n\\n\", winner);\n}\n\nint main(int argc, char **argv){\n\tsetvbuf(stdout, NULL, _IONBF, 0);\n\t// Set the gid to the effective gid\n\t// this prevents /bin/sh from dropping the privileges\n\tgid_t gid = getegid();\n\tsetresgid(gid, gid, gid);\n\t\n\tint res;\n\t\n\tprintf(\"Welcome to my guessing game!\\n\\n\");\n\t\n\twhile (1) {\n\t\tres = do_stuff();\n\t\tif (res) {\n\t\t\twin();\n\t\t}\n\t}\n\t\n\treturn 0;\n}\n\n```\nFirst this to notice here is that the program uses rand() to generate a random number.Let's see how rand() works: \n\n::note How rand() WorksWhen you call rand(), it runs an algorithm on a starting value called a seed. It returns an integer between 0 and RAND_MAX (at least 32,767) and updates the internal state for the next call.\n\nBecause it uses a fixed mathematical formula, calling rand() repeatedly follows a fixed list of numbers. If you run your program multiple times without changing the starting seed, you will get the exact same sequence of \"random\" numbers every run.\n\nSo let's try to guess the number by debugging the binary ",
+      "imgs": {
+       "imv2gku26rw3": "images/f175acd835972c2f.jpg"
+      },
       "flag": "academy{r0p_y0u_l1k3_4_hurr1c4n3_3ea9d94813b570b2}",
       "fhide": true,
       "flagLabel": "Flag.txt",
       "tags": [
        "rop"
+      ],
+      "role": "player"
+     }
+    }
+   },
+   "securinets-enit": {
+    "type": "dir",
+    "title": "friendly ctf",
+    "items": {
+     "read-it-and-weep": {
+      "type": "file",
+      "title": "read it and weep.md",
+      "date": "2026-10-13",
+      "category": "pwn",
+      "pts": "400",
+      "body": "We’re handed a binary with a win() function that prints the flag, but nothing in the program ever calls it. Our job is to find a bug that lets us hijack control flow and jump into win() ourselves. \n\n**What is the vulnerability in the code? **\n\n\n```c\nprintf(complaint);              \n```\nIf you’ve never seen this before: printf’s first argument is supposed to be a format string, the thing with %s and %d in it that tells printf how to read the rest of its arguments. Normal, safe code looks like printf(\"%s\", complaint)\n\nHere in this chall they just didn't do that. They passed our raw input straight in as the format string. So anything we type isn’t printed as text, it gets parsed by printf. Type %x and it pulls garbage off the stack and prints it in hex.\n\nThat’s really the whole bug. One missing \"%s\".With such a bug we can do many things the most common ones are : \n-leaking stack memory with stuff like %p.\n-writing to arbitrary memory with %n.\n\n**checking what protections we’re up against**\n\n![image](img:imv7aydaoqjj)\n\nNo PIE is huge here: it means the binary loads at the same address every single time, so every function and every GOT entry is at a fixed, known location. We don’t need to leak anything to find out where win() lives.\n\nPartial RELRO means the GOT is still writable. (Quick refresher if you forgot what GOT is — it’s the Global Offset Table, basically a lookup table the binary uses to call external functions like puts(). If we can overwrite the entry for puts in that table, every future call to puts() goes wherever we pointed it instead.)\n\nCanary’s there but doesn’t matter for us. Canaries catch you overflowing a buffer in a straight line and smashing into the return address. We’re not doing that. %n lets us write to any address directly, no overflow involved.\n\nNX doesn’t matter either since we’re not trying to run shellcode, we’re just redirecting flow to code that’s already in the binary.\n\nNow our path is clear, we are going to overwrite puts’s GOT entry with the address of win(). Next time the program calls puts(), it jumps into win() instead.\n\n**finding our offset**\nTo write with %n you first need to know which argument slot corresponds to your own input on the stack. printf lets you grab a specific argument by number, like %7$p means “give me the 7th arg as a pointer.”\nEasiest way to find this is just spray a marker (like \"AAAAAA\") and a bunch of %ps and see where your marker shows back up:\n\n![image](img:imv7bapibgh8)\n\nthat 4141414141 is just “AAAAA” in hex (0x41 = ‘A’), showing up as the 10th value. So offset 10 is us. %10$n writes to whatever address we put at the front of our buffer.\n\n**building the write**\nThe annoying thing about %n that gets people every time: it doesn’t write a value you give it directly. It writes the number of characters printf has printed so far. So to write a specific number, you have to pad the output to exactly that length first and then trigger the %n.\nDoing that math and building the payload yourself can be painful so pwntools just does it for you:\n\n\n```c\npayload = fmtstr_payload(offset, {puts_got: win_addr}, write_size='int')\n```\nIn simple terms “my buffer starts at argument 10, go build me a format string that writes win_addr into puts_got.”\n\n**where I actually got stuck**\nSpent way too long on this part. fmtstr_payload lets you pick how big each write chunk is — byte, short, or int. win_addr here is 0x4011d6, only needs 3 real bytes written into an 8-byte GOT slot.\n\nI started with write_size='short' and it kept breaking — turns out with short pwntools splits it into two separate %n writes (one to zero the slot out, one to patch in the real value). Two writes means two chances to be slightly off on a character count or offset, and that’s exactly what kept happening, I’d get a crash or a garbage write.\n\nSwitched to write_size='int' and it just worked first try. Since the top half of the GOT slot’s already zero anyway, one 4-byte write covers the whole address in a single %n. Way less that can go wrong.\n\nMoral of the story: if your format string write is being flaky, just use fewer writes even if it means writing a couple of extra zero bytes you didn’t strictly need to.\n\n**the actual exploit**\n\n```python\nfrom pwn import *\n\nbinary = './main'\nelf = ELF(binary)\ncontext.binary = elf   # sets arch/bits so pwntools packs addresses right\n                        # forget this and it'll quietly assume 32-bit and\n                        # mangle your addresses, took me a bit to catch that\n\np = remote('pwn.securinets-enit.club', 1314)\n\nwin_addr = elf.symbols['win']\nputs_got = elf.got['puts']\n\noffset = 10\npayload = fmtstr_payload(offset, {puts_got: win_addr}, write_size='int')\n\np.recvuntil(b'Complaint: ')\np.sendline(payload)\n\nprint(p.recvall(timeout=5))\n```\n",
+      "imgs": {
+       "imv7aydaoqjj": "images/dbc8becc6c2db2ce.jpg",
+       "imv7bapibgh8": "images/5feae32380b6ad09.jpg"
+      },
+      "fhide": true,
+      "flagLabel": "flag",
+      "tags": [
+       "format string"
       ],
       "role": "player"
      }
@@ -234,7 +260,7 @@
     "date": "2026-09-29",
     "category": "CTF",
     "link": "",
-    "body": "RANK 1 + solving 90% of pwn challs.",
+    "body": "RANK 1 + solving 90% of pwn challs.\n\n\n",
     "imgs": {},
     "rank": "1ST"
    }
