@@ -171,7 +171,7 @@ figure.portrait img{width:170px;height:170px;object-fit:cover;border-radius:50%;
 figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid var(--accent);box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
 .sub{color:var(--dim);margin:-.1rem 0 1.8rem;font-size:1.08rem}
 /* ===== Obsidian (default): near-black, indigo + copper, serif/mono ===== */
-[data-theme=obsidian] body{font-size:1.06rem;line-height:1.7;background:radial-gradient(ellipse 70% 40% at 50% -10%,rgba(124,128,207,.1),transparent 70%),var(--bg2);background-attachment:fixed}
+[data-theme=obsidian] body{font-size:1.06rem;line-height:1.7;background:radial-gradient(ellipse 60% 40% at 15% -5%,rgba(124,128,207,.07),transparent 70%),radial-gradient(ellipse 50% 40% at 95% 100%,rgba(200,144,90,.035),transparent 70%),var(--bg2);background-attachment:fixed}
 [data-theme=obsidian] body::before,[data-theme=obsidian] body::after,[data-theme=obsidian] .window-bar,[data-theme=obsidian] .terminal-container::before,[data-theme=obsidian] .terminal-container::after{display:none}
 [data-theme=obsidian] #rain{opacity:1}
 [data-theme=obsidian] .terminal-container{max-width:1240px;background:transparent;border:0;box-shadow:none;outline:0;backdrop-filter:none;border-radius:0;animation:none;overflow:visible}
@@ -232,14 +232,9 @@ figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid v
 [data-theme=obsidian] h1.hero{margin-top:.3rem}
 [data-theme=obsidian] .flagbox{width:fit-content;min-width:240px;max-width:min(420px,100%);gap:.4rem;margin:1.8rem auto 1.2rem;padding:.8rem 1.1rem .75rem}
 [data-theme=obsidian] .fb-h{font-size:.6rem}[data-theme=obsidian] .fb-v{font-size:.9rem;padding:.35rem .8rem}
-/* background: slow colour glows + flow-field threads (kept low-contrast on purpose) */
-#aura{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-#aura i{position:absolute;border-radius:50%;will-change:transform}
-#aura i:nth-child(1){width:55vw;height:55vw;left:-12vw;top:-18vw;background:radial-gradient(circle,rgba(124,128,207,.15),transparent 65%);animation:aur1 70s ease-in-out infinite alternate}
-#aura i:nth-child(2){width:45vw;height:45vw;right:-10vw;bottom:-15vw;background:radial-gradient(circle,rgba(200,144,90,.1),transparent 65%);animation:aur2 85s ease-in-out infinite alternate}
-#aura i:nth-child(3){width:30vw;height:30vw;left:40vw;top:35vh;background:radial-gradient(circle,rgba(110,150,200,.07),transparent 65%);animation:aur3 95s ease-in-out infinite alternate}
-@keyframes aur1{to{transform:translate(14vw,10vw)}}@keyframes aur2{to{transform:translate(-12vw,-8vw)}}@keyframes aur3{to{transform:translate(-10vw,12vh)}}
-#spot{position:fixed;left:0;top:0;width:760px;height:760px;margin:-380px 0 0 -380px;border-radius:50%;background:radial-gradient(circle,rgba(124,128,207,.075),transparent 65%);pointer-events:none;z-index:0;opacity:0;transition:opacity .6s;will-change:transform}body.mv #spot{opacity:1}.nomo #spot{display:none}
+/* background: a still blueprint grid (dots + registration marks) that fades out behind the text; it stays fixed while the page scrolls, which gives a quiet sense of depth */
+#grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130'><path d='M60 65h10M65 60v10' stroke='%23969ae6' stroke-opacity='.55' stroke-width='1'/></svg>"),radial-gradient(circle,rgba(150,154,230,.24) 1px,transparent 1.6px);background-size:130px 130px,26px 26px;-webkit-mask-image:radial-gradient(ellipse 62% 72% at 50% 42%,transparent 28%,#000 100%);mask-image:radial-gradient(ellipse 62% 72% at 50% 42%,transparent 28%,#000 100%)}
+@media(max-width:900px){#grid{opacity:.3;-webkit-mask-image:none;mask-image:none}}
 /* writeup text: highlighted inline code, bigger bold, underlined subtitles */
 .md h2,.md h3,.md h4{display:block}
 :not(pre)>code{font-family:'JetBrains Mono',monospace;font-size:.86em;color:#dcdef7;background:rgba(124,128,207,.14);border:1px solid rgba(124,128,207,.3);padding:.08em .42em;border-radius:4px;overflow-wrap:anywhere;-webkit-box-decoration-break:clone;box-decoration-break:clone}
@@ -250,14 +245,12 @@ pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
 /* reading progress, skip link, print */
 #prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;opacity:0;transition:opacity .3s;z-index:3100;pointer-events:none}
 .skip{position:absolute;left:-999px;top:0;z-index:4000;background:var(--accent);color:var(--onacc);padding:.5rem 1rem}.skip:focus{left:8px;top:8px}
-@media print{body{background:#fff!important;color:#000!important}#spot,#aura,#hexg,#cd,#cr,#trail,#prog,header,footer,.input-line,.action-bar,.pn,.drop,.cb,.skip{display:none!important}.terminal-container{background:none!important;box-shadow:none!important;max-width:none!important}.md,.md *,h1,h2,h3,p,li,.meta{color:#000!important}pre{background:#f4f4f4!important;color:#000!important;border:1px solid #ccc}a{color:#000}.flagbox{break-inside:avoid;border-color:#000;background:none!important}.fb-v{background:none!important;color:#000!important}}
+@media print{body{background:#fff!important;color:#000!important}#grid,#spot,#aura,#hexg,#cd,#cr,#trail,#prog,header,footer,.input-line,.action-bar,.pn,.drop,.cb,.skip{display:none!important}.terminal-container{background:none!important;box-shadow:none!important;max-width:none!important}.md,.md *,h1,h2,h3,p,li,.meta{color:#000!important}pre{background:#f4f4f4!important;color:#000!important;border:1px solid #ccc}a{color:#000}.flagbox{break-inside:avoid;border-color:#000;background:none!important}.fb-v{background:none!important;color:#000!important}}
 </style>
 </head>
 <body>
-<a class="skip" href="#main-content">Skip to content</a><div id="prog"></div>
+<a class="skip" href="#main-content">Skip to content</a><div id="prog"></div><div id="grid" aria-hidden="true"></div>
 <noscript><p style="padding:2rem;color:#c4c5d6;font-family:sans-serif">This site needs JavaScript to show the writeups.</p></noscript>
-<div id="aura" aria-hidden="true"><i></i><i></i><i></i></div>
-<div id="spot" aria-hidden="true"></div>
 <div id="lb" onclick="this.style.display='none';scrollTo(0,+this.dataset.y||0)"><img alt=""></div>
 <div id="pal"><div class="pbox"><input id="pq" placeholder="Search writeups, projects, pages…" aria-label="search" autocomplete="off"><div id="pres"></div><p class="meta" style="padding:.5rem 1rem;margin:0">↑↓ move · Enter open · Esc close</p></div></div>
 
@@ -653,11 +646,6 @@ document.addEventListener('click',e=>{if(rd){rd=0;return}const t=e.target.closes
  e.stopImmediatePropagation();const x=e.target;setTimeout(()=>{const q=getSelection();if(!q||q.isCollapsed||!String(q).trim()){rd=1;x.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}))}},260)},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEd();closePal();$('lb').style.display='none';if(document.activeElement===cli)cli.blur()}});
 setInterval(()=>{if(getSelection().isCollapsed)$('clock').textContent=new Date().toLocaleTimeString()},1000);
-
-/* a very faint light that lazily follows the mouse (desktop only) */
-(()=>{const sp=$('spot');if(!sp||!matchMedia('(hover:hover) and (pointer:fine)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
- let x=innerWidth/2,y=innerHeight/2,tx=x,ty=y;addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
- (function loop(){x+=(tx-x)*.07;y+=(ty-y)*.07;sp.style.transform='translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)';requestAnimationFrame(loop)})()})();
 
 addEventListener('popstate',()=>navigateTo(getObj(location.hash.slice(1))?location.hash.slice(1):'home'));
 addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);$('prog').style.transform='scaleX('+Math.min(1,Math.max(0,p))+')'},{passive:true});
