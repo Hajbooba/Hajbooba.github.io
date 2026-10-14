@@ -165,7 +165,7 @@ figure{margin:1.2rem auto;text-align:center}figure img{margin:0 auto;max-width:1
 #main-content{transition:opacity .22s ease,transform .22s ease,height .4s cubic-bezier(.4,0,.2,1)}
 #main-content.page-exit{opacity:0;transform:translateY(6px)}
 @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#ind{display:none}.card>.medal{display:none}
+.card>.medal{display:none}
 .medal{align-self:center;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:var(--tc,var(--accent));border:1px solid color-mix(in srgb,var(--tc,var(--accent)) 55%,transparent);background:radial-gradient(circle,color-mix(in srgb,var(--tc,var(--accent)) 18%,transparent),transparent 70%);font-size:1rem}
 figure.portrait img{width:170px;height:170px;object-fit:cover;border-radius:50%;border:2px solid var(--accent);box-shadow:0 0 0 6px var(--bg),0 0 0 7px color-mix(in srgb,var(--accent) 50%,transparent),0 10px 30px #000}
 figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid var(--accent);box-shadow:inset 0 0 60px rgba(0,0,0,.6)}
@@ -185,7 +185,6 @@ figure.wide img{width:100%;aspect-ratio:21/9;object-fit:cover;border:1px solid v
 [data-theme=obsidian] nav button{border:0;background:none;box-shadow:none;min-width:0;padding:.45rem .85rem;color:var(--dim);font-size:.76rem;letter-spacing:.06em}
 [data-theme=obsidian] nav button i{display:none}
 [data-theme=obsidian] nav button:hover,[data-theme=obsidian] nav button.active{background:none;color:var(--h);box-shadow:none}
-[data-theme=obsidian] #ind{display:block;position:absolute;height:2px;background:var(--accent2);pointer-events:none;transition:left .4s cubic-bezier(.4,0,.2,1),width .4s cubic-bezier(.4,0,.2,1),top .4s cubic-bezier(.4,0,.2,1),opacity .2s}
 [data-theme=obsidian] h1,[data-theme=obsidian] h2,[data-theme=obsidian] h3,[data-theme=obsidian] h4{font-weight:400}
 [data-theme=obsidian] h1{font-size:clamp(2rem,4vw,2.7rem);margin-bottom:.5rem}[data-theme=obsidian] h1>i{display:none}
 [data-theme=obsidian] h2{font-size:1.4rem}[data-theme=obsidian] h3{font-size:1.12rem}
@@ -242,6 +241,53 @@ pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
 .md p b,.md li b,.md h2 b,.md h3 b{font-weight:700;font-size:1.07em;color:#f2f3fb}
 .c-u{text-decoration:underline;text-decoration-color:var(--accent2);text-decoration-thickness:2px;text-underline-offset:.28em}
 .c-hl{background:linear-gradient(transparent 55%,rgba(200,144,90,.38) 55%);color:var(--h);padding:0 .15em}
+/* sticky header with a blurred full-width bar, scroll line, home sections, side rail */
+html{overflow-x:clip}
+[data-theme=obsidian] header{position:sticky;top:0;z-index:60;margin:-1rem -1.2rem 1.5rem;padding:.7rem 1.2rem;border-bottom:0}
+[data-theme=obsidian] header::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:rgba(7,7,10,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #1d1f2e}
+[data-theme=obsidian] header::after{display:none}
+@media(max-width:820px){[data-theme=obsidian] header{position:static}}
+nav .kbd{margin-left:.6rem;border:1px solid #2c2f46!important;border-radius:3px;padding:.3rem .6rem!important;color:var(--dim)}
+nav .kbd kbd{font:.62rem 'JetBrains Mono',monospace;border:1px solid #2c2f46;padding:0 .35rem;border-radius:2px;margin-left:.35rem}
+#prog{height:3px;opacity:1;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(200,144,90,.4)}
+.sec{margin-top:5.5rem;scroll-margin-top:90px;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.sec.in{opacity:1;transform:none}.sec:first-child{margin-top:0}.nomo .sec{opacity:1;transform:none}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem;padding-bottom:1.1rem;border-bottom:1px solid #1d1f2e;position:relative}
+.sec-head::after{content:"";position:absolute;left:0;bottom:-1px;width:56px;height:2px;background:var(--accent2)}
+.sec-n{font:.72rem 'JetBrains Mono',monospace;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}.sec-n b{color:var(--accent2)}
+[data-theme=obsidian] h2.sec-t{display:block;font:400 clamp(1.9rem,4vw,2.8rem)/1.1 'Newsreader',serif;letter-spacing:-.02em;margin:.35rem 0 .3rem;color:var(--h)}
+.sec-s{color:var(--dim);margin:0}.sec-more{white-space:nowrap}
+h2[id],h3[id]{scroll-margin-top:90px}
+#rail{position:fixed;left:max(10px,calc((100vw - 1240px)/2 - 54px));top:50%;transform:translateY(-50%);z-index:40;display:none;flex-direction:column;align-items:center;gap:.8rem;font:.62rem 'JetBrains Mono',monospace;color:var(--dim)}
+@media(min-width:1480px){body.home #rail{display:flex}}
+.rl-name{writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.28em;text-transform:uppercase;color:var(--accent2);min-height:88px}
+.rl-track{position:relative;width:2px;height:170px;background:#23253a}
+.rl-fill{position:absolute;left:0;top:0;width:100%;height:0;background:linear-gradient(var(--accent),var(--accent2))}
+.rl-dot{position:absolute;left:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border:1px solid #4a4d7a;background:var(--bg);transform:rotate(45deg);cursor:pointer;transition:background .25s,border-color .25s}
+.rl-dot:hover{border-color:var(--accent)}.rl-dot.on{background:var(--accent2);border-color:var(--accent2)}
+.lay-row{display:grid;grid-template-columns:120px 1fr 1.4fr 64px auto;gap:.5rem;align-items:center;margin:.55rem 0}.lay-row label{display:flex;gap:.4rem;align-items:center;margin:0;cursor:pointer}
+.lay-row input[type=checkbox]{width:auto}.lay-row.lock b{color:var(--dim)}.lay-mv{display:flex;gap:.25rem}.lay-mv button{padding:.15rem .5rem}
+@media(max-width:700px){.lay-row{grid-template-columns:1fr 1fr}}
+@media print{.sec{opacity:1!important;transform:none!important}#rail{display:none!important}}
+/* conveyor of writeups on the home page */
+.mq{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;margin:0 -.4rem;padding:.5rem .4rem;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.mq::-webkit-scrollbar{display:none}.mq.drag{user-select:none}
+.mq-row{display:flex;gap:1rem;width:max-content}.mq .tile{flex:0 0 280px;width:280px;animation:none}
+.sec-act{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+/* steadier header: fixed-width path, no sub-pixel blur edge */
+[data-theme=obsidian] header{min-height:54px;align-items:center}
+[data-theme=obsidian] header>div:first-child{flex:0 0 auto;white-space:nowrap}
+#current-path{display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+[data-theme=obsidian] header::before{left:calc(50% - 50vw);width:100vw;transform:none}
+#prog{transition:transform .12s linear,opacity .3s;will-change:transform}
+/* nav underline = the page you are on (changes only when you navigate) */
+[data-theme=obsidian] nav button[data-path]{position:relative}
+[data-theme=obsidian] nav button[data-path]::after{content:"";position:absolute;left:.85rem;right:.85rem;bottom:.18rem;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+[data-theme=obsidian] nav button[data-path].active::after{transform:scaleX(1)}
+/* scroll line across the whole screen */
+#progbg{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.06);z-index:3099;pointer-events:none}
+#prog{height:2px;background:linear-gradient(90deg,#c8905a,#e8a56a 60%,#8d92e0);box-shadow:0 0 10px rgba(232,165,106,.6)}
+@media print{#progbg{display:none!important}}
 /* reading progress, skip link, print */
 #prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;opacity:0;transition:opacity .3s;z-index:3100;pointer-events:none}
 .skip{position:absolute;left:-999px;top:0;z-index:4000;background:var(--accent);color:var(--onacc);padding:.5rem 1rem}.skip:focus{left:8px;top:8px}
@@ -249,7 +295,7 @@ pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
 </style>
 </head>
 <body>
-<a class="skip" href="#main-content">Skip to content</a><div id="prog"></div><div id="grid" aria-hidden="true"></div>
+<a class="skip" href="#main-content">Skip to content</a><div id="progbg"></div><div id="prog"></div><div id="rail" aria-hidden="true"><div class="rl-name" id="rl-name">home</div><div class="rl-track" id="rl-track"><i class="rl-fill" id="rl-fill"></i></div><div class="rl-pct" id="rl-pct">0%</div></div><div id="grid" aria-hidden="true"></div>
 <noscript><p style="padding:2rem;color:#c4c5d6;font-family:sans-serif">This site needs JavaScript to show the writeups.</p></noscript>
 <div id="lb" onclick="this.style.display='none';scrollTo(0,+this.dataset.y||0)"><img alt=""></div>
 <div id="pal"><div class="pbox"><input id="pq" placeholder="Search writeups, projects, pages…" aria-label="search" autocomplete="off"><div id="pres"></div><p class="meta" style="padding:.5rem 1rem;margin:0">↑↓ move · Enter open · Esc close</p></div></div>
@@ -259,12 +305,13 @@ pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
     <header>
       <div><span style="color:var(--dim)">root@0xb00b4:</span><span class="pp" id="current-path">~/home</span><span id="badge"></span></div>
       <nav>
-        <button data-path="home" onclick="navigateTo('home')"><i class="fa-solid fa-house"></i> home</button>
+        <button data-path="home" onclick="goSection('home')"><i class="fa-solid fa-house"></i> home</button>
         <button data-path="writeups" onclick="navigateTo('writeups')"><i class="fa-solid fa-flag"></i> writeups</button>
         <button data-path="projects" onclick="navigateTo('projects')"><i class="fa-solid fa-code-branch"></i> projects</button>
         <button data-path="achievements" onclick="navigateTo('achievements')"><i class="fa-solid fa-trophy"></i> achievements</button>
         <button data-path="experience" onclick="navigateTo('experience')"><i class="fa-solid fa-briefcase"></i> experience</button>
         <button data-path="about" onclick="navigateTo('about')"><i class="fa-solid fa-user-ninja"></i> about</button>
+        <button class="kbd" onclick="openPal()" title="Search (Ctrl K)">⌕ <kbd>Ctrl K</kbd></button>
       </nav>
     </header>
     <main id="main-content"></main>
@@ -312,6 +359,13 @@ pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit}
    <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">copper</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
   <div id="g-files"><label>Challenge files (zip, binary, pcap… up to 25 MB each)</label><button onclick="$('f-att').click()"><i class="fa-solid fa-paperclip"></i> attach files</button><input type="file" id="f-att" multiple hidden onchange="attach(this.files);this.value=''"><div id="f-list"></div></div>
   <div class="modal-buttons"><button onclick="closeEd()">Cancel</button><button style="background:var(--accent);color:var(--onacc)" onclick="saveItem()">Save</button></div>
+</div></div>
+
+<div class="modal-overlay" id="lay"><div class="modal">
+  <h2><i class="fa-solid fa-table-list"></i> Customize home sections</h2>
+  <p class="meta">Pick what appears on the home page, in which order, with your own titles and how many items each section shows.</p>
+  <div id="lay-list"></div>
+  <div class="modal-buttons"><button onclick="layReset()">Reset</button><button onclick="closeLay()">Cancel</button><button style="background:var(--accent);color:var(--onacc)" onclick="saveLayout()">Save</button></div>
 </div></div>
 
 <script type="application/json" id="content">
@@ -405,37 +459,98 @@ function getObj(p){
  return{obj:c,cleanPath:parts.join('/')}}
 const cnt=o=>o.type==='file'||o.type==='card'?1:Object.values(o.items||{}).reduce((a,x)=>a+cnt(x),0);
 /* ── SMOOTH NAVIGATE: fade out, swap, fade in, with the page height animating between the two ── */
+/* ===== home = one long page of sections (customisable), sticky nav, scroll-spy, side rail ===== */
+const DEFLAY=[{id:'home',on:true},{id:'writeups',on:true,limit:12,title:'Writeups',sub:'Challenges I solved, explained step by step.'},{id:'projects',on:true,limit:4,title:'Projects',sub:'Things I built, and what I learned building them.'},{id:'achievements',on:true,limit:6,title:'Achievements',sub:'Ranks, results and recognition.'},{id:'experience',on:true,limit:4,title:'Experience',sub:'Where I have worked and what I did there.'},{id:'about',on:true,title:'About',sub:'A little more about me.'}];
+function getLayout(){const L=(fs.home&&fs.home.layout)||[],out=L.filter(x=>DEFLAY.some(d=>d.id===x.id)).map(x=>({...DEFLAY.find(d=>d.id===x.id),...x}));
+ DEFLAY.forEach(d=>{if(!out.some(x=>x.id===d.id))out.push({...d,on:!L.length})});const i=out.findIndex(x=>x.id==='home');if(i>0)out.unshift(out.splice(i,1)[0]);out[0].on=true;return out}
+const scrollToEl=e=>window.scrollTo({top:Math.max(0,e.getBoundingClientRect().top+scrollY-84),behavior:'smooth'});
+function goSection(id){
+ if(cur==='home'){if(id==='home'){window.scrollTo({top:0,behavior:'smooth'});return}const e=document.querySelector('.sec[data-s="'+id+'"]');if(e){scrollToEl(e);return}}
+ else if(cur.split('/')[0]===id){window.scrollTo({top:0,behavior:'smooth'});return}
+ if(id==='home'||getLayout().some(x=>x.id===id&&x.on))navigateTo('home',()=>{const e=document.querySelector('.sec[data-s="'+id+'"]');if(id==='home')window.scrollTo(0,0);else if(e)scrollToEl(e)});
+ else navigateTo(id)}
+function homeView(o){
+ const L=getLayout().filter(s=>s.on),items=c=>(fs[c]&&fs[c].items)||{};let n=0,h=admin?`<div class="action-bar"><button class="btn-action" onclick="openEditor('home')"><i class="fa-solid fa-pen"></i> edit intro</button><button class="btn-action" onclick="openLayout()"><i class="fa-solid fa-table-list"></i> customize sections</button></div>`:'';
+ const head=(s,more,label,extra)=>`<div class="sec-head"><div><div class="sec-n"><b>${String(n).padStart(2,'0')}</b> / ${esc(s.id)}</div><h2 class="sec-t">${esc(s.title||cap(s.id))}</h2>${s.sub?`<p class="sec-s">${esc(s.sub)}</p>`:''}</div><div class="sec-act">${extra||''}${more?`<a class="btn-action sec-more" onclick="navigateTo('${more}')">${label} <i class="fa-solid fa-arrow-right"></i></a>`:''}</div></div>`;
+ for(const s of L){
+  if(s.id==='home'){h+=`<section class="sec in" data-s="home"><h1 class="hero"><i class="fa-solid fa-terminal"></i> <span class="tw">${esc(o.title)}</span></h1><div class="md fade">${md(o.body,o.imgs)}</div><div id="stats"></div></section>`;continue}
+  n++;let body='';const none='<p class="meta">Nothing here yet.</p>';
+  if(s.id==='writeups'){const W=[];walk(fs.writeups,'writeups',(v,p)=>{if(v.type==='file')W.push([v,p])});W.sort((a,b)=>String(b[0].date||'').localeCompare(String(a[0].date||'')));body=W.length?`<div class="mq" id="mq"><div class="mq-row">${W.slice(0,s.limit||12).map(([v,p])=>tileH(v,p,'')).join('')}</div></div>`:none}
+  else if(s.id==='projects'||s.id==='achievements'){const k=Object.keys(items(s.id)).slice(0,s.limit||6);body=k.length?`<div class="cards">${k.map(x=>cardH(items(s.id)[x],s.id+'/'+x,'')).join('')}</div>`:none}
+  else if(s.id==='experience'){const k=Object.keys(items('experience')).slice(0,s.limit||4);body=k.length?`<div class="tl">${k.map(x=>tlH(items('experience')[x],'experience/'+x,'')).join('')}</div>`:none}
+  else if(s.id==='about'){if(!fs.about)continue;body=`<div class="md">${md(fs.about.body,fs.about.imgs)}</div>`}
+  h+=`<section class="sec" data-s="${s.id}">${head(s,s.id,s.id==='about'?'Open page':'View all',s.id==='writeups'?'<button class="btn-action" onclick="mqGo(-1)" title="previous">←</button><button class="btn-action" onclick="mqGo(1)" title="next">→</button>':'')}${body}</section>`}
+ $('main-content').innerHTML+=h}
+function initHome(){const S=[...document.querySelectorAll('.sec')];
+ if(!('IntersectionObserver' in window)||document.body.classList.contains('nomo'))S.forEach(x=>x.classList.add('in'));
+ else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -10% 0px',threshold:.04});S.forEach(x=>x.classList.contains('in')||io.observe(x))}
+ buildRail(S.map(x=>x.dataset.s));spyId='';spy();initMq()}
+let spyRaf=0,spyId='';
+function spy(){spyRaf=0;const h=document.documentElement,p=Math.min(1,Math.max(0,h.scrollTop/((h.scrollHeight-h.clientHeight)||1)));
+ $('prog').style.transform='scaleX('+p+')';if(cur!=='home')return;
+ const S=[...document.querySelectorAll('.sec')];if(!S.length)return;let on=S[0];for(const x of S)if(x.getBoundingClientRect().top<=160)on=x;
+ const id=on.dataset.s;$('rl-fill').style.height=(p*100)+'%';$('rl-pct').textContent=Math.round(p*100)+'%';
+ if(id!==spyId){spyId=id;$('rl-name').textContent=id;document.querySelectorAll('.rl-dot').forEach(d=>d.classList.toggle('on',d.dataset.s===id))}}
+addEventListener('scroll',()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)},{passive:true});
+addEventListener('resize',()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)});
+if('ResizeObserver' in window)new ResizeObserver(()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)}).observe($('main-content'));
+function buildRail(ids){const t=$('rl-track');t.querySelectorAll('.rl-dot').forEach(d=>d.remove());
+ ids.forEach((id,i)=>{const d=document.createElement('i');d.className='rl-dot';d.dataset.s=id;d.title=id;d.style.top=(ids.length>1?i/(ids.length-1)*100:0)+'%';d.onclick=()=>goSection(id);t.appendChild(d)})}
+let mqTok=0,mqHold=0;
+function mqGo(d){const mq=$('mq');if(!mq)return;mqHold=performance.now()+1400;mq.scrollBy({left:d*Math.min(320,mq.clientWidth*.8),behavior:'smooth'})}
+function initMq(){const mq=$('mq');if(!mq)return;const row=mq.firstElementChild,tok=++mqTok;
+ if(row.scrollWidth<=mq.clientWidth+8)return;                      /* few writeups: keep a plain row */
+ const kids=[...row.children];for(let k=0;k<2;k++)kids.forEach(c=>{const x=c.cloneNode(true);x.setAttribute('aria-hidden','true');x.tabIndex=-1;row.appendChild(x)});
+ const g=parseFloat(getComputedStyle(row).columnGap)||0,w=(row.scrollWidth+g)/3,still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ let pos=w,last=performance.now(),drag=null;mq.scrollLeft=pos;
+ mq.addEventListener('wheel',()=>{mqHold=performance.now()+1500},{passive:true});mq.addEventListener('touchstart',()=>{mqHold=performance.now()+3000},{passive:true});
+ mq.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button)return;drag={x:e.clientX,l:mq.scrollLeft};mq.classList.add('drag')});
+ const up=()=>{drag=null;mq.classList.remove('drag')};addEventListener('pointerup',up);addEventListener('pointercancel',up);
+ addEventListener('pointermove',e=>{if(drag&&document.body.contains(mq))mq.scrollLeft=drag.l-(e.clientX-drag.x)});
+ (function loop(t){if(tok!==mqTok||!document.body.contains(mq))return;requestAnimationFrame(loop);const dt=Math.min(64,t-last);last=t;
+  if(Math.abs(mq.scrollLeft-pos)>2)pos=mq.scrollLeft;                 /* the reader scrolled/dragged: follow */
+  if(pos>=2*w){pos-=w;mq.scrollLeft=pos}else if(pos<w){pos+=w;mq.scrollLeft=pos}   /* seamless wrap, both directions */
+  const r=mq.getBoundingClientRect();
+  if(still||document.body.classList.contains('nomo')||document.hidden||r.bottom<0||r.top>innerHeight||drag||mq.matches(':hover')||mq.matches(':focus-within')||t<mqHold)return;
+  pos+=dt*.03;mq.scrollLeft=pos})(performance.now())}
+let LAY=[];
+function openLayout(){if(!admin)return;LAY=getLayout().map(x=>({...x}));drawLay();$('lay').style.display='flex'}
+const closeLay=()=>$('lay').style.display='none';
+function drawLay(){$('lay-list').innerHTML=LAY.map((x,i)=>x.id==='home'?`<div class="lay-row lock"><b>intro</b><span class="meta" style="grid-column:2/-1">the hero, buttons and skills (change it with “edit intro”)</span></div>`:`<div class="lay-row"><label><input type="checkbox" ${x.on?'checked':''} onchange="LAY[${i}].on=this.checked"> <b>${esc(x.id)}</b></label><input placeholder="Title" value="${esc(x.title||'')}" oninput="LAY[${i}].title=this.value"><input placeholder="Subtitle" value="${esc(x.sub||'')}" oninput="LAY[${i}].sub=this.value">${x.id!=='about'?`<input type="number" min="1" max="24" value="${x.limit||6}" title="how many items to show" oninput="LAY[${i}].limit=+this.value||6">`:'<span></span>'}<span class="lay-mv"><button onclick="layMv(${i},-1)">↑</button><button onclick="layMv(${i},1)">↓</button></span></div>`).join('')}
+function layMv(i,d){const j=i+d;if(j<1||j>=LAY.length)return;[LAY[i],LAY[j]]=[LAY[j],LAY[i]];drawLay()}
+function saveLayout(){fs.home.layout=LAY.map(({id,on,title,sub,limit})=>({id,on:id==='home'?true:on,title,sub,limit}));saveFS();closeLay();navigateTo('home')}
+function layReset(){LAY=DEFLAY.map(x=>({...x}));drawLay()}
+/* ── smooth navigation: fade out, swap, fade in (page height animates when the change is small) ── */
 let navT=0;
-function navigateTo(p){
+function navigateTo(p,after){
   const r=getObj(p);
   if(!r){showErr(`bash: cd: ${p}: No such file or directory`);return}
   const main=$('main-content'),same=r.cleanPath===cur,fast=same||document.body.classList.contains('nomo')||matchMedia('(prefers-reduced-motion:reduce)').matches;
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',r.cleanPath.split('/')[0]===b.dataset.path));
-  moveInd();
+  document.querySelectorAll('nav button[data-path]').forEach(b=>b.classList.toggle('active',r.cleanPath.split('/')[0]===b.dataset.path));
   const swap=()=>{
     cur=r.cleanPath;{const h=location.hash.slice(1);if(h!==cur)(h===''&&cur==='home'?history.replaceState:history.pushState).call(history,null,'','#'+cur)}
     const{obj,cleanPath}=r;
     $('current-path').innerText='~/'+(cleanPath==='home'?'':cleanPath);
+    document.body.classList.toggle('home',cleanPath==='home');
     main.innerHTML='';
-    if(obj.type==='page')pageView(obj);
+    if(obj.type==='page')(cleanPath==='home'?homeView:pageView)(obj);
     else if(obj.type==='file')fileView(obj);
     else if(obj.type==='card')cardView(obj);
     else dirView(cleanPath,obj);
-    if(cleanPath==='home'&&$('recent')){
-      let a=[];walk(fs.writeups,'writeups',(v,p)=>{if(v.type==='file')a.push([v,p])});
-      a.sort((x,y)=>(y[0].date||'').localeCompare(x[0].date||''));
-      $('recent').innerHTML=a.slice(0,5).map(([v,p])=>`<li><a class="file-link" onclick="navigateTo('${p}')"><i class="fa-regular fa-file-code"></i> ${esc(v.title)} ${bdg(v.category||'')} <span class="meta">${esc(v.date||'')}</span></a></li>`).join('')||'<li class="meta">no writeups yet</li>'}
     if(cleanPath==='home'&&$('stats'))$('stats').innerHTML=`<div class="stats"><div><b>${cnt(fs.writeups)}</b>writeups</div><div><b>${cnt(fs.projects)}</b>projects</div><div><b>${cnt(fs.achievements)}</b>achievements</div></div>`;
-    stagger();$('prog').style.opacity=(obj.type==='file'||obj.type==='card')?1:0;
+    stagger();
+    if(cleanPath==='home')initHome();else spy();
   };
-  if(fast){swap();return}
+  if(fast){swap();if(after)setTimeout(after,60);return}
   clearTimeout(navT);
   const h0=main.offsetHeight;main.style.height=h0+'px';main.style.overflow='hidden';main.classList.add('page-exit');
   navT=setTimeout(()=>{
     swap();window.scrollTo(0,0);
-    main.style.height='auto';const h1=main.scrollHeight;main.style.height=h0+'px';void main.offsetHeight;
+    main.style.height='auto';const h1=main.scrollHeight;
+    if(Math.abs(h1-h0)>900){main.style.height='';main.style.overflow='';main.classList.remove('page-exit');if(after)setTimeout(after,80);return}
+    main.style.height=h0+'px';void main.offsetHeight;
     main.classList.remove('page-exit');main.style.height=h1+'px';
-    setTimeout(()=>{main.style.height='';main.style.overflow=''},420)
+    setTimeout(()=>{main.style.height='';main.style.overflow='';if(after)after()},430)
   },180);
 }
 function crumb(p){const parts=p.split('/');let acc="",h=`<div class="breadcrumb"><i class="fa-solid fa-folder-tree"></i> `;
@@ -545,8 +660,6 @@ const CI={pwn:'fa-skull',rev:'fa-gears',web:'fa-spider',crypto:'fa-key',forensic
 const cicon=c=>{const k=String(c).toLowerCase();return CI[Object.keys(CI).find(x=>k.includes(x))]||'fa-cube'};
 const isO=()=>document.documentElement.dataset.theme==='obsidian',cap=t=>String(t).charAt(0).toUpperCase()+String(t).slice(1);
 const SUBS={writeups:'Writeups for challenges I solve, grouped by technique.',projects:'Things I built, and what I learned building them.',achievements:'Ranks, results and recognition.',experience:'Where I have worked and what I did there.'};
-function moveInd(){const n=document.querySelector('nav');if(!n)return;let i=$('ind');if(!i){i=document.createElement('span');i.id='ind';n.appendChild(i)}const a=n.querySelector('button.active');if(!a){i.style.opacity=0;return}i.style.opacity=1;i.style.width=a.offsetWidth+'px';i.style.left=a.offsetLeft+'px';i.style.top=(a.offsetTop+a.offsetHeight-3)+'px'}
-addEventListener('resize',moveInd);document.fonts&&document.fonts.ready.then(()=>moveInd());
 let HC=0;
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('ctfsite',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
 async function idbSet(k,v){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
@@ -581,7 +694,7 @@ $('pal').onclick=e=>{if(e.target.id==='pal')closePal()};
 let gp=0;
 document.addEventListener('keydown',e=>{
  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPal();return}
- const t=e.target;if(/INPUT|TEXTAREA|SELECT/.test(t.tagName)||e.ctrlKey||e.metaKey||e.altKey||$('ed').style.display==='flex')return;const k=e.key;
+ const t=e.target;if(/INPUT|TEXTAREA|SELECT/.test(t.tagName)||e.ctrlKey||e.metaKey||e.altKey||$('ed').style.display==='flex'||$('lay').style.display==='flex')return;const k=e.key;
  if(k==='/'){e.preventDefault();openPal()}
  else if(/^[1-6]$/.test(k))navigateTo(['home','writeups','projects','achievements','experience','about'][k-1]);
  else if(k==='?')showInfo('<b>Keys</b> (press Esc first if the prompt is focused): <b>1-6</b> pages • <b>/</b> or <b>Ctrl K</b> search • <b>j/k</b> move • <b>Enter</b> open • <b>g g</b> top • <b>m</b> motion • <b>←/→</b> prev/next writeup');
@@ -644,11 +757,10 @@ document.addEventListener('click',e=>{if(rd){rd=0;return}const t=e.target.closes
  const s=getSelection(),sel=s&&!s.isCollapsed&&String(s).trim(),drag=dn&&Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>5;
  if(sel||drag||e.detail>1){e.stopImmediatePropagation();e.preventDefault();return}
  e.stopImmediatePropagation();const x=e.target;setTimeout(()=>{const q=getSelection();if(!q||q.isCollapsed||!String(q).trim()){rd=1;x.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}))}},260)},true);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEd();closePal();$('lb').style.display='none';if(document.activeElement===cli)cli.blur()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEd();closePal();closeLay();$('lb').style.display='none';if(document.activeElement===cli)cli.blur()}});
 setInterval(()=>{if(getSelection().isCollapsed)$('clock').textContent=new Date().toLocaleTimeString()},1000);
 
 addEventListener('popstate',()=>navigateTo(getObj(location.hash.slice(1))?location.hash.slice(1):'home'));
-addEventListener('scroll',()=>{const h=document.documentElement,p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);$('prog').style.transform='scaleX('+Math.min(1,Math.max(0,p))+')'},{passive:true});
 /* content lives in content.json (embedded JSON above is only a fallback for opening the file locally) */
 fetch('content.json?'+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.home)PUBLISHED=norm(j)}).catch(()=>{})
  
