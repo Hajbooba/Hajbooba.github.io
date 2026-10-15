@@ -249,7 +249,6 @@ html{overflow-x:clip}
 @media(max-width:820px){[data-theme=obsidian] header{position:static}}
 nav .kbd{margin-left:.6rem;border:1px solid #2c2f46!important;border-radius:3px;padding:.3rem .6rem!important;color:var(--dim)}
 nav .kbd kbd{font:.62rem 'JetBrains Mono',monospace;border:1px solid #2c2f46;padding:0 .35rem;border-radius:2px;margin-left:.35rem}
-#prog{height:3px;opacity:1;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(200,144,90,.4)}
 .sec{margin-top:5.5rem;scroll-margin-top:90px;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .sec.in{opacity:1;transform:none}.sec:first-child{margin-top:0}.nomo .sec{opacity:1;transform:none}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem;padding-bottom:1.1rem;border-bottom:1px solid #1d1f2e;position:relative}
@@ -279,23 +278,25 @@ h2[id],h3[id]{scroll-margin-top:90px}
 [data-theme=obsidian] header>div:first-child{flex:0 0 auto;white-space:nowrap}
 #current-path{display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
 [data-theme=obsidian] header::before{left:calc(50% - 50vw);width:100vw;transform:none}
-#prog{transition:transform .12s linear,opacity .3s;will-change:transform}
 /* nav underline = the page you are on (changes only when you navigate) */
 [data-theme=obsidian] nav button[data-path]{position:relative}
 [data-theme=obsidian] nav button[data-path]::after{content:"";position:absolute;left:.85rem;right:.85rem;bottom:.18rem;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;transition:transform .3s cubic-bezier(.4,0,.2,1)}
 [data-theme=obsidian] nav button[data-path].active::after{transform:scaleX(1)}
 /* scroll line across the whole screen */
-#progbg{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.06);z-index:3099;pointer-events:none}
-#prog{height:2px;background:linear-gradient(90deg,#c8905a,#e8a56a 60%,#8d92e0);box-shadow:0 0 10px rgba(232,165,106,.6)}
-@media print{#progbg{display:none!important}}
+/* header flush to the top, one mono font; glowing scroll line */
+[data-theme=obsidian] body{padding:0 1.2rem 1.2rem}
+[data-theme=obsidian] .terminal-body{padding:0 1.2rem 1.5rem}
+[data-theme=obsidian] header{margin:0 -1.2rem 1.5rem}
+[data-theme=obsidian] header>div:first-child{font-family:'JetBrains Mono',monospace;font-size:.78rem}
 /* reading progress, skip link, print */
-#prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent2);transform:scaleX(0);transform-origin:0 50%;opacity:0;transition:opacity .3s;z-index:3100;pointer-events:none}
+#prog{position:fixed;top:0;left:0;width:0;height:2px;background:var(--accent2);z-index:3100;pointer-events:none;transition:width .12s linear}
+.rl-dot.past{border-color:var(--accent2)}
 .skip{position:absolute;left:-999px;top:0;z-index:4000;background:var(--accent);color:var(--onacc);padding:.5rem 1rem}.skip:focus{left:8px;top:8px}
 @media print{body{background:#fff!important;color:#000!important}#grid,#spot,#aura,#hexg,#cd,#cr,#trail,#prog,header,footer,.input-line,.action-bar,.pn,.drop,.cb,.skip{display:none!important}.terminal-container{background:none!important;box-shadow:none!important;max-width:none!important}.md,.md *,h1,h2,h3,p,li,.meta{color:#000!important}pre{background:#f4f4f4!important;color:#000!important;border:1px solid #ccc}a{color:#000}.flagbox{break-inside:avoid;border-color:#000;background:none!important}.fb-v{background:none!important;color:#000!important}}
 </style>
 </head>
 <body>
-<a class="skip" href="#main-content">Skip to content</a><div id="progbg"></div><div id="prog"></div><div id="rail" aria-hidden="true"><div class="rl-name" id="rl-name">home</div><div class="rl-track" id="rl-track"><i class="rl-fill" id="rl-fill"></i></div><div class="rl-pct" id="rl-pct">0%</div></div><div id="grid" aria-hidden="true"></div>
+<a class="skip" href="#main-content">Skip to content</a><div id="prog"></div><div id="rail" aria-hidden="true"><div class="rl-name" id="rl-name">home</div><div class="rl-track" id="rl-track"><i class="rl-fill" id="rl-fill"></i></div><div class="rl-pct" id="rl-pct">0%</div></div><div id="grid" aria-hidden="true"></div>
 <noscript><p style="padding:2rem;color:#c4c5d6;font-family:sans-serif">This site needs JavaScript to show the writeups.</p></noscript>
 <div id="lb" onclick="this.style.display='none';scrollTo(0,+this.dataset.y||0)"><img alt=""></div>
 <div id="pal"><div class="pbox"><input id="pq" placeholder="Search writeups, projects, pages…" aria-label="search" autocomplete="off"><div id="pres"></div><p class="meta" style="padding:.5rem 1rem;margin:0">↑↓ move · Enter open · Esc close</p></div></div>
@@ -486,11 +487,16 @@ function initHome(){const S=[...document.querySelectorAll('.sec')];
  else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -10% 0px',threshold:.04});S.forEach(x=>x.classList.contains('in')||io.observe(x))}
  buildRail(S.map(x=>x.dataset.s));spyId='';spy();initMq()}
 let spyRaf=0,spyId='';
-function spy(){spyRaf=0;const h=document.documentElement,p=Math.min(1,Math.max(0,h.scrollTop/((h.scrollHeight-h.clientHeight)||1)));
- $('prog').style.transform='scaleX('+p+')';if(cur!=='home')return;
- const S=[...document.querySelectorAll('.sec')];if(!S.length)return;let on=S[0];for(const x of S)if(x.getBoundingClientRect().top<=160)on=x;
- const id=on.dataset.s;$('rl-fill').style.height=(p*100)+'%';$('rl-pct').textContent=Math.round(p*100)+'%';
- if(id!==spyId){spyId=id;$('rl-name').textContent=id;document.querySelectorAll('.rl-dot').forEach(d=>d.classList.toggle('on',d.dataset.s===id))}}
+function railState(tops,p){const n=tops.length;let k=0;for(let i=0;i<n;i++)if(tops[i]<=160)k=i;if(p>=1)k=n-1;
+ let t=0;if(k<n-1&&p<1){const a=tops[k],b=tops[k+1];t=Math.min(1,Math.max(0,(160-a)/((b-a)||1)))}
+ return{k,fill:p<=0?0:n>1?(p>=1?100:(k+t)/(n-1)*100):p*100}}
+function spy(){spyRaf=0;const h=document.documentElement,mx=Math.max(h.scrollHeight,document.body.scrollHeight)-h.clientHeight,tp=window.scrollY||h.scrollTop,p=mx<=0?0:(tp>=mx-3?1:Math.min(1,Math.max(0,tp/mx)));
+ $('prog').style.width=(p*100)+'%';if(cur!=='home')return;
+ const S=[...document.querySelectorAll('.sec')];if(!S.length)return;
+ const st=railState(S.map(x=>x.getBoundingClientRect().top),p),id=S[st.k].dataset.s;
+ $('rl-fill').style.height=st.fill+'%';$('rl-pct').textContent=Math.round(p*100)+'%';
+ document.querySelectorAll('.rl-dot').forEach((d,i)=>{d.classList.toggle('on',i===st.k);d.classList.toggle('past',i<st.k)});
+ if(id!==spyId){spyId=id;$('rl-name').textContent=id}}
 addEventListener('scroll',()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)},{passive:true});
 addEventListener('resize',()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)});
 if('ResizeObserver' in window)new ResizeObserver(()=>{if(!spyRaf)spyRaf=requestAnimationFrame(spy)}).observe($('main-content'));
@@ -530,7 +536,7 @@ function navigateTo(p,after){
   const swap=()=>{
     cur=r.cleanPath;{const h=location.hash.slice(1);if(h!==cur)(h===''&&cur==='home'?history.replaceState:history.pushState).call(history,null,'','#'+cur)}
     const{obj,cleanPath}=r;
-    $('current-path').innerText='~/'+(cleanPath==='home'?'':cleanPath);
+    $('current-path').innerText='~/'+cleanPath;
     document.body.classList.toggle('home',cleanPath==='home');
     main.innerHTML='';
     if(obj.type==='page')(cleanPath==='home'?homeView:pageView)(obj);
