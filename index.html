@@ -547,11 +547,11 @@ function navigateTo(p,after){
     stagger();
     if(cleanPath==='home')initHome();else spy();
   };
-  if(fast){swap();if(after)setTimeout(after,60);return}
+  if(fast){if(!same)window.scrollTo(0,0);swap();if(after)setTimeout(after,60);return}
   clearTimeout(navT);
   const h0=main.offsetHeight;main.style.height=h0+'px';main.style.overflow='hidden';main.classList.add('page-exit');
   navT=setTimeout(()=>{
-    swap();window.scrollTo(0,0);
+    window.scrollTo(0,0);swap();
     main.style.height='auto';const h1=main.scrollHeight;
     if(Math.abs(h1-h0)>900){main.style.height='';main.style.overflow='';main.classList.remove('page-exit');if(after)setTimeout(after,80);return}
     main.style.height=h0+'px';void main.offsetHeight;
