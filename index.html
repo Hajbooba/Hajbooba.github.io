@@ -288,6 +288,10 @@ h2[id],h3[id]{scroll-margin-top:90px}
 [data-theme=obsidian] .terminal-body{padding:0 1.2rem 1.5rem}
 [data-theme=obsidian] header{margin:0 -1.2rem 1.5rem}
 [data-theme=obsidian] header>div:first-child{font-family:'JetBrains Mono',monospace;font-size:.78rem}
+/* code highlighting */
+.tk-c{color:#6b6f8c;font-style:italic}.tk-s{color:#8fc9a9}.tk-n{color:#e0a56a}.tk-k{color:#a9aef0}.tk-t{color:#7fb7d9}.tk-f{color:#e8d9a8}.tk-p{color:#d98fb0}.tk-l{color:#f0c674}.tk-r{color:#e0a56a}.tk-i{color:#a9aef0}.tk-v{color:#7fb7d9}
+pre[data-lang]{padding-top:2.1rem}
+pre[data-lang]::before{content:attr(data-lang);position:absolute;top:.6rem;left:1.1rem;font:.62rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 /* reading progress, skip link, print */
 #prog{position:fixed;top:0;left:0;width:0;height:2px;background:var(--accent2);z-index:3100;pointer-events:none;transition:width .12s linear}
 .rl-dot.past{border-color:var(--accent2)}
@@ -342,7 +346,7 @@ h2[id],h3[id]{scroll-margin-top:90px}
       <button onclick="$('f-files').click()"><i class="fa-regular fa-image"></i> insert image</button>
       <button onclick="wrap('**')"><b>B</b></button>
       <button onclick="wrap('`')"><i class="fa-solid fa-code"></i> inline</button>
-      <button onclick="wrap('\n```python\n','\n```\n')"><i class="fa-solid fa-terminal"></i> code block</button>
+      <select id="f-lang" onchange="codeSel(this)" style="width:auto" title="insert a code block"><option value="">&lt;/&gt; code block…</option><option value="python">python</option><option value="c">c</option><option value="asm">assembly</option><option value="bash">bash</option><option value="text">plain text</option></select>
       <button onclick="ins('\n## Heading\n')">H2</button><button onclick="ins('\n- item')">list</button>
       <button onclick="centerSel()" title="center the selected lines (click again to undo)"><i class="fa-solid fa-align-center"></i> center</button>
       <button onclick="wrap('{hl|','}')" title="highlight selected text"><i class="fa-solid fa-highlighter"></i> highlight</button>
@@ -354,7 +358,7 @@ h2[id],h3[id]{scroll-margin-top:90px}
     </div>
     <textarea id="f-body" placeholder="Write markdown. Put the cursor anywhere and click 'insert image' (or paste / drag an image in) to place a screenshot exactly there."></textarea>
     <div id="f-prev" class="md"></div>
-    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> <code>{u|underlined}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered. Start a photo's caption with <code>portrait</code> for a round framed photo or <code>wide</code> for a cinematic banner crop.</p>
+    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> <code>{u|underlined}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered. Start a photo's caption with <code>portrait</code> for a round framed photo or <code>wide</code> for a cinematic banner crop. Code blocks are highlighted for <code>python</code>, <code>c</code>, <code>asm</code> and <code>bash</code>: pick the language from the “code block” menu.</p>
   </div>
   <div id="g-flag"><label>Flag (shown in a highlighted box at the end of the writeup)</label><input id="f-flag" placeholder="picoCTF{...}"><label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="f-fh" style="width:auto"> hide it until the reader clicks (spoiler)</label>
    <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">copper</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
@@ -420,17 +424,42 @@ function readImg(f){return new Promise(r=>{const fr=new FileReader();fr.onload=(
 const zoom=s=>{const l=$('lb');l.querySelector('img').src=s;l.dataset.y=scrollY;l.style.display='flex'};
 
 /* markdown-lite: headings, lists, bold, code, links, images (img:id resolves to embedded image) */
-function hl(c){return esc(c).replace(/("[^"\n]*"|'[^'\n]*')/g,'<span class="st">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="kw">$1</span>')}
-const cb=c=>`<pre><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c)}</code></pre>`;
+function hlGeneric(c){return esc(c).replace(/("[^"\n]*"|'[^'\n]*')/g,'<span class="tk-s">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="tk-k">$1</span>')}
+const AL={py:'python',python:'python',python3:'python',c:'c',h:'c',cc:'c',cpp:'c','c++':'c',hpp:'c',asm:'asm',assembly:'asm',nasm:'asm',s:'asm',x86:'asm',x64:'asm',x86_64:'asm',arm:'asm',aarch64:'asm',gas:'asm',sh:'bash',bash:'bash',shell:'bash',zsh:'bash'};
+const WS=t=>new Set(t.split(' '));
+const KW={python:WS('and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield None True False'),c:WS('if else for while do switch case default break continue return goto sizeof typedef struct union enum static extern const volatile register inline NULL true false auto restrict'),bash:WS('if then else elif fi for do done while until case esac function in select time')};
+const TY={python:WS('print len range int str float list dict set tuple bytes bytearray open type isinstance enumerate zip map filter sorted sum min max abs hex ord chr input super self cls bin oct bool'),c:WS('int char short long float double void unsigned signed size_t ssize_t uint8_t uint16_t uint32_t uint64_t int8_t int16_t int32_t int64_t uintptr_t intptr_t FILE bool wchar_t off_t pid_t'),bash:WS('echo cd ls cat grep sed awk chmod chown export source read printf test exit set unset alias eval exec kill sudo python python3 gcc make strings objdump readelf gdb nc curl')};
+const MNE=WS('mov movs movzx movsx movsxd movabs lea push pop call ret retn leave jmp nop hlt int int3 syscall sysenter cpuid xchg add sub adc sbb mul imul div idiv inc dec neg not and or xor test cmp shl shr sal sar rol ror rcl rcr bt bts btr btc bsf bsr bswap cdq cqo cwd cwde cdqe lodsb lodsw lodsd lodsq stosb stosw stosd stosq movsb movsw movsd movsq scasb cmpsb rep repe repne lock xadd cmpxchg pushf popf pushfq popfq ldr str ldp stp ldrb strb ldrh strh bl blr br bx b cbz cbnz tbz tbnz adr adrp eor orr bic lsl lsr asr mvn svc cset csel orn madd msub udiv sdiv movk movz movn');
+const CCS=WS('e z ne nz g ge l le a ae b be s ns o no p np pe po c nc ng nge nl nle na nae nb nbe cxz ecxz rcxz');
+const isCC=w=>{const m=/^(j|cmov|set)([a-z]+)$/i.exec(w);return !!m&&CCS.has(m[2].toLowerCase())};
+const REG=/^(?:[re]?[abcd]x|[abcd][lh]|[re]?[sd]il?|[re]?[sb]pl?|[re]?ip|r(?:8|9|1[0-5])[dwb]?|[c-gs]s|[xyz]mm\d+|st\d?|[wx]\d{1,2}|sp|lr|pc|fp|rflags|eflags)$/i;
+const ASMDIR=/^(?:byte|word|dword|qword|ptr|offset|short|near|far|section|segment|global|extern|db|dw|dd|dq|equ|times|bits|default|align|resb|resw|resd|resq|rel|abs)$/i;
+const RXS={
+ python:/(?<cm>#[^\n]*)|(?<st>[bBrRuUfF]{0,2}(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'))|(?<pp>@\w[\w.]*)|(?<nm>\b(?:0[xX][0-9a-fA-F_]+|0[bB][01_]+|\d[\d_]*(?:\.\d+)?(?:[eE][+-]?\d+)?)\b)|(?<fn>[A-Za-z_]\w*)(?=\s*\()|(?<wd>[A-Za-z_]\w*)/g,
+ c:/(?<cm>\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(?<pp>^[ \t]*#[ \t]*\w+[^\n]*)|(?<st>"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(?<nm>\b(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)[uUlLfF]*\b)|(?<fn>[A-Za-z_]\w*)(?=\s*\()|(?<wd>[A-Za-z_]\w*)/gm,
+ asm:/(?<cm>;[^\n]*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#(?=[ \t])[^\n]*)|(?<st>"(?:\\.|[^"\\\n])*"|'[^'\n]*')|(?<lb>^[ \t]*[.A-Za-z_][\w.$@]*(?=:))|(?<rg>%[A-Za-z]\w*)|(?<nm>[$#]?-?(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\b[0-9][0-9a-fA-F]*[hH]\b|\b\d+\b))|(?<pp>\.[A-Za-z_]\w*)|(?<wd>[A-Za-z_][\w$@]*)/gm,
+ bash:/(?<cm>(?:^|(?<=\s))#[^\n]*)|(?<st>"(?:\\.|[^"\\])*"|'[^']*')|(?<va>\$(?:\w+|\{[^}]*\}|[?!@#$*]))|(?<pp>(?<=\s)--?[A-Za-z][\w-]*)|(?<nm>\b\d+\b)|(?<wd>[A-Za-z_][\w.-]*)/gm};
+const guess=c=>/#\s*include|\bint\s+main\b|\bprintf\s*\(|\bstruct\s+\w+\s*\{|->/.test(c)?'c':(/^\s*(?:mov|push|pop|lea|call|ret|syscall|xor|jmp|add|sub|cmp)\b/m.test(c)&&/%?\b[re]?[abcd]x\b|\b[re]sp\b/i.test(c))?'asm':/^\s*(?:def |import |from \w+ import|class )|\bprint\(/m.test(c)?'python':'';
+const langOf=(c,lang)=>/^(text|txt|plain)$/i.test(lang||'')?'text':(AL[String(lang||'').toLowerCase()]||(lang?'':guess(c)));
+function tk(L,m){const g=m.groups,w=m[0],t=esc(w);let k='';
+ if(g.cm!==undefined)k='c';else if(g.st!==undefined)k='s';else if(g.nm!==undefined)k='n';else if(g.pp!==undefined)k='p';else if(g.lb!==undefined)k='l';else if(g.rg!==undefined)k='r';else if(g.va!==undefined)k='v';
+ else if(L==='asm')k=REG.test(w)?'r':(MNE.has(w.toLowerCase())||isCC(w))?'i':ASMDIR.test(w)?'p':'';
+ else if(KW[L]&&KW[L].has(w))k='k';else if(TY[L]&&TY[L].has(w))k='t';else if(g.fn!==undefined)k='f';
+ return k?'<span class="tk-'+k+'">'+t+'</span>':t}
+function hl(c,lang){const L=langOf(c,lang);if(L==='text')return esc(c);const R=RXS[L];if(!R)return hlGeneric(c);
+ let o='',i=0,m;R.lastIndex=0;while((m=R.exec(c))){if(m[0]==='')R.lastIndex++;o+=esc(c.slice(i,m.index))+tk(L,m);i=m.index+m[0].length}
+ return o+esc(c.slice(i))}
+function codeSel(x){if(x.value)wrap('\n```'+x.value+'\n','\n```\n');x.value=''}
+const cb=(c,lang)=>{const L=langOf(c,lang),lab=L==='text'?'text':(L||'');return `<pre${lab?` data-lang="${esc(lab)}"`:''}><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c,lang)}</code></pre>`};
 function md(t,im){t=String(t||'');
  if(/(^|\n)::center( |$)/.test(t)){let out='',buf=[],c=false;const flush=()=>{if(buf.length)out+=c?`<div class="ctr">${md(buf.join('\n'),im)}</div>`:md(buf.join('\n'),im);buf=[]};
   for(const l of t.split('\n')){const m=l.match(/^::center ?(.*)$/);if(!!m!==c){flush();c=!!m}buf.push(m?m[1]:l)}flush();return out}
  im=im||{};
  const inl=s=>fx(esc(s).replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,(m,a,u)=>{const k=(a.match(/^(portrait|wide)\b:?\s*/i)||[])[1];if(k)a=a.replace(/^(portrait|wide)\b:?\s*/i,'');u=u.startsWith('img:')?(im[u.slice(4)]||''):u;return safeImg(u)?`<figure${k?' class="'+k.toLowerCase()+'"':''}><img src="${u}" alt="${a}" onclick="zoom(this.src)" loading="lazy">${a?`<figcaption>${a}</figcaption>`:''}</figure>`:''})
   .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\b([A-Za-z0-9_]*(?:CTF|flag)\{[^}\s]*\})/gi,'<span class="flag">$1</span>').replace(/\[([^\]]+)\]\((https?:[^)\s"']+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>'));
- let o='',code=null,ls=false,m;
+ let o='',code=null,lang='',ls=false,m;
  for(const l of String(t||'').split('\n')){
-  if(l.startsWith('```')){if(code===null)code=[];else{o+=cb(code.join('\n'));code=null}continue}
+  if(l.startsWith('```')){if(code===null){code=[];lang=l.slice(3).trim().split(/\s+/)[0]||''}else{o+=cb(code.join('\n'),lang);code=null}continue}
   if(code){code.push(l);continue}
   if(ls&&!/^- /.test(l)){o+='</ul>';ls=false}
   if(m=l.match(/^::(note|tip|warn|danger) (.*)$/)){o+=`<div class="callout ${m[1]}"><b>${m[1].toUpperCase()}</b> ${inl(m[2])}</div>`;continue}
@@ -441,7 +470,7 @@ function md(t,im){t=String(t||'');
   else if(/^- /.test(l)){if(!ls){o+='<ul>';ls=true}o+=`<li>${inl(l.slice(2))}</li>`}
   else if(/^!\[/.test(l))o+=inl(l);
   else if(l.trim())o+=`<p>${inl(l)}</p>`}
- if(ls)o+='</ul>';if(code)o+=cb(code.join('\n'));return o}
+ if(ls)o+='</ul>';if(code)o+=cb(code.join('\n'),lang);return o}
 const bodyOf=f=>f.body!==undefined?f.body:(f.overview||'')+(f.code?'\n\n```python\n'+f.code+'\n```':'')+(f.images||[]).filter(safeImg).map(u=>'\n\n![]('+u+')').join('');
 function copyCode(b){navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.querySelector('code').innerText);b.innerHTML='<i class="fa-solid fa-check"></i> copied';setTimeout(()=>b.innerHTML='<i class="fa-regular fa-copy"></i> copy',1500)}
 
@@ -487,13 +516,13 @@ function initHome(){const S=[...document.querySelectorAll('.sec')];
  else{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -10% 0px',threshold:.04});S.forEach(x=>x.classList.contains('in')||io.observe(x))}
  buildRail(S.map(x=>x.dataset.s));spyId='';spy();initMq()}
 let spyRaf=0,spyId='';
-function railState(tops,p){const n=tops.length;let k=0;for(let i=0;i<n;i++)if(tops[i]<=160)k=i;if(p>=1)k=n-1;
- let t=0;if(k<n-1&&p<1){const a=tops[k],b=tops[k+1];t=Math.min(1,Math.max(0,(160-a)/((b-a)||1)))}
+function railState(tops,p,T){T=T||160;const n=tops.length;let k=0;for(let i=0;i<n;i++)if(tops[i]<=T)k=i;if(p>=1)k=n-1;
+ let t=0;if(k<n-1&&p<1){const a=tops[k],b=tops[k+1];t=Math.min(1,Math.max(0,(T-a)/((b-a)||1)))}
  return{k,fill:p<=0?0:n>1?(p>=1?100:(k+t)/(n-1)*100):p*100}}
 function spy(){spyRaf=0;const h=document.documentElement,mx=Math.max(h.scrollHeight,document.body.scrollHeight)-h.clientHeight,tp=window.scrollY||h.scrollTop,p=mx<=8?0:(tp>=mx-3?1:Math.min(1,Math.max(0,tp/mx)));
  $('prog').style.width=(p*100)+'%';if(cur!=='home')return;
  const S=[...document.querySelectorAll('.sec')];if(!S.length)return;
- const st=railState(S.map(x=>x.getBoundingClientRect().top),p),id=S[st.k].dataset.s;
+ const st=railState(S.map(x=>x.getBoundingClientRect().top),p,innerHeight*.6),id=S[st.k].dataset.s;
  $('rl-fill').style.height=st.fill+'%';$('rl-pct').textContent=Math.round(p*100)+'%';
  document.querySelectorAll('.rl-dot').forEach((d,i)=>{d.classList.toggle('on',i===st.k);d.classList.toggle('past',i<st.k)});
  if(id!==spyId){spyId=id;$('rl-name').textContent=id}}
