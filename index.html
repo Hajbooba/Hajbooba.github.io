@@ -292,6 +292,18 @@ h2[id],h3[id]{scroll-margin-top:90px}
 .tk-c{color:#6b6f8c;font-style:italic}.tk-s{color:#8fc9a9}.tk-n{color:#e0a56a}.tk-k{color:#a9aef0}.tk-t{color:#7fb7d9}.tk-f{color:#e8d9a8}.tk-p{color:#d98fb0}.tk-l{color:#f0c674}.tk-r{color:#e0a56a}.tk-i{color:#a9aef0}.tk-v{color:#7fb7d9}
 pre[data-lang]{padding-top:2.1rem}
 pre[data-lang]::before{content:attr(data-lang);position:absolute;top:.6rem;left:1.1rem;font:.62rem 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+/* achievements: compact scoreboard grid (rank, event, small label; a diamond marks the podium) */
+.wins{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.win{position:relative;display:flex;align-items:center;gap:.9rem;padding:1.05rem 1.15rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--panel);cursor:pointer;transition:background .2s;animation:fadeup .5s ease backwards;animation-delay:calc(var(--i,0)*45ms)}
+.win:hover{background:#0f1018}
+.win-r{font:700 1.7rem/1 'JetBrains Mono',monospace;color:var(--dim);min-width:3.1rem;white-space:nowrap}
+.win-t{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.win-t b{font:500 1.02rem/1.25 'Newsreader',serif;color:var(--h)}
+.win-t span{font:.64rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.win.w1 .win-r{color:var(--accent2)}.win.w2 .win-r,.win.w3 .win-r{color:#b9bde8}
+.win::after{content:"";position:absolute;top:.8rem;right:.85rem;width:8px;height:8px;transform:rotate(45deg);border:1px solid transparent}
+.win.w1::after{background:var(--accent2);border-color:var(--accent2)}.win.w2::after,.win.w3::after{border-color:#8f94c8}
+.win .cb{position:absolute;top:2px;right:2px;display:flex;z-index:2}
 /* reading progress, skip link, print */
 #prog{position:fixed;top:0;left:0;width:0;height:2px;background:var(--accent2);z-index:3100;pointer-events:none;transition:width .12s linear}
 .rl-dot.past{border-color:var(--accent2)}
@@ -440,7 +452,9 @@ const RXS={
  asm:/(?<cm>;[^\n]*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#(?=[ \t])[^\n]*)|(?<st>"(?:\\.|[^"\\\n])*"|'[^'\n]*')|(?<lb>^[ \t]*[.A-Za-z_][\w.$@]*(?=:))|(?<rg>%[A-Za-z]\w*)|(?<nm>[$#]?-?(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\b[0-9][0-9a-fA-F]*[hH]\b|\b\d+\b))|(?<pp>\.[A-Za-z_]\w*)|(?<wd>[A-Za-z_][\w$@]*)/gm,
  bash:/(?<cm>(?:^|(?<=\s))#[^\n]*)|(?<st>"(?:\\.|[^"\\])*"|'[^']*')|(?<va>\$(?:\w+|\{[^}]*\}|[?!@#$*]))|(?<pp>(?<=\s)--?[A-Za-z][\w-]*)|(?<nm>\b\d+\b)|(?<wd>[A-Za-z_][\w.-]*)/gm};
 const guess=c=>/#\s*include|\bint\s+main\b|\bprintf\s*\(|\bstruct\s+\w+\s*\{|->/.test(c)?'c':(/^\s*(?:mov|push|pop|lea|call|ret|syscall|xor|jmp|add|sub|cmp)\b/m.test(c)&&/%?\b[re]?[abcd]x\b|\b[re]sp\b/i.test(c))?'asm':/^\s*(?:def |import |from \w+ import|class )|\bprint\(/m.test(c)?'python':'';
-const langOf=(c,lang)=>/^(text|txt|plain)$/i.test(lang||'')?'text':(AL[String(lang||'').toLowerCase()]||(lang?'':guess(c)));
+const langOf=(c,lang)=>{const k=String(lang||'').toLowerCase().trim();if(/^(text|txt|plain|none)$/.test(k))return 'text';if(AL[k])return AL[k];
+ if(k){if(/asm|assembl|masm|gas|x86|x64|amd64|arm|mips|riscv/.test(k))return 'asm';if(/py/.test(k))return 'python';if(/^c(pp|xx|\+\+)?(\W|$)|^objc|^clang/.test(k))return 'c';if(/sh$|bash|zsh|shell|console|terminal/.test(k))return 'bash'}
+ return guess(c)};
 function tk(L,m){const g=m.groups,w=m[0],t=esc(w);let k='';
  if(g.cm!==undefined)k='c';else if(g.st!==undefined)k='s';else if(g.nm!==undefined)k='n';else if(g.pp!==undefined)k='p';else if(g.lb!==undefined)k='l';else if(g.rg!==undefined)k='r';else if(g.va!==undefined)k='v';
  else if(L==='asm')k=REG.test(w)?'r':(MNE.has(w.toLowerCase())||isCC(w))?'i':ASMDIR.test(w)?'p':'';
@@ -450,7 +464,7 @@ function hl(c,lang){const L=langOf(c,lang);if(L==='text')return esc(c);const R=R
  let o='',i=0,m;R.lastIndex=0;while((m=R.exec(c))){if(m[0]==='')R.lastIndex++;o+=esc(c.slice(i,m.index))+tk(L,m);i=m.index+m[0].length}
  return o+esc(c.slice(i))}
 function codeSel(x){if(x.value)wrap('\n```'+x.value+'\n','\n```\n');x.value=''}
-const cb=(c,lang)=>{const L=langOf(c,lang),lab=L==='text'?'text':(L||'');return `<pre${lab?` data-lang="${esc(lab)}"`:''}><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c,lang)}</code></pre>`};
+const cb=(c,lang)=>{const L=langOf(c,lang),lab=L==='text'?'text':(lang?String(lang).toLowerCase():(L||''));return `<pre${lab?` data-lang="${esc(lab)}"`:''}><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c,lang)}</code></pre>`};
 function md(t,im){t=String(t||'');
  if(/(^|\n)::center( |$)/.test(t)){let out='',buf=[],c=false;const flush=()=>{if(buf.length)out+=c?`<div class="ctr">${md(buf.join('\n'),im)}</div>`:md(buf.join('\n'),im);buf=[]};
   for(const l of t.split('\n')){const m=l.match(/^::center ?(.*)$/);if(!!m!==c){flush();c=!!m}buf.push(m?m[1]:l)}flush();return out}
@@ -490,7 +504,12 @@ function getObj(p){
 const cnt=o=>o.type==='file'||o.type==='card'?1:Object.values(o.items||{}).reduce((a,x)=>a+cnt(x),0);
 /* ── SMOOTH NAVIGATE: fade out, swap, fade in, with the page height animating between the two ── */
 /* ===== home = one long page of sections (customisable), sticky nav, scroll-spy, side rail ===== */
-const DEFLAY=[{id:'home',on:true},{id:'writeups',on:true,limit:12,title:'Writeups',sub:'Challenges I solved, explained step by step.'},{id:'projects',on:true,limit:4,title:'Projects',sub:'Things I built, and what I learned building them.'},{id:'achievements',on:true,limit:6,title:'Achievements',sub:'Ranks, results and recognition.'},{id:'experience',on:true,limit:4,title:'Experience',sub:'Where I have worked and what I did there.'},{id:'about',on:true,title:'About',sub:'A little more about me.'}];
+function rankInfo(r){const t=String(r||'').trim();let m=t.match(/^#?0*(\d+)/);if(m)return{n:+m[1],txt:'#'+String(+m[1]).padStart(2,'0'),tier:Math.min(+m[1],4)};m=t.match(/top\s*0*(\d+)/i);if(m)return{n:+m[1],txt:'top '+(+m[1]),tier:4};return{n:0,txt:t||'—',tier:4}}
+const winH=(it,path,btns)=>{const r=rankInfo(it.rank),sub=[it.category,it.date&&String(it.date).slice(0,4)].filter(Boolean).join(' · ');
+ return `<div class="win w${r.tier}" tabindex="0" onclick="navigateTo('${path}')" onkeydown="if(event.key==='Enter')navigateTo('${path}')"><div class="cb">${btns||''}</div><span class="win-r">${esc(r.txt)}</span><div class="win-t"><b>${esc(it.title)}</b>${sub?`<span>${esc(sub)}</span>`:''}</div></div>`};
+const winsOf=(it,prefix,btns,limit)=>{const k=Object.keys(it).sort((a,b)=>(rankInfo(it[a].rank).n||999)-(rankInfo(it[b].rank).n||999)||String(it[b].date||'').localeCompare(String(it[a].date||''))).slice(0,limit||999);
+ return k.length?`<div class="wins">${k.map(x=>winH(it[x],prefix+'/'+x,btns?btns(x):'')).join('')}</div>`:'<p class="meta">Nothing here yet.</p>'};
+const DEFLAY=[{id:'home',on:true},{id:'writeups',on:true,limit:12,title:'Writeups',sub:'Challenges I solved, explained step by step.'},{id:'projects',on:true,limit:4,title:'Projects',sub:'Things I built, and what I learned building them.'},{id:'achievements',on:true,limit:12,title:'Achievements',sub:'Ranks, results and recognition.'},{id:'experience',on:true,limit:4,title:'Experience',sub:'Where I have worked and what I did there.'},{id:'about',on:true,title:'About',sub:'A little more about me.'}];
 function getLayout(){const L=(fs.home&&fs.home.layout)||[],out=L.filter(x=>DEFLAY.some(d=>d.id===x.id)).map(x=>({...DEFLAY.find(d=>d.id===x.id),...x}));
  DEFLAY.forEach(d=>{if(!out.some(x=>x.id===d.id))out.push({...d,on:!L.length})});const i=out.findIndex(x=>x.id==='home');if(i>0)out.unshift(out.splice(i,1)[0]);out[0].on=true;return out}
 const scrollToEl=e=>window.scrollTo({top:Math.max(0,e.getBoundingClientRect().top+scrollY-84),behavior:'smooth'});
@@ -506,7 +525,8 @@ function homeView(o){
   if(s.id==='home'){h+=`<section class="sec in" data-s="home"><h1 class="hero"><i class="fa-solid fa-terminal"></i> <span class="tw">${esc(o.title)}</span></h1><div class="md fade">${md(o.body,o.imgs)}</div><div id="stats"></div></section>`;continue}
   n++;let body='';const none='<p class="meta">Nothing here yet.</p>';
   if(s.id==='writeups'){const W=[];walk(fs.writeups,'writeups',(v,p)=>{if(v.type==='file')W.push([v,p])});W.sort((a,b)=>String(b[0].date||'').localeCompare(String(a[0].date||'')));body=W.length?`<div class="mq" id="mq"><div class="mq-row">${W.slice(0,s.limit||12).map(([v,p])=>tileH(v,p,'')).join('')}</div></div>`:none}
-  else if(s.id==='projects'||s.id==='achievements'){const k=Object.keys(items(s.id)).slice(0,s.limit||6);body=k.length?`<div class="cards">${k.map(x=>cardH(items(s.id)[x],s.id+'/'+x,'')).join('')}</div>`:none}
+  else if(s.id==='achievements'){body=winsOf(items('achievements'),'achievements',null,s.limit||12)}
+  else if(s.id==='projects'){const k=Object.keys(items(s.id)).slice(0,s.limit||6);body=k.length?`<div class="cards">${k.map(x=>cardH(items(s.id)[x],s.id+'/'+x,'')).join('')}</div>`:none}
   else if(s.id==='experience'){const k=Object.keys(items('experience')).slice(0,s.limit||4);body=k.length?`<div class="tl">${k.map(x=>tlH(items('experience')[x],'experience/'+x,'')).join('')}</div>`:none}
   else if(s.id==='about'){if(!fs.about)continue;body=`<div class="md">${md(fs.about.body,fs.about.imgs)}</div>`}
   h+=`<section class="sec" data-s="${s.id}">${head(s,s.id,s.id==='about'?'Open page':'View all',s.id==='writeups'?'<button class="btn-action" onclick="mqGo(-1)" title="previous">←</button><button class="btn-action" onclick="mqGo(1)" title="next">→</button>':'')}${body}</section>`}
@@ -607,7 +627,7 @@ function dirView(p,d){
  const btns=k=>admin?`<button class="btn-delete" title="edit" onclick="event.stopPropagation();openEditor('${p}/${k}')"><i class="fa-solid fa-pen"></i></button><button class="btn-delete" title="delete" onclick="event.stopPropagation();deleteItem('${p}','${k}')"><i class="fa-solid fa-trash"></i></button>`:'';
  const parts=p.split('/'),it=d.items||{},ks=Object.keys(it),dirs=ks.filter(k=>it[k].type==='dir'),files=ks.filter(k=>it[k].type!=='dir');
  let h=(admin?`<div class="action-bar"><button class="btn-action" onclick="openEditor('${p}',1)"><i class="fa-solid fa-plus"></i> Add here</button></div>`:'')+`<h1><i class="fa-solid fa-terminal"></i> <span class="tw">${isO()?esc(d.title||p):'$ ls -la ./'+esc(p)}</span></h1>${isO()&&(d.sub||SUBS[p])?`<p class="sub">${esc(d.sub||SUBS[p])}</p>`:''}`;
- if(d.kind==='exp')h+=`<div class="tl">${ks.map(k=>tlH(it[k],p+'/'+k,btns(k))).join('')||'<p class="meta">Nothing here yet.</p>'}</div>`;else if(d.type==='cards')h+=`<div class="cards">${ks.map(k=>cardH(it[k],p+'/'+k,btns(k))).join('')||'<p class="meta">Nothing here yet.</p>'}</div>`;
+ if(d.kind==='exp')h+=`<div class="tl">${ks.map(k=>tlH(it[k],p+'/'+k,btns(k))).join('')||'<p class="meta">Nothing here yet.</p>'}</div>`;else if(d.kind==='rank')h+=winsOf(it,p,btns);else if(d.type==='cards')h+=`<div class="cards">${ks.map(k=>cardH(it[k],p+'/'+k,btns(k))).join('')||'<p class="meta">Nothing here yet.</p>'}</div>`;
  else{let l='';
   if(parts.length>1)l+=`<li><a class="dir-link" onclick="navigateTo('${parts.slice(0,-1).join('/')}')"><i class="fa-solid fa-folder-open" style="color:var(--yellow)"></i> <strong>.. (parent)</strong></a></li>`;
   l+=dirs.map(k=>`<li><a class="dir-link" onclick="navigateTo('${p}/${k}')"><i class="fa-solid fa-folder"></i> <strong>${esc(k)}/</strong> <span class="meta">(${esc(it[k].title||'')})</span></a>${btns(k)}</li>`).join('');
@@ -736,10 +756,10 @@ document.addEventListener('keydown',e=>{
  else if(k==='m')toggleMotion();
  else if(k==='g'){if(gp&&Date.now()-gp<600)scrollTo({top:0,behavior:'smooth'});gp=Date.now()}
  else if(k==='ArrowRight'||k==='ArrowLeft'){const l=[...document.querySelectorAll('.pn a')],t=l.find(x=>x.textContent.includes(k==='ArrowRight'?'next':'prev'));if(t)t.click()}
- else if(k==='j'||k==='k'){const L=[...document.querySelectorAll('.tile,.card,.tl-item,.dir-link,.file-link')].filter(x=>x.offsetParent),i=L.indexOf(document.activeElement),n=L[Math.max(0,Math.min(L.length-1,i+(k==='j'?1:-1)))];if(n)n.focus()}});
+ else if(k==='j'||k==='k'){const L=[...document.querySelectorAll('.tile,.card,.tl-item,.win,.dir-link,.file-link')].filter(x=>x.offsetParent),i=L.indexOf(document.activeElement),n=L[Math.max(0,Math.min(L.length-1,i+(k==='j'?1:-1)))];if(n)n.focus()}});
 
 /* animations + messages */
-function stagger(){document.querySelectorAll('.dir-link,.file-link').forEach(a=>{a.tabIndex=0;a.onkeydown=e=>{if(e.key==='Enter')a.click()}});document.querySelectorAll('.file-list li').forEach((l,i)=>l.style.animationDelay=i*60+'ms');document.querySelectorAll('.fade>*').forEach((l,i)=>l.style.animationDelay=((isO()?40:300)+i*(isO()?55:90))+'ms');document.querySelectorAll('.tiles>*,.cards>*,.tl>*').forEach((e,i)=>e.style.setProperty('--i',i))}
+function stagger(){document.querySelectorAll('.dir-link,.file-link').forEach(a=>{a.tabIndex=0;a.onkeydown=e=>{if(e.key==='Enter')a.click()}});document.querySelectorAll('.file-list li').forEach((l,i)=>l.style.animationDelay=i*60+'ms');document.querySelectorAll('.fade>*').forEach((l,i)=>l.style.animationDelay=((isO()?40:300)+i*(isO()?55:90))+'ms');document.querySelectorAll('.tiles>*,.cards>*,.tl>*,.wins>*').forEach((e,i)=>e.style.setProperty('--i',i))}
 function showErr(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-msg"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(m)}</div>`)}
 function showInfo(m){$('main-content').insertAdjacentHTML('afterbegin',`<div class="terminal-info"><i class="fa-solid fa-circle-info"></i> ${m}</div>`)}
 
@@ -785,10 +805,10 @@ cli.addEventListener('keydown',e=>{
   ▀█▄█▀</pre><div><b style="color:var(--accent)">root@0xb00b4</b><br>─────────────<br><b>OS:</b> Obsidian x86_64<br><b>Host:</b> obsidian<br><b>Location:</b> Tunisia<br><b>Focus:</b> pwn / rev<br><b>Writeups:</b> ${cnt(fs.writeups)}<br><b>Uptime:</b> ${Math.floor(performance.now()/1000)}s</div></div>`}
   else showErr(`bash: ${cmd}: command not found. Type 'help' for options.`);
  }});
-document.addEventListener('click',e=>{if(String(getSelection())||e.target.closest('.modal,button,a,input,select,textarea,#boot,.crumb,figure,#pal,main,.md,pre,p,li,h1,h2,h3,h4,.card,.tile,.tl-item,.meta,.toc,.stats,.drop,#lb'))return;cli.focus({preventScroll:true})});
+document.addEventListener('click',e=>{if(String(getSelection())||e.target.closest('.modal,button,a,input,select,textarea,#boot,.crumb,figure,#pal,main,.md,pre,p,li,h1,h2,h3,h4,.card,.tile,.tl-item,.win,.meta,.toc,.stats,.drop,#lb'))return;cli.focus({preventScroll:true})});
 /* selection guard: dragging/double-clicking text inside cards & links must not fire their click (it re-renders the page and wipes the selection) */
 let dn=null,rd=0;addEventListener('mousedown',e=>dn={x:e.clientX,y:e.clientY},true);
-document.addEventListener('click',e=>{if(rd){rd=0;return}const t=e.target.closest('.card,.tile,.tl-item,.file-link,.dir-link,.crumb');if(!t||e.target.closest('button'))return;
+document.addEventListener('click',e=>{if(rd){rd=0;return}const t=e.target.closest('.card,.tile,.tl-item,.win,.file-link,.dir-link,.crumb');if(!t||e.target.closest('button'))return;
  const s=getSelection(),sel=s&&!s.isCollapsed&&String(s).trim(),drag=dn&&Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>5;
  if(sel||drag||e.detail>1){e.stopImmediatePropagation();e.preventDefault();return}
  e.stopImmediatePropagation();const x=e.target;setTimeout(()=>{const q=getSelection();if(!q||q.isCollapsed||!String(q).trim()){rd=1;x.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}))}},260)},true);
