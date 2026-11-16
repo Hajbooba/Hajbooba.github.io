@@ -395,6 +395,42 @@
        "Ios"
       ],
       "role": "player"
+     },
+     "harbor": {
+      "type": "file",
+      "title": "Harbor.md",
+      "date": "2026-11-16",
+      "category": "Rev",
+      "pts": "500",
+      "body": "{u|**Challenge overview**} \nThe challenge is a reverse-engineering task involving an iOS application written in Swift, with some Objective-C code responsible for detecting jailbreak indicators.Our objective is to identify four checks performed by the application, in their exact execution order, and calculate the SHA-256-based flag.\n\n{u|**Extracting the ipa**} \nAn .ipa file is essentially a ZIP archive containing the iOS application.\nto extract it : \n![image](img:imwjlforwkct)\nThe resulting structure is:\n![image](img:imwjlgs6taj7)\nThe important file that we're going to reverse is: `Payload/Harbor.app/Harbor`(This is the actual compiled executable.) \n\n![image](img:imwjlk0ex0xx)\nSo we're dealing with a Mach-O ARM64 executable, which is normal for an iOS application. We do not need to run it. Static analysis in Ghidra is enough: Ghidra can show us the program's strings, functions, and the order in which functions call one another.\n\n{u|**Reversing the binary**}  \nLooking at the symbol tree in ghidra we can notice an interesting class named `HBDeviceCheck` \n\n![image](img:imwjlv7b797c)\nThe class methods are a useful starting point, but do not assume the names display order tells you the check order. We need to follow the calls in the function that coordinates the checks. \nAfter some work i concluded that the most important methods of them is `failedCheckMask` as you can see below : \n![image](img:imwjm724gno2)\nIts calling 4 checks in a row. \nBefore the `4` checks, it calls `hasAllChecks`. That is a capability check: the method asks whether the expected check methods are available. It is not one of the four jailbreak indicators requested in the challenge, as shown here \n![image](img:imwjm97ajeni)\nIf we follow the subsequent calls in `failedCheckMask`. They are made in this order:\n**1-rootlessFolderPresent** \n**2-cydiaSchemeHandled**\n**3-canWriteOutsideSandbox**\n**4-cydiaAppInstalled**\nThis is the order we are going to use when building our answer. \nNow lets find the exact values. \nFor each method,lets inspect its references and the string constants passed to the relevant Foundation/UIKit APIs:\nWe will start with the first method `rootlessFolderPresent`\n\n![image](img:imwjmfqoheen)\nSO `rootlessFolderPresent` checker whether `/var/jb` exists or not. Nice! now lets do the same for the rest 3 methods\n**2-cydiaSchemeHandled**\n\n![image](img:imwjmjvo1gmo)\n`cydiaSchemeHandled` creates a URL using this scheme and asks the application whether it can open it : `cydia://` \n**3-canWriteOutsideSandbox**\n\n![image](img:imwjmolhncmw)\n`canWriteOutsideSandbox` attempts to write a probe file at: `/private/harbor_probe.txt` \n\n**4-cydiaAppInstalled**\n\n![image](img:imwjmq25x6c1)\n\n`cydiaAppInstalled`checks whether this application path exists: `/Applications/Cydia.app`\nNow we have all parts needed to build our flag ! \n\n{u|**Building and hashing the input**}\nLets join the four values in check order with a single vertical bar (`|`).Thats what we get :\n::center `/var/jb|cydia://|/private/harbor_probe.txt|/Applications/Cydia.app`\nthen we calculate the SHA-256 hash :\n\n![image](img:imwjmv4xykrq)\n\nThe challenge asks for only the first 16 hexadecimal characters, so we're left with : `323ee67c1eed1d0e`\nAdd the flag format and its all done. \n",
+      "imgs": {
+       "imwjlforwkct": "images/f59170f08ceb0632.jpg",
+       "imwjlgs6taj7": "images/74bdcca5d9002da3.jpg",
+       "imwjlk0ex0xx": "images/bf3043a2019783e5.jpg",
+       "imwjlv7b797c": "images/01da13b14b700ab1.jpg",
+       "imwjm724gno2": "images/b49ae437a2636681.jpg",
+       "imwjm97ajeni": "images/417d1813f639470c.jpg",
+       "imwjmfqoheen": "images/69f83e4539166350.jpg",
+       "imwjmjvo1gmo": "images/87d9eeae3a7f87a2.jpg",
+       "imwjmolhncmw": "images/dc35a30f4aceff3e.jpg",
+       "imwjmq25x6c1": "images/23973dda6933cf94.jpg",
+       "imwjmv4xykrq": "images/e6038f0994e30ef1.jpg"
+      },
+      "flag": "Cybercamp{323ee67c1eed1d0e}",
+      "fhide": true,
+      "flagLabel": "flag.txt",
+      "files": [
+       {
+        "name": "Harbor.ipa",
+        "size": 52123,
+        "sha": "4234fd520aeea0bba0066e2c4e5fc903831b01fed67fb431fef549783dcdbf33",
+        "path": "files/4234fd52/Harbor.ipa"
+       }
+      ],
+      "tags": [
+       "Ios"
+      ],
+      "role": "player"
      }
     }
    }
