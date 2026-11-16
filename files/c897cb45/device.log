@@ -1,0 +1,160 @@
+Nov 14 21:54:14 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<630>
+Nov 14 21:54:17 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:54:23 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 15%
+Nov 14 21:54:28 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<607>
+Nov 14 21:54:29 Lab-iPhone CommCenter[88] <Notice>: Signal strength 73 bars
+Nov 14 21:54:36 Lab-iPhone CommCenter[88] <Notice>: Signal strength 53 bars
+Nov 14 21:54:43 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:54:46 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<1415>
+Nov 14 21:54:47 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 64%
+Nov 14 21:54:50 Lab-iPhone CommCenter[88] <Notice>: Signal strength 48 bars
+Nov 14 21:54:55 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -58 dBm on channel 36
+Nov 14 21:54:56 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 21:55:00 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<1211>
+Nov 14 21:55:06 Lab-iPhone searchd[145] <Notice>: Indexing batch of 54 items finished
+Nov 14 21:55:13 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 40%
+Nov 14 21:55:14 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 89
+Nov 14 21:55:21 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 54%
+Nov 14 21:55:22 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 27
+Nov 14 21:55:28 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 29
+Nov 14 21:55:34 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:55:40 Lab-iPhone CommCenter[88] <Notice>: Signal strength 79 bars
+Nov 14 21:55:43 Lab-iPhone CommCenter[88] <Notice>: Signal strength 57 bars
+Nov 14 21:55:48 Lab-iPhone securityd[112] <Error>: SecItemCopyMatching: no password found for service com.apple.account.AppleAccount
+Nov 14 21:55:55 Lab-iPhone searchd[145] <Notice>: Indexing batch of 57 items finished
+Nov 14 21:56:00 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 24%
+Nov 14 21:56:05 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 17%
+Nov 14 21:56:09 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:56:11 Lab-iPhone CommCenter[88] <Notice>: Signal strength 43 bars
+Nov 14 21:56:12 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:56:14 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:56:19 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 80%
+Nov 14 21:56:26 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 41%
+Nov 14 21:56:29 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:56:36 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -65 dBm on channel 36
+Nov 14 21:56:38 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:56:39 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -40 dBm on channel 36
+Nov 14 21:56:45 Lab-iPhone SpringBoard[58] <Notice>: Application 547 com.apple.mobilesafari now in foreground
+Nov 14 21:56:49 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -38 dBm on channel 36
+Nov 14 21:56:55 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 54%
+Nov 14 21:56:56 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 40%
+Nov 14 21:56:59 Lab-iPhone SpringBoard[58] <Notice>: Application 982 com.apple.mobilesafari now in foreground
+Nov 14 21:57:06 Lab-iPhone Locker(Foundation)[1520] <Notice>: Application did finish launching
+Nov 14 21:57:07 Lab-iPhone searchd[145] <Notice>: Indexing batch of 43 items finished
+Nov 14 21:57:08 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 21:57:14 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<871>
+Nov 14 21:57:20 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -48 dBm on channel 36
+Nov 14 21:57:27 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:57:29 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 18
+Nov 14 21:57:31 Lab-iPhone searchd[145] <Notice>: Indexing batch of 17 items finished
+Nov 14 21:57:35 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:57:40 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:57:44 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 53%
+Nov 14 21:57:50 Lab-iPhone SpringBoard[58] <Notice>: Application 974 com.apple.mobilesafari now in foreground
+Nov 14 21:57:55 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 21:58:02 Lab-iPhone searchd[145] <Notice>: Indexing batch of 49 items finished
+Nov 14 21:58:03 Lab-iPhone SpringBoard[58] <Notice>: Application 1401 com.apple.mobilesafari now in foreground
+Nov 14 21:58:08 Lab-iPhone CommCenter[88] <Notice>: Signal strength 90 bars
+Nov 14 21:58:09 Lab-iPhone searchd[145] <Notice>: Indexing batch of 53 items finished
+Nov 14 21:58:16 Lab-iPhone akd[198] <Notice>: AuthKit: password re-entry not required, token still valid
+Nov 14 21:58:22 Lab-iPhone CommCenter[88] <Notice>: Signal strength 46 bars
+Nov 14 21:58:27 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:58:33 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -15 dBm on channel 36
+Nov 14 21:58:35 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:58:37 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 21:58:38 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 21:58:42 Lab-iPhone searchd[145] <Notice>: Indexing batch of 81 items finished
+Nov 14 21:58:44 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 47%
+Nov 14 21:58:45 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 77%
+Nov 14 21:58:52 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:58:55 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -73 dBm on channel 36
+Nov 14 21:59:00 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -23 dBm on channel 36
+Nov 14 21:59:07 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 21:59:12 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<616>
+Nov 14 21:59:17 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 21:59:18 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 24
+Nov 14 21:59:22 Lab-iPhone searchd[145] <Notice>: Indexing batch of 57 items finished
+Nov 14 21:59:24 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -12 dBm on channel 36
+Nov 14 21:59:25 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 64%
+Nov 14 21:59:32 Lab-iPhone SpringBoard[58] <Notice>: Application 1011 com.apple.mobilesafari now in foreground
+Nov 14 21:59:38 Lab-iPhone CommCenter[88] <Notice>: Signal strength 30 bars
+Nov 14 21:59:43 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -29 dBm on channel 36
+Nov 14 21:59:46 Lab-iPhone CommCenter[88] <Notice>: Signal strength 15 bars
+Nov 14 21:59:52 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<451>
+Nov 14 21:59:58 Lab-iPhone SpringBoard[58] <Notice>: Application 556 com.apple.mobilesafari now in foreground
+Nov 14 22:00:05 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<1303>
+Nov 14 22:00:12 Lab-iPhone CommCenter[88] <Notice>: Signal strength 16 bars
+Nov 14 22:00:14 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 22:00:18 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:00:22 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 13%
+Nov 14 22:00:24 Lab-iPhone searchd[145] <Notice>: Indexing batch of 21 items finished
+Nov 14 22:00:27 Lab-iPhone CommCenter[88] <Notice>: Signal strength 67 bars
+Nov 14 22:00:30 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<1283>
+Nov 14 22:00:37 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 22:00:42 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<538>
+Nov 14 22:00:47 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 73%
+Nov 14 22:00:48 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:00:53 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:01:00 Lab-iPhone Locker(Foundation)[1520] <Notice>: Key encrypted, investigate the Mach-O! CIPHERTEXT: "/f0t0Wcc0+bMkPVdUDlyTpXSaGFmCBvvP3wJlwjC/jE="
+Nov 14 22:01:07 Lab-iPhone Locker(Foundation)[1520] <Notice>: Backup encrypted with AES-256-CBC, key from the backup password (PBKDF2-SHA256, 100000 iterations), openssl-compatible
+Nov 14 22:01:11 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:01:17 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -83 dBm on channel 36
+Nov 14 22:01:18 Lab-iPhone CommCenter[88] <Notice>: Signal strength 38 bars
+Nov 14 22:01:24 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:01:25 Lab-iPhone searchd[145] <Notice>: Indexing batch of 30 items finished
+Nov 14 22:01:30 Lab-iPhone Locker(Foundation)[1520] <Notice>: Backup written: backup.enc
+Nov 14 22:01:37 Lab-iPhone SpringBoard[58] <Notice>: Application 1356 com.apple.mobilesafari now in foreground
+Nov 14 22:01:42 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 50
+Nov 14 22:01:47 Lab-iPhone searchd[145] <Notice>: Indexing batch of 74 items finished
+Nov 14 22:01:52 Lab-iPhone SpringBoard[58] <Notice>: Application 858 com.apple.mobilesafari now in foreground
+Nov 14 22:01:57 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<564>
+Nov 14 22:02:01 Lab-iPhone SpringBoard[58] <Notice>: Application 1301 com.apple.mobilesafari now in foreground
+Nov 14 22:02:07 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 38%
+Nov 14 22:02:08 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:02:11 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 40%
+Nov 14 22:02:18 Lab-iPhone SpringBoard[58] <Notice>: Application 379 com.apple.mobilesafari now in foreground
+Nov 14 22:02:24 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:02:31 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 11%
+Nov 14 22:02:34 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 55%
+Nov 14 22:02:35 Lab-iPhone searchd[145] <Notice>: Indexing batch of 15 items finished
+Nov 14 22:02:42 Lab-iPhone CommCenter[88] <Notice>: Signal strength 12 bars
+Nov 14 22:02:49 Lab-iPhone SpringBoard[58] <Notice>: Application 1127 com.apple.mobilesafari now in foreground
+Nov 14 22:02:52 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<1029>
+Nov 14 22:02:58 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 68%
+Nov 14 22:03:00 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:03:07 Lab-iPhone searchd[145] <Notice>: Indexing batch of 66 items finished
+Nov 14 22:03:11 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 42%
+Nov 14 22:03:12 Lab-iPhone SpringBoard[58] <Notice>: Application 657 com.apple.mobilesafari now in foreground
+Nov 14 22:03:16 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:03:18 Lab-iPhone searchd[145] <Notice>: Indexing batch of 26 items finished
+Nov 14 22:03:24 Lab-iPhone SpringBoard[58] <Notice>: Application 1056 com.apple.mobilesafari now in foreground
+Nov 14 22:03:27 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 22:03:28 Lab-iPhone Preferences[1388] <Notice>: Screen Time: passcode prompt dismissed
+Nov 14 22:03:29 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 22:03:36 Lab-iPhone apsd[92] <Notice>: Connected to courier 23-courier.push.apple.com
+Nov 14 22:03:42 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 57%
+Nov 14 22:03:44 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:03:49 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:03:54 Lab-iPhone searchd[145] <Notice>: Indexing batch of 20 items finished
+Nov 14 22:03:56 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<660>
+Nov 14 22:04:00 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 46%
+Nov 14 22:04:07 Lab-iPhone CommCenter[88] <Notice>: Signal strength 29 bars
+Nov 14 22:04:09 Lab-iPhone searchd[145] <Notice>: Indexing batch of 29 items finished
+Nov 14 22:04:11 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 86%
+Nov 14 22:04:12 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -63 dBm on channel 36
+Nov 14 22:04:17 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
+Nov 14 22:04:21 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -24 dBm on channel 36
+Nov 14 22:04:28 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 82%
+Nov 14 22:04:33 Lab-iPhone backboardd[66] <Notice>: Display brightness changed to 26%
+Nov 14 22:04:39 Lab-iPhone dasd[97] <Notice>: Activity com.apple.photos.analysis deferred, battery 24%
+Nov 14 22:04:44 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -33 dBm on channel 36
+Nov 14 22:04:48 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:04:51 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -33 dBm on channel 36
+Nov 14 22:04:57 Lab-iPhone kernel[0] <Notice>: AppleKeyStore: operation succeeded for handle 48
+Nov 14 22:05:03 Lab-iPhone searchd[145] <Notice>: Indexing batch of 67 items finished
+Nov 14 22:05:04 Lab-iPhone runningboardd[63] <Notice>: Acquired assertion for app<316>
+Nov 14 22:05:07 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:05:11 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -12 dBm on channel 36
+Nov 14 22:05:17 Lab-iPhone wifid[77] <Notice>: WiFi: RSSI -78 dBm on channel 36
+Nov 14 22:05:21 Lab-iPhone mDNSResponder[104] <Notice>: mDNS_Execute: link-local address changed
+Nov 14 22:05:26 Lab-iPhone locationd[81] <Notice>: Client com.apple.weather is authorized for location
