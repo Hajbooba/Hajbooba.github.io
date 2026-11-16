@@ -336,6 +336,67 @@
       "role": "player"
      }
     }
+   },
+   "cybercamp-7.0": {
+    "type": "dir",
+    "title": "Ios reverse",
+    "items": {
+     "locker": {
+      "type": "file",
+      "title": "Locker.md",
+      "date": "2026-11-16",
+      "category": "Rev",
+      "pts": "600",
+      "body": "This challenge is a mix of IOS reverse engineering, Cryptography, and backup forensics .\n\n{u|**Challenge overview : **}\nThe challenge provides 3 main files:\ndevice.log: An iOS device system log.\nLocker.ipa: An iOS application package.\nbackup.enc: An encrypted iOS backup.\n\nThe objective is clear here, we are going to investigate the application, recover the password used to encrypt the backup, decrypt the backup, and retrieve the hidden flag.\n\nThe interesting part is that the backup password is not directly provided, we need to understand the logic used in the application to recover it. \n{u|**Initial File Analysis **}\nFirst of all i started by identifying the three provided file and that's what i got:\n\n![image](img:imwjf6ebwbou)\nThe .ipa extension indicates that the application is an iOS package. Since IPA files are ZIP archives, I could inspect their contents using:\n![image](img:imwjf7wbtxey)\n{u|**Analyzing the Device Log**}\nThe next step was examining device.log:\nwe can use cat device.log to see the entire content of the file, but that will take a longer time to find useful info, so instead i searched for references to the Locker application and encryption-related messages: \n![image](img:imwjfgh438o9)\nThis is much clearer, now we can see some important entries. \nAn encrypted key was logged: \n![image](img:imwjfl2kmb0p)\nThe backup encryption format was disclosed:\n![image](img:imwjfmbwagig)\nThe log also confirmed that the backup was successfully written.\nSo, from the previous messages we can understand that the application logs an encrypted version of its backup password, And The backup uses `AES-256-CBC` with `PBKDF2-SHA256` and 100,000 iterations.\nNow the ciphertext from the log became the starting point for reverse engineering the application.\n{u|**Extracting the iOS Application**}\nSince IPA files are ZIP archives, I extracted the application:\n![image](img:imwjg51nchwj)\nThe executable was located at:\nextracted/Payload/Locker.app as shown here \n![image](img:imwjg73mebbr)\nI also inspected the application metadata:\n\n![image](img:imwjix4tp99j)\nThe bundle identifier was: `camp.cyber.locker`\nThis identifier would later help identify the correct application data inside the decrypted backup.\n\n{u|**Reverse Engineering the Mach-O Executable**} \nThe next step was analyzing the actual application executable. I loeaded the executable into ghidra and started looking for interesting stuff:\nInstead of looking at every function and try to understand the full code, i just started looking for useful infos directly, i opened search>for strings and after few tries i found this when i searched for \"Aes\" : \n![image](img:imwjggbqio2y)\ni found that \"LockerAESKey2026\" interesting, mabye its a password or key used somewhere? \nI followed where this string is used and i found this : \n![image](img:imwjgpsc3tre)\nWhile analyzing the `aesEncrypt`: method in the Mach-O executable using Ghidra, I located a call to Apple's `CCCrypt()` function. By examining its arguments, I noticed that the encryption key was not dynamically generated or retrieved from another location. Instead, it was passed directly as a hardcoded string literal:\n`LockerAESKey2026`. The following argument was `0x10`, which represents `16` bytes in hexadecimal. This confirmed that the application uses a `128-bit AES key`. So now we are sure that `LockerAESKey2026` is the hardcoded AES key.\nI also continued searching where the function `aesEncrypt` was called, and i found this : \n\n![image](img:imwjguzexffn)\nInteresting right? we know all the enryption process.\nFor the xor key i just opened the `xorData` function and found that the key is `\"Vault\"` as shown below : \n![image](img:imwjhdk8k3wi)\nSo this is what happened to the real password : Real_password -> XOR with repeating key `\"Vault\"` -> Base64 encode -> ROT13 -> AES-128-ECB encryption -> Base64 encode -> Encrypted key logged in device.log. \nSo in order to get the real password we need to do the same steps backward, to do this i just created a decrypt.py script that give me the password: \n\n```python\n\nimport base64\nimport codecs\n\nfrom Crypto.Cipher import AES\nfrom Crypto.Util.Padding import unpad\n\n# Recovered values from reverse engineering\nCIPHERTEXT = \"/f0t0Wcc0+bMkPVdUDlyTpXSaGFmCBvvP3wJlwjC/jE=\"\nAES_KEY = b\"LockerAESKey2026\"\nXOR_KEY = b\"Vault\"\n\n\ndef decrypt_password():\n\n    # Step 1: Decode outer Base64\n    encrypted_data = base64.b64decode(CIPHERTEXT)\n\n    # Step 2: Decrypt AES-128-ECB\n    cipher = AES.new(AES_KEY, AES.MODE_ECB)\n    decrypted = unpad(cipher.decrypt(encrypted_data), AES.block_size)\n\n    # Step 3: Reverse ROT13\n    decrypted = codecs.decode(decrypted.decode(\"ascii\"), \"rot_13\")\n\n    # Step 4: Decode inner Base64\n    xor_data = base64.b64decode(decrypted)\n\n    # Step 5: Reverse XOR using repeating key\n    password = bytes(\n        byte ^ XOR_KEY[i % len(XOR_KEY)]\n        for i, byte in enumerate(xor_data)\n    )\n\n    return password.decode(\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    try:\n        password = decrypt_password()\n        print(\"[+] Backup password recovered!\")\n        print(f\"[+] Password: {password}\")\n\n    except Exception as e:\n        print(f\"[-] Decryption failed: {e}\")\n\n```\nRunning the script we successfully got out password :\n\n![image](img:imwjhz4kzgw8)\nAt this point, we have successfully reversed the application's custom encryption pipeline.\n{u|**Decrypting the Encrypted Backup**}\nThe device log explicitly provided the backup encryption parameters:\nAES-256-CBC\nPBKDF2-SHA256\n100,000 iterations\nOpenSSL-compatible format\nNow that the password is known, we can decrypt backup.enc.\n![image](img:imwji2bgrfc4)\nAnd we got out backup.tar! \n![image](img:imwji3r8riqe)\nThis confirms that the decryption succeeded.\n{u|**Extracting the Backup**}\nSince the decrypted file is a TAR archive, I extracted its contents:\n\n![image](img:imwjibhbbg65)\nlet's take a look at what we extracted : \n\n![image](img:imwjihhpxrd1)\nThe filename secret.png immediately looked interesting.The question i asked here, which one to open? there are two secret.png, i still can open them both, but earlier we discovered from the info.plist that the bundle identifier was: camp.cyber.locker Therefore, the relevant application data should be in : `AppDomaincamp.cyber.locker`\nI opened the image :\n\n![image](img:imwjijkespjd)\n\nBINGO! ",
+      "imgs": {
+       "imwjf6ebwbou": "images/d37dfd6d10982fda.jpg",
+       "imwjf7wbtxey": "images/7f92783a07a1d436.jpg",
+       "imwjfgh438o9": "images/7b08f2919d1ed63d.jpg",
+       "imwjfl2kmb0p": "images/56c95c2934a484ac.jpg",
+       "imwjfmbwagig": "images/309ff130d848c2f1.jpg",
+       "imwjg51nchwj": "images/ed72555079f54927.jpg",
+       "imwjg73mebbr": "images/31fc5c2948dfa5aa.jpg",
+       "imwjggbqio2y": "images/ce6207c73aee68be.jpg",
+       "imwjgpsc3tre": "images/8d34b60d0b400448.jpg",
+       "imwjguzexffn": "images/ab3efeba55e374c0.jpg",
+       "imwjhdk8k3wi": "images/99dcaadc2fae6a84.jpg",
+       "imwjhz4kzgw8": "images/23e8f1a70a8cdb46.jpg",
+       "imwji2bgrfc4": "images/7e39aec323f633f8.jpg",
+       "imwji3r8riqe": "images/674e0b7335acf958.jpg",
+       "imwjibhbbg65": "images/48aad854d9988cb6.jpg",
+       "imwjihhpxrd1": "images/93cb327a8e6a2fcf.jpg",
+       "imwjijkespjd": "images/4e12a79e22b063db.jpg",
+       "imwjix4tp99j": "images/cce91fcc6c4e05bd.jpg"
+      },
+      "flag": "Cybercamp{k3y5_1n_th3_m4ch0_unl0ck_th3_v4ult}",
+      "fhide": true,
+      "flagLabel": "flag.txt",
+      "files": [
+       {
+        "name": "backup.enc",
+        "size": 122912,
+        "sha": "483839664aea0201dacfc1ba7ac21a0f6971b7c6c9d2ac69bfa3f36740516d47",
+        "path": "files/48383966/backup.enc"
+       },
+       {
+        "name": "device.log",
+        "size": 14980,
+        "sha": "c897cb458e2d5be445295286a54dadba4edb52d8b8e7c05b4e3dafba0728ef42",
+        "path": "files/c897cb45/device.log"
+       },
+       {
+        "name": "Locker.ipa",
+        "size": 14636,
+        "sha": "3662ec7f25f249b43d4b17f62037e44514bd632c7bbe12ebc98f45f80f0cefa5",
+        "path": "files/3662ec7f/Locker.ipa"
+       }
+      ],
+      "tags": [
+       "Ios"
+      ],
+      "role": "player"
+     }
+    }
    }
   }
  },
@@ -386,6 +447,18 @@
     "body": "",
     "imgs": {},
     "rank": "1st"
+   },
+   "cybercamp-7.0": {
+    "type": "card",
+    "title": "Cybercamp 7.0",
+    "date": "2026-11-16",
+    "category": "CTF",
+    "link": "",
+    "body": "\n![image](img:imwjek3s2mcc)\n",
+    "imgs": {
+     "imwjek3s2mcc": "images/42ff833942db1e30.jpg"
+    },
+    "rank": "2nd"
    }
   },
   "kind": "rank"
