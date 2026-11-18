@@ -871,9 +871,9 @@ function overText(e){const t=e.target;if(t.closest('a,button,figure'))return fal
 /* animated blueprint background (replaces the static #grid) */
 #grid{display:none}
 #txl{position:fixed;left:0;right:0;top:0;height:2px;opacity:0;z-index:3200;pointer-events:none;background:linear-gradient(90deg,transparent,var(--accent2) 18%,#ffe0b8 50%,var(--accent2) 82%,transparent);box-shadow:0 0 18px 4px rgba(200,144,90,.5),0 -26px 60px 18px rgba(200,144,90,.08)}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none;
- -webkit-mask-image:radial-gradient(ellipse 62% 72% at 50% 42%,transparent 28%,#000 100%);
- mask-image:radial-gradient(ellipse 62% 72% at 50% 42%,transparent 28%,#000 100%)}
+#bg{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;
+ -webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 42%,rgba(0,0,0,.7) 20%,#000 100%);
+ mask-image:radial-gradient(ellipse 70% 80% at 50% 42%,rgba(0,0,0,.7) 20%,#000 100%)}
 @media(max-width:900px){#bg{-webkit-mask-image:none;mask-image:none;opacity:.6}}
 @media print{#bg{display:none}}
 </style>
@@ -888,7 +888,9 @@ let W,H,dpr,mx=-999,my=-999,nodes=[],drawnStill=false,bursts=[];
 window.__bgBurst=()=>{bursts.push({t:performance.now(),x:mx>0?mx:W/2,y:mx>0?my:H*.4})};
 function fit(){
   dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
-  cv.width=W*dpr;cv.height=H*dpr;c.setTransform(dpr,0,0,dpr,0,0);
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  cv.style.width=W+'px';cv.style.height=H+'px';   /* keep CSS size = viewport (fixes shift on zoom/HiDPI) */
+  c.setTransform(dpr,0,0,dpr,0,0);
   const n=Math.round(Math.min(46,W*H/32000));
   nodes=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,
     vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18}));
