@@ -358,7 +358,7 @@ pre[data-lang]::before{content:attr(data-lang);position:absolute;top:.6rem;left:
       <button onclick="$('f-files').click()"><i class="fa-regular fa-image"></i> insert image</button>
       <button onclick="wrap('**')"><b>B</b></button>
       <button onclick="wrap('`')"><i class="fa-solid fa-code"></i> inline</button>
-      <select id="f-lang" onchange="codeSel(this)" style="width:auto" title="insert a code block"><option value="">&lt;/&gt; code block…</option><option value="python">python</option><option value="c">c</option><option value="asm">assembly</option><option value="bash">bash</option><option value="text">plain text</option></select>
+      <select id="f-lang" onchange="codeSel(this)" style="width:auto" title="insert a code block"><option value="">&lt;/&gt; code block…</option><option value="python">python</option><option value="c">c</option><option value="objc">objective-c</option><option value="asm">assembly</option><option value="bash">bash</option><option value="text">plain text</option></select>
       <button onclick="ins('\n## Heading\n')">H2</button><button onclick="ins('\n- item')">list</button>
       <button onclick="centerSel()" title="center the selected lines (click again to undo)"><i class="fa-solid fa-align-center"></i> center</button>
       <button onclick="wrap('{hl|','}')" title="highlight selected text"><i class="fa-solid fa-highlighter"></i> highlight</button>
@@ -370,7 +370,7 @@ pre[data-lang]::before{content:attr(data-lang);position:absolute;top:.6rem;left:
     </div>
     <textarea id="f-body" placeholder="Write markdown. Put the cursor anywhere and click 'insert image' (or paste / drag an image in) to place a screenshot exactly there."></textarea>
     <div id="f-prev" class="md"></div>
-    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> <code>{u|underlined}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered. Start a photo's caption with <code>portrait</code> for a round framed photo or <code>wide</code> for a cinematic banner crop. Code blocks are highlighted for <code>python</code>, <code>c</code>, <code>asm</code> and <code>bash</code>: pick the language from the “code block” menu.</p>
+    <p class="meta" style="margin:.4rem 0 0">Supports # headings, - lists, **bold**, `code`, [links](https://…), ``` code blocks, ![caption](url or img:id).<br>Extras: <code>{hl|highlight}</code> <code>{red|colored}</code> <code>{strike|struck}</code> <code>{u|underlined}</code> · <code>::note</code> <code>::tip</code> <code>::warn</code> <code>::danger</code> callouts · <code>::flag picoCTF{...}</code> puts a flag box right there (<code>::flag?</code> hides it as a spoiler). Center text with the <b>center</b> button or start a line with <code>::center </code>. Images are always centered. Start a photo's caption with <code>portrait</code> for a round framed photo or <code>wide</code> for a cinematic banner crop. Code blocks are highlighted for <code>python</code>, <code>c</code>, <code>objc</code>, <code>asm</code> and <code>bash</code>: pick the language from the “code block” menu.</p>
   </div>
   <div id="g-flag"><label>Flag (shown in a highlighted box at the end of the writeup)</label><input id="f-flag" placeholder="picoCTF{...}"><label style="display:flex;gap:.5rem;align-items:center;cursor:pointer"><input type="checkbox" id="f-fh" style="width:auto"> hide it until the reader clicks (spoiler)</label>
    <div class="two"><div><label>Box label</label><input id="f-fl" placeholder="FLAG / root.txt / user flag"></div><div><label>Color</label><select id="f-fc"><option value="">copper</option><option>red</option><option>green</option><option>blue</option><option>purple</option><option>pink</option><option>accent</option></select></div><div><label>Small note</label><input id="f-fn" placeholder="solved in 40 min"></div></div></div>
@@ -437,10 +437,12 @@ const zoom=s=>{const l=$('lb');l.querySelector('img').src=s;l.dataset.y=scrollY;
 
 /* markdown-lite: headings, lists, bold, code, links, images (img:id resolves to embedded image) */
 function hlGeneric(c){return esc(c).replace(/("[^"\n]*"|'[^'\n]*')/g,'<span class="tk-s">$1</span>').replace(/\b(from|import|def|return|for|if|else|while|int|char|void|include)\b/g,'<span class="tk-k">$1</span>')}
-const AL={py:'python',python:'python',python3:'python',c:'c',h:'c',cc:'c',cpp:'c','c++':'c',hpp:'c',asm:'asm',assembly:'asm',nasm:'asm',s:'asm',x86:'asm',x64:'asm',x86_64:'asm',arm:'asm',aarch64:'asm',gas:'asm',sh:'bash',bash:'bash',shell:'bash',zsh:'bash'};
+const AL={py:'python',python:'python',python3:'python',c:'c',h:'c',cc:'c',cpp:'c','c++':'c',hpp:'c',asm:'asm',assembly:'asm',nasm:'asm',s:'asm',x86:'asm',x64:'asm',x86_64:'asm',arm:'asm',aarch64:'asm',gas:'asm',sh:'bash',bash:'bash',shell:'bash',zsh:'bash',objc:'objc','objective-c':'objc',objectivec:'objc','obj-c':'objc',objective_c:'objc',m:'objc',mm:'objc','objc++':'objc','objective-c++':'objc'};
 const WS=t=>new Set(t.split(' '));
 const KW={python:WS('and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield None True False'),c:WS('if else for while do switch case default break continue return goto sizeof typedef struct union enum static extern const volatile register inline NULL true false auto restrict'),bash:WS('if then else elif fi for do done while until case esac function in select time')};
 const TY={python:WS('print len range int str float list dict set tuple bytes bytearray open type isinstance enumerate zip map filter sorted sum min max abs hex ord chr input super self cls bin oct bool'),c:WS('int char short long float double void unsigned signed size_t ssize_t uint8_t uint16_t uint32_t uint64_t int8_t int16_t int32_t int64_t uintptr_t intptr_t FILE bool wchar_t off_t pid_t'),bash:WS('echo cd ls cat grep sed awk chmod chown export source read printf test exit set unset alias eval exec kill sudo python python3 gcc make strings objdump readelf gdb nc curl')};
+KW.objc=WS('if else for while do switch case default break continue return goto sizeof typedef struct union enum static extern const volatile register inline NULL true false auto restrict self super nil Nil YES NO in out inout bycopy byref oneway nonatomic atomic strong weak copy assign retain readonly readwrite getter setter nonnull nullable null_unspecified null_resettable class unsafe_unretained __weak __strong __block __bridge __autoreleasing __unsafe_unretained IBOutlet IBAction IBInspectable NS_ASSUME_NONNULL_BEGIN NS_ASSUME_NONNULL_END');
+TY.objc=WS('id SEL Class IMP BOOL instancetype void int char short long float double unsigned signed size_t ssize_t uint8_t uint16_t uint32_t uint64_t int8_t int16_t int32_t int64_t uintptr_t intptr_t bool NSInteger NSUInteger CGFloat NSObject Protocol');
 const MNE=WS('mov movs movzx movsx movsxd movabs lea push pop call ret retn leave jmp nop hlt int int3 syscall sysenter cpuid xchg add sub adc sbb mul imul div idiv inc dec neg not and or xor test cmp shl shr sal sar rol ror rcl rcr bt bts btr btc bsf bsr bswap cdq cqo cwd cwde cdqe lodsb lodsw lodsd lodsq stosb stosw stosd stosq movsb movsw movsd movsq scasb cmpsb rep repe repne lock xadd cmpxchg pushf popf pushfq popfq ldr str ldp stp ldrb strb ldrh strh bl blr br bx b cbz cbnz tbz tbnz adr adrp eor orr bic lsl lsr asr mvn svc cset csel orn madd msub udiv sdiv movk movz movn');
 const CCS=WS('e z ne nz g ge l le a ae b be s ns o no p np pe po c nc ng nge nl nle na nae nb nbe cxz ecxz rcxz');
 const isCC=w=>{const m=/^(j|cmov|set)([a-z]+)$/i.exec(w);return !!m&&CCS.has(m[2].toLowerCase())};
@@ -451,20 +453,21 @@ const RXS={
  c:/(?<cm>\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(?<pp>^[ \t]*#[ \t]*\w+[^\n]*)|(?<st>"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(?<nm>\b(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)[uUlLfF]*\b)|(?<fn>[A-Za-z_]\w*)(?=\s*\()|(?<wd>[A-Za-z_]\w*)/gm,
  asm:/(?<cm>;[^\n]*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|#(?=[ \t])[^\n]*)|(?<st>"(?:\\.|[^"\\\n])*"|'[^'\n]*')|(?<lb>^[ \t]*[.A-Za-z_][\w.$@]*(?=:))|(?<rg>%[A-Za-z]\w*)|(?<nm>[$#]?-?(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\b[0-9][0-9a-fA-F]*[hH]\b|\b\d+\b))|(?<pp>\.[A-Za-z_]\w*)|(?<wd>[A-Za-z_][\w$@]*)/gm,
  bash:/(?<cm>(?:^|(?<=\s))#[^\n]*)|(?<st>"(?:\\.|[^"\\])*"|'[^']*')|(?<va>\$(?:\w+|\{[^}]*\}|[?!@#$*]))|(?<pp>(?<=\s)--?[A-Za-z][\w-]*)|(?<nm>\b\d+\b)|(?<wd>[A-Za-z_][\w.-]*)/gm};
-const guess=c=>/#\s*include|\bint\s+main\b|\bprintf\s*\(|\bstruct\s+\w+\s*\{|->/.test(c)?'c':(/^\s*(?:mov|push|pop|lea|call|ret|syscall|xor|jmp|add|sub|cmp)\b/m.test(c)&&/%?\b[re]?[abcd]x\b|\b[re]sp\b/i.test(c))?'asm':/^\s*(?:def |import |from \w+ import|class )|\bprint\(/m.test(c)?'python':'';
+RXS.objc=/(?<cm>\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(?<pp>^[ \t]*#[ \t]*\w+[^\n]*)|(?<st>@?"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(?<at>@\w+)|(?<nm>\b(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?)[uUlLfF]*\b)|(?<ms>(?<=[\[\]][\w.*]*\s+)[A-Za-z_]\w*)|(?<fn>[A-Za-z_]\w*)(?=\s*\()|(?<wd>[A-Za-z_]\w*)/gm;
+const guess=c=>/@(?:interface|implementation|protocol|property|end|selector|autoreleasepool|class)\b|#\s*import\b|\bNS[A-Z]\w+/.test(c)?'objc':/#\s*include|\bint\s+main\b|\bprintf\s*\(|\bstruct\s+\w+\s*\{|->/.test(c)?'c':(/^\s*(?:mov|push|pop|lea|call|ret|syscall|xor|jmp|add|sub|cmp)\b/m.test(c)&&/%?\b[re]?[abcd]x\b|\b[re]sp\b/i.test(c))?'asm':/^\s*(?:def |import |from \w+ import|class )|\bprint\(/m.test(c)?'python':'';
 const langOf=(c,lang)=>{const k=String(lang||'').toLowerCase().trim();if(/^(text|txt|plain|none)$/.test(k))return 'text';if(AL[k])return AL[k];
  if(k){if(/asm|assembl|masm|gas|x86|x64|amd64|arm|mips|riscv/.test(k))return 'asm';if(/py/.test(k))return 'python';if(/^c(pp|xx|\+\+)?(\W|$)|^objc|^clang/.test(k))return 'c';if(/sh$|bash|zsh|shell|console|terminal/.test(k))return 'bash'}
  return guess(c)};
 function tk(L,m){const g=m.groups,w=m[0],t=esc(w);let k='';
- if(g.cm!==undefined)k='c';else if(g.st!==undefined)k='s';else if(g.nm!==undefined)k='n';else if(g.pp!==undefined)k='p';else if(g.lb!==undefined)k='l';else if(g.rg!==undefined)k='r';else if(g.va!==undefined)k='v';
+ if(g.cm!==undefined)k='c';else if(g.st!==undefined)k='s';else if(g.nm!==undefined)k='n';else if(g.pp!==undefined)k='p';else if(g.lb!==undefined)k='l';else if(g.rg!==undefined)k='r';else if(g.va!==undefined)k='v';else if(g.at!==undefined)k='k';
  else if(L==='asm')k=REG.test(w)?'r':(MNE.has(w.toLowerCase())||isCC(w))?'i':ASMDIR.test(w)?'p':'';
- else if(KW[L]&&KW[L].has(w))k='k';else if(TY[L]&&TY[L].has(w))k='t';else if(g.fn!==undefined)k='f';
+ else if(g.ms!==undefined)k='f';else if(L==='objc'&&g.fn===undefined&&/^(?:NS|UI|CG|CF|CA|AV|MK|WK)[A-Z]/.test(w))k='t';else if(KW[L]&&KW[L].has(w))k='k';else if(TY[L]&&TY[L].has(w))k='t';else if(g.fn!==undefined||g.ms!==undefined)k='f';
  return k?'<span class="tk-'+k+'">'+t+'</span>':t}
 function hl(c,lang){const L=langOf(c,lang);if(L==='text')return esc(c);const R=RXS[L];if(!R)return hlGeneric(c);
  let o='',i=0,m;R.lastIndex=0;while((m=R.exec(c))){if(m[0]==='')R.lastIndex++;o+=esc(c.slice(i,m.index))+tk(L,m);i=m.index+m[0].length}
  return o+esc(c.slice(i))}
 function codeSel(x){if(x.value)wrap('\n```'+x.value+'\n','\n```\n');x.value=''}
-const cb=(c,lang)=>{const L=langOf(c,lang),lab=L==='text'?'text':(lang?String(lang).toLowerCase():(L||''));return `<pre${lab?` data-lang="${esc(lab)}"`:''}><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c,lang)}</code></pre>`};
+const cb=(c,lang)=>{const L=langOf(c,lang),lab=L==='text'?'text':L==='objc'?'objective-c':(lang?String(lang).toLowerCase():(L||''));return `<pre${lab?` data-lang="${esc(lab)}"`:''}><button class="btn-action copy" onclick="copyCode(this)"><i class="fa-regular fa-copy"></i> copy</button><code>${hl(c,lang)}</code></pre>`};
 function md(t,im){t=String(t||'');
  if(/(^|\n)::center( |$)/.test(t)){let out='',buf=[],c=false;const flush=()=>{if(buf.length)out+=c?`<div class="ctr">${md(buf.join('\n'),im)}</div>`:md(buf.join('\n'),im);buf=[]};
   for(const l of t.split('\n')){const m=l.match(/^::center ?(.*)$/);if(!!m!==c){flush();c=!!m}buf.push(m?m[1]:l)}flush();return out}
@@ -576,7 +579,7 @@ function layMv(i,d){const j=i+d;if(j<1||j>=LAY.length)return;[LAY[i],LAY[j]]=[LA
 function saveLayout(){fs.home.layout=LAY.map(({id,on,title,sub,limit})=>({id,on:id==='home'?true:on,title,sub,limit}));saveFS();closeLay();navigateTo('home')}
 function layReset(){LAY=DEFLAY.map(x=>({...x}));drawLay()}
 /* ── smooth navigation: fade out, swap, fade in (page height animates when the change is small) ── */
-let navT=0;
+let navT=0,txBusy=false,txPend=null,lastDown={x:0,y:0,t:-9e9};addEventListener('pointerdown',e=>{lastDown={x:e.clientX,y:e.clientY,t:performance.now()}},true);
 function navigateTo(p,after){
   const r=getObj(p);
   if(!r){showErr(`bash: cd: ${p}: No such file or directory`);return}
@@ -597,39 +600,49 @@ function navigateTo(p,after){
     if(cleanPath==='home')initHome();else spy();
   };
   if(fast){if(!same)window.scrollTo(0,0);swap();if(after)setTimeout(after,60);return}
-  clearTimeout(navT);
-  if(main._a)main._a.forEach(x=>x.cancel());
-  main.style.pointerEvents='none';
-  /* out: glitch, chromatic split, then collapse like a CRT switching off */
-  const out=main.animate([
-    {opacity:1,transform:'none',filter:'none',clipPath:'inset(0)'},
-    {opacity:.95,transform:'translateX(-7px) skewX(-2deg)',filter:'hue-rotate(40deg) contrast(1.3)',clipPath:'inset(0 0 0 0)',offset:.18},
-    {opacity:.8,transform:'translateX(9px) skewX(3deg)',filter:'hue-rotate(-50deg) blur(1px)',clipPath:'inset(22% 0 30% 0)',offset:.4},
-    {opacity:.9,transform:'translateX(-4px)',filter:'brightness(1.8)',clipPath:'inset(0 0 0 0)',offset:.58},
-    {opacity:0,transform:'scaleY(.015) scaleX(1.03)',filter:'brightness(3) blur(2px)',clipPath:'inset(0)'}
-  ],{duration:360,easing:'cubic-bezier(.7,0,.84,0)',fill:'forwards'});
-  main._a=[out];
-  navT=setTimeout(()=>{
-    out.cancel();window.scrollTo(0,0);swap();main.style.pointerEvents='';
-    if(window.__bgBurst)window.__bgBurst();
-    reveal(main,after)
-  },360);
+  if(txBusy){txPend=[p,after];return}
+  txBusy=true;main.style.pointerEvents='none';
+  (async()=>{
+    try{
+      await tilesIn('~/'+r.cleanPath);
+      window.scrollTo(0,0);swap();main.style.pointerEvents='';
+      if(window.__bgBurst)window.__bgBurst();
+      await tilesOut(main);
+    }catch(e){console.error(e);document.querySelectorAll('#tx,#txt').forEach(n=>n.remove());main.style.pointerEvents=''}
+    txBusy=false;
+    if(after)after();
+    if(txPend){const q=txPend;txPend=null;navigateTo(q[0],q[1])}
+  })();
 }
-/* in: a copper scanline sweeps down and uncovers the new page behind it */
-function reveal(main,after){
-  const r=main.getBoundingClientRect(),Hh=main.scrollHeight,vis=Math.max(60,Math.min(Hh,innerHeight-r.top)),D=760,E='cubic-bezier(.22,.8,.2,1)';
-  let ln=document.getElementById('txl');if(!ln){ln=document.createElement('div');ln.id='txl';document.body.appendChild(ln)}
-  const a=main.animate([
-    {clipPath:`inset(0 0 ${Hh}px 0)`,filter:'brightness(1.7) blur(2px)'},
-    {clipPath:`inset(0 0 ${Math.max(0,Hh-vis)}px 0)`,filter:'none'}
-  ],{duration:D,easing:E});
-  const l=ln.animate([
-    {top:r.top+'px',opacity:1},
-    {top:(r.top+vis)+'px',opacity:1,offset:.92},
-    {top:(r.top+vis)+'px',opacity:0}
-  ],{duration:D,easing:E});
-  main._a=[a,l];
-  a.onfinish=()=>{main._a=null;if(after)after()}
+/* page transition: a grid of tiles flips in from where you clicked (circle -> square, copper spark at the leading edge),
+   shows the destination path, then flips back out while the new page rises into place */
+let TXS=null;
+function tilesIn(label){
+  const W=innerWidth,H=innerHeight,cs=Math.max(110,Math.round(Math.max(W,H)/12)),cols=Math.ceil(W/cs),rows=Math.ceil(H/cs);
+  const ok=performance.now()-lastDown.t<1500,ox=ok?lastDown.x:W/2,oy=ok?lastDown.y:H*.4;
+  document.querySelectorAll('#tx,#txt').forEach(n=>n.remove());
+  const el=document.createElement('div');el.id='tx';el.style.gridTemplate=`repeat(${rows},1fr) / repeat(${cols},1fr)`;
+  const maxd=Math.hypot(Math.max(ox,W-ox),Math.max(oy,H-oy))||1,cells=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const b=document.createElement('b');el.appendChild(b);cells.push([b,Math.hypot((c+.5)/cols*W-ox,(r+.5)/rows*H-oy)/maxd])}
+  document.body.appendChild(el);
+  const t=document.createElement('div');t.id='txt';t.textContent=label;document.body.appendChild(t);
+  TXS={el,cells,t};
+  const an=cells.map(([b,d])=>b.animate([
+    {transform:'scale(0) rotate(-100deg)',opacity:0,borderRadius:'50%',backgroundColor:'#c8905a'},
+    {transform:'scale(1.06) rotate(0deg)',opacity:1,borderRadius:'2px',backgroundColor:'#050507'}
+  ],{duration:360,delay:d*200,easing:'cubic-bezier(.6,0,.2,1)',fill:'both'}));
+  t.animate([{opacity:0,letterSpacing:'.5em'},{opacity:1,letterSpacing:'.2em'}],{duration:340,delay:260,easing:'ease-out',fill:'both'});
+  return Promise.all(an.map(a=>a.finished));
+}
+function tilesOut(main){
+  const{el,cells,t}=TXS;
+  main.animate([{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'none'}],{duration:850,delay:180,easing:'cubic-bezier(.22,.8,.2,1)',fill:'backwards'});
+  t.animate([{opacity:1},{opacity:0}],{duration:180,fill:'forwards'});
+  const an=cells.map(([b,d])=>b.animate([
+    {transform:'scale(1.06) rotate(0deg)',opacity:1,borderRadius:'2px'},
+    {transform:'scale(0) rotate(100deg)',opacity:0,borderRadius:'50%'}
+  ],{duration:360,delay:90+d*200,easing:'cubic-bezier(.4,0,.8,.4)',fill:'both'}));
+  return Promise.all(an.map(a=>a.finished)).then(()=>{el.remove();t.remove();TXS=null});
 }
 function crumb(p){const parts=p.split('/');let acc="",h=`<div class="breadcrumb"><i class="fa-solid fa-folder-tree"></i> `;
  parts.forEach((x,i)=>{acc+=(i?'/':'')+x;h+=i===parts.length-1?`<span style="color:var(--text)">${esc(x)}</span>`:`<span class="crumb" onclick="navigateTo('${acc}')">${esc(x)}</span> / `});
@@ -870,12 +883,15 @@ function overText(e){const t=e.target;if(t.closest('a,button,figure'))return fal
 <style>
 /* animated blueprint background (replaces the static #grid) */
 #grid{display:none}
-#txl{position:fixed;left:0;right:0;top:0;height:2px;opacity:0;z-index:3200;pointer-events:none;background:linear-gradient(90deg,transparent,var(--accent2) 18%,#ffe0b8 50%,var(--accent2) 82%,transparent);box-shadow:0 0 18px 4px rgba(200,144,90,.5),0 -26px 60px 18px rgba(200,144,90,.08)}
 #bg{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;
  -webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 42%,rgba(0,0,0,.7) 20%,#000 100%);
  mask-image:radial-gradient(ellipse 70% 80% at 50% 42%,rgba(0,0,0,.7) 20%,#000 100%)}
 @media(max-width:900px){#bg{-webkit-mask-image:none;mask-image:none;opacity:.6}}
 @media print{#bg{display:none}}
+#tx{position:fixed;inset:0;z-index:3200;pointer-events:none;display:grid}
+#tx b{display:block;position:relative;background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(var(--ac-rgb,124,128,207),.22);will-change:transform,opacity}
+#tx b::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border:1px solid var(--accent2);transform:rotate(45deg);opacity:.65}
+#txt{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3201;pointer-events:none;white-space:nowrap;opacity:0;font:.74rem 'JetBrains Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--accent2)}
 </style>
 <script>
 (()=>{
